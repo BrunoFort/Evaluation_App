@@ -1,0 +1,239 @@
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, Search, Shield, Share2, Star, Users, Briefcase, Building2 } from "lucide-react";
+import { motion } from "framer-motion";
+
+export default function Home() {
+  const [accessCode, setAccessCode] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userType, setUserType] = useState(null); // 'employee' | 'employer' | null
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const auth = await base44.auth.isAuthenticated();
+      setIsAuthenticated(auth);
+      
+      if (auth) {
+        const user = await base44.auth.me();
+        // Check if user has an employee or employer profile
+        const [employees, employers] = await Promise.all([
+          base44.entities.Employee.filter({ user_id: user.id }),
+          base44.entities.Employer.filter({ user_id: user.id })
+        ]);
+        
+        if (employees.length > 0) setUserType('employee');
+        else if (employers.length > 0) setUserType('employer');
+      }
+      
+      setLoading(false);
+    };
+    checkAuth();
+  }, []);
+
+  const handleCodeSubmit = (e) => {
+    e.preventDefault();
+    if (accessCode.trim()) {
+      window.location.href = createPageUrl(`Evaluate?code=${accessCode.trim().toUpperCase()}`);
+    }
+  };
+
+  const features = [
+    {
+      icon: Shield,
+      title: "Secure & Private",
+      description: "Only you control who can access your evaluations through your unique code"
+    },
+    {
+      icon: Share2,
+      title: "Easy Sharing",
+      description: "Share your code or link with employers to receive professional feedback"
+    },
+    {
+      icon: Star,
+      title: "Detailed Ratings",
+      description: "Comprehensive skill assessments covering technical, communication, and leadership"
+    },
+    {
+      icon: Users,
+      title: "Verified Reviews",
+      description: "Employers must register to submit evaluations, ensuring authenticity"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-transparent to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-slate-200/30 to-transparent rounded-full blur-3xl" />
+        
+        <div className="relative max-w-6xl mx-auto px-4 pt-20 pb-32">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight">
+              Professional
+              <span className="block mt-2 bg-gradient-to-r from-slate-700 to-slate-500 bg-clip-text text-transparent">
+                Evaluation Platform
+              </span>
+            </h1>
+            <p className="mt-6 text-xl text-gray-600 leading-relaxed">
+              Build your professional reputation with verified evaluations from registered employers. 
+              Share your unique code to receive detailed feedback.
+            </p>
+          </motion.div>
+
+          {/* Action Cards */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-12 grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          >
+            {/* For Employees */}
+            <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center mb-6">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">For Employees</h2>
+                <p className="text-gray-600 mb-6 text-sm">
+                  Create your profile and get a unique access code to share with employers for evaluations.
+                </p>
+                {!loading && (
+                  isAuthenticated && userType === 'employee' ? (
+                    <Link to={createPageUrl("EmployeeDashboard")}>
+                      <Button className="w-full h-11 font-semibold bg-slate-900 hover:bg-slate-800">
+                        My Dashboard
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to={createPageUrl("EmployeeRegister")}>
+                      <Button className="w-full h-11 font-semibold bg-slate-900 hover:bg-slate-800">
+                        Register as Employee
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  )
+                )}
+              </CardContent>
+            </Card>
+
+            {/* For Employers */}
+            <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center mb-6">
+                  <Building2 className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">For Employers</h2>
+                <p className="text-gray-600 mb-6 text-sm">
+                  Register to submit evaluations for employees. View evaluations anytime with access codes.
+                </p>
+                {!loading && (
+                  isAuthenticated && userType === 'employer' ? (
+                    <Link to={createPageUrl("EmployerDashboard")}>
+                      <Button className="w-full h-11 font-semibold bg-emerald-600 hover:bg-emerald-700">
+                        My Dashboard
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to={createPageUrl("EmployerRegister")}>
+                      <Button className="w-full h-11 font-semibold bg-emerald-600 hover:bg-emerald-700">
+                        Register as Employer
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  )
+                )}
+              </CardContent>
+            </Card>
+
+            {/* View Evaluations */}
+            <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+              <CardContent className="p-8">
+                <div className="w-12 h-12 rounded-xl bg-violet-600 flex items-center justify-center mb-6">
+                  <Search className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-3">View Evaluations</h2>
+                <p className="text-gray-600 mb-6 text-sm">
+                  Enter an employee's access code to view their profile and evaluation history.
+                </p>
+                <form onSubmit={handleCodeSubmit} className="space-y-3">
+                  <Input
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    placeholder="Enter code (e.g., ABC123)"
+                    className="h-11 text-center font-mono tracking-widest uppercase bg-white"
+                    maxLength={6}
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full h-11 font-semibold bg-violet-600 hover:bg-violet-700"
+                  >
+                    View Profile
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+            <p className="mt-3 text-lg text-gray-600">Simple, secure, and professional</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="border-0 shadow-lg h-full hover:shadow-xl transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4">
+                      <feature.icon className="w-6 h-6 text-slate-700" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="py-8 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 text-center text-gray-500 text-sm">
+          Professional Evaluation Platform — Build your reputation with verified feedback
+        </div>
+      </footer>
+    </div>
+  );
+}
