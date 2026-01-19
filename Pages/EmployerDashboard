@@ -1,0 +1,325 @@
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Settings, ClipboardList, Search, LogOut, Home, ArrowRight, Building2 } from "lucide-react";
+import { toast } from "sonner";
+import EvaluationCard from "@/components/evaluation/EvaluationCard";
+import PhoneInput from "@/components/ui/PhoneInput";
+
+export default function EmployerDashboard() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [accessCode, setAccessCode] = useState("");
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("EmployerDashboard"));
+        return;
+      }
+      const userData = await base44.auth.me();
+      setUser(userData);
+      setLoading(false);
+    };
+    loadUser();
+  }, []);
+
+  const { data: employerProfile, isLoading: profileLoading } = useQuery({
+    queryKey: ["employerProfile", user?.id],
+    queryFn: async () => {
+      const profiles = await base44.entities.Employer.filter({ user_id: user.id });
+      return profiles[0] || null;
+    },
+    enabled: !!user?.id
+  });
+
+  const { data: myEvaluations = [], isLoading: evaluationsLoading } = useQuery({
+    queryKey: ["myEvaluations", user?.id],
+    queryFn: () => base44.entities.Evaluation.filter(
+      { employer_user_id: user.id },
+      "-created_date"
+    ),
+    enabled: !!user?.id
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data) => {
+      return base44.entities.Employer.update(employerProfile.id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["employerProfile"]);
+      toast.success("Profile updated!");
+    }
+  });
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (accessCode.trim()) {
+      window.location.href = createPageUrl(`Evaluate?code=${accessCode.trim().toUpperCase()}`);
+    }
+  };
+
+  if (loading || profileLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
+  // Redirect to register if no profile
+  if (!employerProfile) {
+    window.location.href = createPageUrl("EmployerRegister");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link to={createPageUrl("Home")} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+              <Home className="w-4 h-4" />
+              <span className="text-sm font-medium">Home</span>
+            </Link>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => base44.auth.logout(createPageUrl("Home"))}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto p-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Employer Dashboard</h1>
+          <p className="text-gray-600 mt-1">Submit evaluations and manage your profile</p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Profile Card */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="border-0 shadow-xl overflow-hidden">
+              <div className="h-20 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600" />
+              <CardContent className="relative pt-0 pb-6">
+                <div className="flex flex-col items-center -mt-10">
+                  <div className="w-20 h-20 rounded-2xl bg-white shadow-lg flex items-center justify-center border-4 border-white">
+                    <Building2 className="w-10 h-10 text-emerald-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 mt-4">{employerProfile.full_name}</h2>
+                  <p className="text-gray-500">{employerProfile.function_position}</p>
+                  <p className="text-emerald-600 font-medium mt-1">{employerProfile.company_name}</p>
+                </div>
+                
+                <div className="mt-6 space-y-2 text-sm">
+                  {employerProfile.business_number && (
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-500">Business Number</span>
+                      <span className="font-medium">{employerProfile.business_number}</span>
+                    </div>
+                  )}
+                  {employerProfile.employer_id && (
+                    <div className="flex justify-between py-2 border-b">
+                      <span className="text-gray-500">Employer ID</span>
+                      <span className="font-medium">{employerProfile.employer_id}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-500">Email</span>
+                    <span className="font-medium">{employerProfile.email}</span>
+                  </div>
+                  {employerProfile.phone_number && (
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Phone</span>
+                      <span className="font-medium">{employerProfile.phone_number}</span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Search Employee */}
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Search className="w-5 h-5" />
+                  Evaluate Employee
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSearch} className="space-y-3">
+                  <Input
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    placeholder="Enter access code"
+                    className="text-center font-mono tracking-widest uppercase"
+                    maxLength={6}
+                  />
+                  <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    Search & Evaluate
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="evaluations" className="space-y-6">
+              <TabsList className="bg-white shadow-sm border p-1">
+                <TabsTrigger value="evaluations" className="gap-2">
+                  <ClipboardList className="w-4 h-4" />
+                  My Evaluations ({myEvaluations.length})
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-2">
+                  <Settings className="w-4 h-4" />
+                  Settings
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="evaluations" className="space-y-4">
+                {evaluationsLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                  </div>
+                ) : myEvaluations.length === 0 ? (
+                  <Card className="border-0 shadow-lg">
+                    <CardContent className="py-16 text-center">
+                      <ClipboardList className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-900">No evaluations submitted yet</h3>
+                      <p className="text-gray-500 mt-1 max-w-sm mx-auto">
+                        Enter an employee's access code to submit your first evaluation
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  myEvaluations.map((evaluation) => (
+                    <EvaluationCard 
+                      key={evaluation.id} 
+                      evaluation={evaluation}
+                      showDetails={true}
+                    />
+                  ))
+                )}
+              </TabsContent>
+
+              <TabsContent value="settings">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>Edit Profile</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <EmployerProfileEditForm 
+                      profile={employerProfile}
+                      onSave={(data) => updateProfileMutation.mutate(data)}
+                      isSaving={updateProfileMutation.isPending}
+                    />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmployerProfileEditForm({ profile, onSave, isSaving }) {
+  const [formData, setFormData] = useState({
+    full_name: profile.full_name || "",
+    company_name: profile.company_name || "",
+    business_number: profile.business_number || "",
+    function_position: profile.function_position || "",
+    employer_id: profile.employer_id || "",
+    phone_number: profile.phone_number || "",
+    email: profile.email || "",
+    address: profile.address || ""
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Full Name</Label>
+          <Input
+            value={formData.full_name}
+            onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Function/Position</Label>
+          <Input
+            value={formData.function_position}
+            onChange={(e) => setFormData(prev => ({ ...prev, function_position: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Company Name</Label>
+          <Input
+            value={formData.company_name}
+            onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Business Number</Label>
+          <Input
+            value={formData.business_number}
+            onChange={(e) => setFormData(prev => ({ ...prev, business_number: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Employer ID</Label>
+          <Input
+            value={formData.employer_id}
+            onChange={(e) => setFormData(prev => ({ ...prev, employer_id: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Email</Label>
+          <Input
+            value={formData.email}
+            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Phone Number</Label>
+          <PhoneInput
+            value={formData.phone_number}
+            onChange={(value) => setFormData(prev => ({ ...prev, phone_number: value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Address</Label>
+          <Input
+            value={formData.address}
+            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+          />
+        </div>
+      </div>
+      <Button
+        onClick={() => onSave(formData)}
+        disabled={isSaving}
+        className="w-full"
+      >
+        {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+        Save Changes
+      </Button>
+    </div>
+  );
+}
