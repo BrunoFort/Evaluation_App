@@ -1,0 +1,359 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Loader2, Send } from "lucide-react";
+import StarRating from "@/components/ui/StarRating";
+
+const JOB_FUNCTIONS = [
+  "Engineering",
+  "Software Development",
+  "Product Management",
+  "Design",
+  "Marketing",
+  "Sales",
+  "Customer Service",
+  "Human Resources",
+  "Finance",
+  "Operations",
+  "Administration",
+  "Healthcare",
+  "Education",
+  "Construction",
+  "Manufacturing",
+  "Hospitality",
+  "Retail",
+  "Other"
+];
+
+export default function EvaluationForm({ employee, employer, onSubmit, isSubmitting }) {
+  const [formData, setFormData] = useState({
+    employee_id_number: employee?.id_number || "",
+    job_function: "",
+    custom_job_function: "",
+    specific_position: "",
+    relationship: "",
+    technical_skills: 0,
+    communication: 0,
+    problem_solving: 0,
+    leadership: 0,
+    team_worker: 0,
+    punctuality: 0,
+    overall_rating: 0,
+    strengths: "",
+    areas_for_improvement: "",
+    comments: "",
+    would_recommend: true,
+    work_period: ""
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const jobFunction = formData.job_function === "Other" 
+      ? formData.custom_job_function 
+      : formData.job_function;
+
+    onSubmit({
+      employee_id: employee.id,
+      employee_access_code: employee.access_code,
+      employer_id: employer.id,
+      employer_user_id: employer.user_id,
+      evaluator_name: employer.full_name,
+      evaluator_company: employer.company_name,
+      evaluator_role: employer.function_position,
+      employee_id_number: formData.employee_id_number,
+      job_function: jobFunction,
+      specific_position: formData.specific_position,
+      relationship: formData.relationship,
+      technical_skills: formData.technical_skills,
+      communication: formData.communication,
+      problem_solving: formData.problem_solving,
+      leadership: formData.leadership,
+      team_worker: formData.team_worker,
+      punctuality: formData.punctuality,
+      overall_rating: formData.overall_rating,
+      strengths: formData.strengths,
+      areas_for_improvement: formData.areas_for_improvement,
+      comments: formData.comments,
+      would_recommend: formData.would_recommend,
+      work_period: formData.work_period
+    });
+  };
+
+  const updateField = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const isValid = formData.job_function && 
+    (formData.job_function !== "Other" || formData.custom_job_function) &&
+    formData.technical_skills > 0 && 
+    formData.communication > 0 && 
+    formData.problem_solving > 0 && 
+    formData.leadership > 0 && 
+    formData.team_worker > 0 &&
+    formData.punctuality > 0 &&
+    formData.overall_rating > 0;
+
+  return (
+    <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl">Submit Evaluation</CardTitle>
+        <CardDescription>
+          Provide professional feedback for {employee.full_name}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Employee Info (Pre-filled) */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Employee Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg">
+              <div>
+                <p className="text-xs text-gray-500">Name</p>
+                <p className="font-medium">{employee.full_name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Email</p>
+                <p className="font-medium">{employee.email || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Phone</p>
+                <p className="font-medium">{employee.phone_number || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Address</p>
+                <p className="font-medium">{employee.address || "—"}</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="employee_id_number">Employee ID Number</Label>
+              <Input
+                id="employee_id_number"
+                value={formData.employee_id_number}
+                onChange={(e) => updateField("employee_id_number", e.target.value)}
+                placeholder="ID number"
+                className="bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Job Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Job Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="job_function">Job Function *</Label>
+                <Select value={formData.job_function} onValueChange={(v) => updateField("job_function", v)}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select job function" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {JOB_FUNCTIONS.map((fn) => (
+                      <SelectItem key={fn} value={fn}>{fn}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {formData.job_function === "Other" && (
+                <div className="space-y-2">
+                  <Label htmlFor="custom_job_function">Specify Job Function *</Label>
+                  <Input
+                    id="custom_job_function"
+                    value={formData.custom_job_function}
+                    onChange={(e) => updateField("custom_job_function", e.target.value)}
+                    placeholder="Enter job function"
+                    className="bg-white"
+                  />
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="specific_position">Specific Position/Title</Label>
+                <Input
+                  id="specific_position"
+                  value={formData.specific_position}
+                  onChange={(e) => updateField("specific_position", e.target.value)}
+                  placeholder="e.g., Senior Developer"
+                  className="bg-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="relationship">Relationship</Label>
+                <Select value={formData.relationship} onValueChange={(v) => updateField("relationship", v)}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select relationship" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="colleague">Colleague</SelectItem>
+                    <SelectItem value="client">Client</SelectItem>
+                    <SelectItem value="direct_report">Direct Report</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="work_period">Work Period</Label>
+                <Input
+                  id="work_period"
+                  value={formData.work_period}
+                  onChange={(e) => updateField("work_period", e.target.value)}
+                  placeholder="e.g., Jan 2022 - Dec 2023"
+                  className="bg-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Ratings */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Skill Ratings *</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label>Technical Skills</Label>
+                <StarRating 
+                  rating={formData.technical_skills} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("technical_skills", v)}
+                  showValue={false}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Communication</Label>
+                <StarRating 
+                  rating={formData.communication} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("communication", v)}
+                  showValue={false}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Problem Solving</Label>
+                <StarRating 
+                  rating={formData.problem_solving} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("problem_solving", v)}
+                  showValue={false}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Leadership</Label>
+                <StarRating 
+                  rating={formData.leadership} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("leadership", v)}
+                  showValue={false}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Team Worker</Label>
+                <StarRating 
+                  rating={formData.team_worker} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("team_worker", v)}
+                  showValue={false}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Punctuality</Label>
+                <StarRating 
+                  rating={formData.punctuality} 
+                  size="lg" 
+                  interactive 
+                  onChange={(v) => updateField("punctuality", v)}
+                  showValue={false}
+                />
+              </div>
+            </div>
+            <div className="pt-4 border-t">
+              <Label className="text-base font-semibold">Overall Rating *</Label>
+              <div className="mt-2">
+                <StarRating 
+                  rating={formData.overall_rating} 
+                  size="xl" 
+                  interactive 
+                  onChange={(v) => updateField("overall_rating", v)}
+                  showValue={false}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Feedback */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Detailed Feedback</h3>
+            <div className="space-y-2">
+              <Label htmlFor="strengths">Key Strengths</Label>
+              <Textarea
+                id="strengths"
+                value={formData.strengths}
+                onChange={(e) => updateField("strengths", e.target.value)}
+                placeholder="What are their strongest qualities?"
+                className="bg-white min-h-[80px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="areas_for_improvement">Areas for Growth</Label>
+              <Textarea
+                id="areas_for_improvement"
+                value={formData.areas_for_improvement}
+                onChange={(e) => updateField("areas_for_improvement", e.target.value)}
+                placeholder="Where could they improve?"
+                className="bg-white min-h-[80px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="comments">Additional Comments</Label>
+              <Textarea
+                id="comments"
+                value={formData.comments}
+                onChange={(e) => updateField("comments", e.target.value)}
+                placeholder="Any other thoughts or observations..."
+                className="bg-white min-h-[80px]"
+              />
+            </div>
+          </div>
+
+          {/* Recommendation */}
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <Label className="text-base font-medium">Would you recommend hiring this person?</Label>
+              <p className="text-sm text-gray-500">Based on your professional experience</p>
+            </div>
+            <Switch
+              checked={formData.would_recommend}
+              onCheckedChange={(v) => updateField("would_recommend", v)}
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full h-12 text-base font-semibold bg-emerald-600 hover:bg-emerald-700"
+            disabled={!isValid || isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Submit Evaluation
+              </>
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
