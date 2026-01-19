@@ -1,0 +1,46 @@
+{
+  "name": "Employee",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Employee's full name"
+    },
+    "id_number": {
+      "type": "string",
+      "description": "Government-issued ID number"
+    },
+    "address": {
+      "type": "string",
+      "description": "Full address"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Contact phone number with country code"
+    },
+    "sin": {
+      "type": "string",
+      "description": "Social Insurance Number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "work_permit": {
+      "type": "string",
+      "description": "Work permit number or status"
+    },
+    "access_code": {
+      "type": "string",
+      "description": "Unique 6-character access code for employers (generated on demand)"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Reference to the authenticated user"
+    }
+  },
+  "required": [
+    "full_name",
+    "user_id"
+  ]
+}
