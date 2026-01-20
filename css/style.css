@@ -1,0 +1,19 @@
+/* This is a CSS file */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+    color:#404040;
+    background-color: #f8daf6;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background: rgb(90, 155, 29);
+    width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    padding: 20px;
+    }   
