@@ -1,6 +1,6 @@
 
   {
-      "name": "Job Applicant Evaluation App",
+      "name": "Evaluation_App",
       "version": "0.1.0",
       "private": true,
       "dependencies": {
