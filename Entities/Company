@@ -1,0 +1,82 @@
+{
+  "name": "Company",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "Contact person first name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Contact person last name"
+    },
+    "employee_registration_number": {
+      "type": "string",
+      "description": "Employee registration number"
+    },
+    "business_number": {
+      "type": "string",
+      "description": "9-digit Business Number"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Validated company name"
+    },
+    "job_title": {
+      "type": "string",
+      "description": "Job title"
+    },
+    "address_street": {
+      "type": "string",
+      "description": "Street/Avenue name"
+    },
+    "address_number": {
+      "type": "string",
+      "description": "Street number"
+    },
+    "address_postal_code": {
+      "type": "string",
+      "description": "Postal code"
+    },
+    "address_city": {
+      "type": "string",
+      "description": "City"
+    },
+    "address_province": {
+      "type": "string",
+      "description": "Province"
+    },
+    "phone_country_code": {
+      "type": "string",
+      "description": "Phone country code"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "contact_preference": {
+      "type": "string",
+      "enum": [
+        "phone",
+        "email",
+        "both"
+      ],
+      "description": "Preferred contact method"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "first_name",
+    "last_name",
+    "business_number",
+    "company_name",
+    "contact_email"
+  ]
+}
