@@ -1,103 +1,66 @@
-import { Input } from "@/components/ui/input";
+import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
-const COUNTRY_CODES = [
-  { code: "+1", country: "US/CA" },
-  { code: "+44", country: "UK" },
-  { code: "+33", country: "FR" },
-  { code: "+49", country: "DE" },
-  { code: "+39", country: "IT" },
-  { code: "+34", country: "ES" },
-  { code: "+31", country: "NL" },
-  { code: "+32", country: "BE" },
-  { code: "+41", country: "CH" },
-  { code: "+43", country: "AT" },
-  { code: "+351", country: "PT" },
-  { code: "+353", country: "IE" },
-  { code: "+46", country: "SE" },
-  { code: "+47", country: "NO" },
-  { code: "+45", country: "DK" },
-  { code: "+358", country: "FI" },
-  { code: "+48", country: "PL" },
-  { code: "+420", country: "CZ" },
-  { code: "+36", country: "HU" },
-  { code: "+40", country: "RO" },
-  { code: "+30", country: "GR" },
-  { code: "+90", country: "TR" },
-  { code: "+7", country: "RU" },
-  { code: "+380", country: "UA" },
-  { code: "+81", country: "JP" },
-  { code: "+82", country: "KR" },
-  { code: "+86", country: "CN" },
-  { code: "+91", country: "IN" },
-  { code: "+852", country: "HK" },
-  { code: "+65", country: "SG" },
-  { code: "+60", country: "MY" },
-  { code: "+66", country: "TH" },
-  { code: "+84", country: "VN" },
-  { code: "+63", country: "PH" },
-  { code: "+62", country: "ID" },
-  { code: "+61", country: "AU" },
-  { code: "+64", country: "NZ" },
-  { code: "+55", country: "BR" },
-  { code: "+52", country: "MX" },
-  { code: "+54", country: "AR" },
-  { code: "+56", country: "CL" },
-  { code: "+57", country: "CO" },
-  { code: "+58", country: "VE" },
-  { code: "+51", country: "PE" },
-  { code: "+20", country: "EG" },
-  { code: "+27", country: "ZA" },
-  { code: "+234", country: "NG" },
-  { code: "+254", country: "KE" },
-  { code: "+971", country: "AE" },
-  { code: "+966", country: "SA" },
-  { code: "+972", country: "IL" },
+const countryCodes = [
+  { code: "+1", country: "CA", flag: "🇨🇦", name: "Canada" },
+  { code: "+1", country: "US", flag: "🇺🇸", name: "United States" },
+  { code: "+44", country: "GB", flag: "🇬🇧", name: "United Kingdom" },
+  { code: "+61", country: "AU", flag: "🇦🇺", name: "Australia" },
+  { code: "+91", country: "IN", flag: "🇮🇳", name: "India" },
+  { code: "+86", country: "CN", flag: "🇨🇳", name: "China" },
+  { code: "+81", country: "JP", flag: "🇯🇵", name: "Japan" },
+  { code: "+49", country: "DE", flag: "🇩🇪", name: "Germany" },
+  { code: "+33", country: "FR", flag: "🇫🇷", name: "France" },
+  { code: "+39", country: "IT", flag: "🇮🇹", name: "Italy" },
+  { code: "+34", country: "ES", flag: "🇪🇸", name: "Spain" },
+  { code: "+55", country: "BR", flag: "🇧🇷", name: "Brazil" },
+  { code: "+52", country: "MX", flag: "🇲🇽", name: "Mexico" },
+  { code: "+82", country: "KR", flag: "🇰🇷", name: "South Korea" },
+  { code: "+31", country: "NL", flag: "🇳🇱", name: "Netherlands" },
+  { code: "+46", country: "SE", flag: "🇸🇪", name: "Sweden" },
+  { code: "+41", country: "CH", flag: "🇨🇭", name: "Switzerland" },
+  { code: "+971", country: "AE", flag: "🇦🇪", name: "UAE" },
+  { code: "+966", country: "SA", flag: "🇸🇦", name: "Saudi Arabia" },
+  { code: "+65", country: "SG", flag: "🇸🇬", name: "Singapore" },
+  { code: "+63", country: "PH", flag: "🇵🇭", name: "Philippines" },
+  { code: "+234", country: "NG", flag: "🇳🇬", name: "Nigeria" },
+  { code: "+27", country: "ZA", flag: "🇿🇦", name: "South Africa" },
+  { code: "+20", country: "EG", flag: "🇪🇬", name: "Egypt" },
 ];
 
-export default function PhoneInput({ value, onChange, placeholder = "Phone number" }) {
-  // Parse value to extract country code and number
-  const parsePhone = (val) => {
-    if (!val) return { countryCode: "+1", number: "" };
-    
-    for (const { code } of COUNTRY_CODES) {
-      if (val.startsWith(code)) {
-        return { countryCode: code, number: val.slice(code.length).trim() };
-      }
-    }
-    return { countryCode: "+1", number: val };
-  };
-
-  const { countryCode, number } = parsePhone(value);
-
-  const handleCodeChange = (newCode) => {
-    onChange(`${newCode} ${number}`.trim());
-  };
-
-  const handleNumberChange = (e) => {
-    const newNumber = e.target.value.replace(/[^\d\s\-()]/g, '');
-    onChange(`${countryCode} ${newNumber}`.trim());
-  };
+export default function PhoneInput({ value, onChange, countryCode, onCountryCodeChange }) {
+  const selectedCountry = countryCodes.find(c => c.code === countryCode) || countryCodes[0];
 
   return (
     <div className="flex gap-2">
-      <Select value={countryCode} onValueChange={handleCodeChange}>
-        <SelectTrigger className="w-28 flex-shrink-0">
-          <SelectValue />
+      <Select value={countryCode} onValueChange={onCountryCodeChange}>
+        <SelectTrigger className="w-[140px] bg-white border-slate-200">
+          <SelectValue>
+            <span className="flex items-center gap-2">
+              <span>{selectedCountry.flag}</span>
+              <span className="text-slate-600">{selectedCountry.code}</span>
+            </span>
+          </SelectValue>
         </SelectTrigger>
-        <SelectContent className="max-h-60">
-          {COUNTRY_CODES.map(({ code, country }) => (
-            <SelectItem key={code} value={code}>
-              {code} {country}
+        <SelectContent className="max-h-[300px]">
+          {countryCodes.map((country) => (
+            <SelectItem key={`${country.country}-${country.code}`} value={country.code}>
+              <span className="flex items-center gap-2">
+                <span>{country.flag}</span>
+                <span>{country.name}</span>
+                <span className="text-slate-400 ml-auto">{country.code}</span>
+              </span>
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
       <Input
-        value={number}
-        onChange={handleNumberChange}
-        placeholder={placeholder}
-        className="flex-1"
+        type="tel"
+        value={value}
+        onChange={(e) => onChange(e.target.value.replace(/[^\d]/g, ''))}
+        placeholder="Phone number"
+        className="flex-1 bg-white border-slate-200"
       />
     </div>
   );
