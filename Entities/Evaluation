@@ -4,128 +4,85 @@
   "properties": {
     "employee_id": {
       "type": "string",
-      "description": "Reference to the employee being evaluated"
+      "description": "Reference to the employee"
     },
-    "employee_access_code": {
+    "evaluator_company_id": {
       "type": "string",
-      "description": "Employee's access code for quick lookup"
-    },
-    "employer_id": {
-      "type": "string",
-      "description": "Reference to the employer submitting the evaluation"
-    },
-    "employer_user_id": {
-      "type": "string",
-      "description": "User ID of the employer"
+      "description": "Reference to the evaluating company"
     },
     "evaluator_name": {
       "type": "string",
-      "description": "Name of the person submitting the evaluation"
+      "description": "Name of the evaluator"
     },
-    "evaluator_company": {
+    "evaluation_date": {
       "type": "string",
-      "description": "Company of the evaluator"
+      "format": "date",
+      "description": "Date of evaluation"
     },
-    "evaluator_role": {
-      "type": "string",
-      "description": "Role/position of the evaluator"
-    },
-    "employee_id_number": {
-      "type": "string",
-      "description": "Employee's ID number (pre-filled)"
-    },
-    "job_function": {
-      "type": "string",
-      "description": "Job function category"
-    },
-    "specific_position": {
-      "type": "string",
-      "description": "Specific position/title"
-    },
-    "relationship": {
-      "type": "string",
-      "enum": [
-        "manager",
-        "colleague",
-        "client",
-        "direct_report",
-        "other"
-      ],
-      "description": "Relationship to the employee"
-    },
-    "technical_skills": {
+    "quality_productivity": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for technical skills"
+      "description": "Quality and Productivity rating"
     },
-    "communication": {
+    "knowledge_skills": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for communication skills"
+      "description": "Knowledge and Skills rating"
     },
-    "problem_solving": {
+    "goal_achievement": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for problem-solving abilities"
+      "description": "Goal Achievement rating"
     },
-    "leadership": {
+    "teamwork_collaboration": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for leadership qualities"
+      "description": "Teamwork and Collaboration rating"
     },
-    "team_worker": {
+    "initiative_proactivity": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for teamwork abilities"
+      "description": "Initiative and Proactivity rating"
     },
-    "punctuality": {
+    "self_management": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Rating for punctuality"
+      "description": "Self-Management rating"
     },
-    "overall_rating": {
+    "communication_interpersonal": {
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Overall rating"
-    },
-    "strengths": {
-      "type": "string",
-      "description": "Key strengths observed"
-    },
-    "areas_for_improvement": {
-      "type": "string",
-      "description": "Areas where improvement could be made"
+      "description": "Communication and Interpersonal Relationships rating"
     },
     "comments": {
       "type": "string",
       "description": "Additional comments"
     },
-    "would_recommend": {
-      "type": "boolean",
-      "description": "Would recommend hiring this person"
-    },
-    "work_period": {
+    "employment_start_date": {
       "type": "string",
-      "description": "Period during which they worked together"
+      "format": "date"
+    },
+    "employment_end_date": {
+      "type": "string",
+      "format": "date"
     }
   },
   "required": [
     "employee_id",
-    "employee_access_code",
-    "employer_id",
-    "technical_skills",
-    "communication",
-    "problem_solving",
-    "leadership",
-    "team_worker",
-    "punctuality",
-    "overall_rating"
+    "evaluator_company_id",
+    "quality_productivity",
+    "knowledge_skills",
+    "goal_achievement",
+    "teamwork_collaboration",
+    "initiative_proactivity",
+    "self_management",
+    "communication_interpersonal"
   ]
 }
