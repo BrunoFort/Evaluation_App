@@ -1,9 +1,10 @@
 import Layout from './components/Layout';
+import Home from './Pages/Home';
 
 function App() {
   return (
     <Layout>
-      <h1 style={{ fontSize: 32 }}>Meu app finalmente apareceu 🎉</h1>
+      <Home />
     </Layout>
   );
 }
