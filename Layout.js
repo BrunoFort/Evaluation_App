@@ -1,9 +1,8 @@
-import { Toaster } from "sonner";
+import React from 'react';
 
 export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-slate-50">
-      <Toaster position="top-center" richColors />
       {children}
     </div>
   );
