@@ -40,13 +40,18 @@ export default function AddEmployee() {
   }, [companyId]);
 
   const loadCompany = async () => {
-    if (companyId) {
-      const companies = await base44.entities.Company.filter({ id: companyId });
-      if (companies.length > 0) {
-        setCompany(companies[0]);
-      }
-    }
-  };
+  if (companyId) {
+    // Simula carregamento
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // MOCK local — substitua pelo que quiser
+    setCompany({
+      id: companyId,
+      company_name: "Mock Company",
+    });
+  }
+};
+
 
   const validateEmail = (email) => {
     return email.includes('@') && email.includes('.');
