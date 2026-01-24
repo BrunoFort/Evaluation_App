@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createPageUrl } from '../lib/utils.js';
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
+import { createPageUrl } from './lib/utils.js';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent } from '../components/ui/card';
 import { Building2, UserCheck, ClipboardCheck, Shield, ArrowRight, Star, User, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 
