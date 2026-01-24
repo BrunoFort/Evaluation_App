@@ -1,4 +1,4 @@
-import PublicEvaluation from "../Pages/PublicEvaluation";
+import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation.jsx";
 import Layout from './components/Layout.jsx';
 import Home from './Pages/Home.jsx';
 
