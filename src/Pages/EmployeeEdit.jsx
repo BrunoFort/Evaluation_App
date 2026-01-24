@@ -1,96 +1,106 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
+import { api } from "../utils/api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { createPageUrl } from "../utils";
+import { Input } from "../components/ui/input";
 
 export default function EmployeeEdit() {
-  // MOCK employee data (substituir quando conectar backend)
-  const [form, setForm] = useState({
-    full_name: "John Doe",
-    personal_email: "john.doe@gmail.com",
-    work_email: "john.doe@company.com",
-    phone_country_code: "+1",
-    phone_number: "613-555-1234",
-    position: "Software Developer",
-    employee_id: "EMP-001",
-    registration_number: "REG-2024-001",
-    sin: "123-456-789",
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [employee, setEmployee] = useState({
+    name: "",
+    role: "",
+    departmentId: ""
   });
 
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const [loading, setLoading] = useState(true);
+
+  // Buscar funcionário pelo ID
+  useEffect(() => {
+    api.get(`/employees/${id}`)
+      .then((data) => setEmployee(data))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const handleChange = (e) => {
+    setEmployee({
+      ...employee,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const handleSave = () => {
-    console.log("Employee updated:", form);
-    window.location.href = createPageUrl("ViewEmployee");
+  const handleSave = async () => {
+    await api.put(`/employees/${id}`, employee);
+    navigate("/employees"); // ajuste se sua rota for diferente
   };
+
+  if (loading) {
+    return (
+      <CompanyLayout>
+        <p className="p-10 text-center text-slate-600">Carregando funcionário...</p>
+      </CompanyLayout>
+    );
+  }
 
   return (
     <CompanyLayout>
       <h1 className="text-3xl font-bold text-slate-900 mb-8">
-        Edit Employee
+        Editar Funcionário
       </h1>
 
       <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-slate-900">
-            Employee Information
+            Informações do Funcionário
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-8">
-          {/* Country code */}
+        <CardContent className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Phone Country Code
+              Nome
             </label>
             <Input
-              value={form.phone_country_code}
-              onChange={(e) => handleChange("phone_country_code", e.target.value)}
-              className="bg-white w-32"
+              name="name"
+              value={employee.name}
+              onChange={handleChange}
+              className="bg-white"
             />
           </div>
 
-          {/* Other fields */}
-          <div className="grid sm:grid-cols-2 gap-6">
-            {Object.entries(form).map(([key, value]) => {
-              if (key === "phone_country_code") return null;
-
-              return (
-                <div key={key}>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {key.replace(/_/g, " ").toUpperCase()}
-                  </label>
-                  <Input
-                    value={value}
-                    onChange={(e) => handleChange(key, e.target.value)}
-                    className="bg-white"
-                  />
-                </div>
-              );
-            })}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Cargo
+            </label>
+            <Input
+              name="role"
+              value={employee.role}
+              onChange={handleChange}
+              className="bg-white"
+            />
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col gap-4 mt-8">
-            <Button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-xl shadow-md hover:shadow-lg transition-all"
-              onClick={handleSave}
-            >
-              Save Changes
-            </Button>
-
-            <Button
-              variant="outline"
-              className="w-full py-6 text-lg rounded-xl border-slate-300 hover:bg-slate-100 transition-all"
-              onClick={() => (window.location.href = createPageUrl("ViewEmployee"))}
-            >
-              Cancel
-            </Button>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Departamento (ID)
+            </label>
+            <Input
+              name="departmentId"
+              value={employee.departmentId}
+              onChange={handleChange}
+              className="bg-white"
+            />
           </div>
+
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={handleSave}
+          >
+            Salvar
+          </Button>
         </CardContent>
       </Card>
     </CompanyLayout>
