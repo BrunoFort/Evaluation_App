@@ -1,0 +1,23 @@
+{
+  "employees": [
+    { "id": 1, "name": "John Doe", "role": "Employee", "departmentId": 1 },
+    { "id": 2, "name": "Sarah Miller", "role": "Manager", "departmentId": 2 }
+  ],
+  "departments": [
+    { "id": 1, "name": "Engineering", "employees": 12 },
+    { "id": 2, "name": "Human Resources", "employees": 4 }
+  ],
+  "evaluations": [
+    { "id": 1, "employeeId": 1, "average": 4.5, "date": "2024-11-15" },
+    { "id": 2, "employeeId": 2, "average": 4.8, "date": "2024-10-02" }
+  ],
+  "notifications": [
+    { "id": 1, "message": "New evaluation available", "userId": 1 }
+  ],
+  "documents": [
+    { "id": 1, "name": "Employee Handbook.pdf", "category": "HR" }
+  ],
+  "auditLogs": [
+    { "id": 1, "user": "Admin", "action": "Created evaluation", "date": "2024-11-20" }
+  ]
+}
