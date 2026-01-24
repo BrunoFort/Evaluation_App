@@ -27,20 +27,20 @@ export default function PublicEvaluation() {
     setIsLoading(true);
     try {
       if (token) {
-        const employees = await base44.entities.Employee.filter({ share_token: token });
+        });
         
         if (employees.length > 0) {
           const emp = employees[0];
           setEmployee(emp);
 
           if (emp.company_id) {
-            const companies = await base44.entities.Company.filter({ id: emp.company_id });
+            });
             if (companies.length > 0) {
               setCompany(companies[0]);
             }
           }
 
-          const evals = await base44.entities.Evaluation.filter({ employee_id: emp.id });
+          });
           setEvaluations(evals);
         } else {
           setNotFound(true);
