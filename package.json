@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
     "api": "json-server --watch fake-api/db.json --port 4000"
   },
   "dependencies": {
