@@ -20,7 +20,7 @@ export default function EmployerLoginPage() {
       employerId: 1,
     });
 
-    navigate("/dashboard");
+    navigate("/");
   }
 
   return (
