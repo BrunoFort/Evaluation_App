@@ -1,18 +1,18 @@
+// src/features/auth/RequireEmployerAuth.jsx
+import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "./useAuth";
+import { useEmployerAuth } from "./useEmployerAuth";
 
 export function RequireEmployerAuth({ children }) {
-  const { user } = useAuth();
+  const { employer, loading } = useEmployerAuth();
   const location = useLocation();
 
-  if (!user || user.role !== "employer") {
-    return (
-      <Navigate
-        to="/employer/login"
-        replace
-        state={{ from: location.pathname + location.search }}
-      />
-    );
+  if (loading) {
+    return <p>Checking authentication...</p>;
+  }
+
+  if (!employer) {
+    return <Navigate to="/employer/login" state={{ from: location }} replace />;
   }
 
   return children;
