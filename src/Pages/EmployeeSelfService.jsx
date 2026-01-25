@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useAuth } from "../features/auth/AuthProvider";
 import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
 import { generateReferenceToken } from "../utils/generateReferenceToken";
+import { saveReferenceToken } from "../features/reference/referenceTokensStore";
 
 export default function EmployeeSelfService() {
   const { user } = useAuth();
@@ -60,10 +61,10 @@ export default function EmployeeSelfService() {
       typeof window !== "undefined" ? window.location.origin : "";
     const link = `${origin}/reference/${user.employeeId}/${token}`;
 
-    // Aqui, em produção, você chamaria o backend para:
-    // - salvar o token vinculado ao employee
-    // - enviar o e-mail real para o interviewerEmail
-    // Por enquanto, só simulamos:
+    // Registra o token vinculado ao employee (simulado)
+    saveReferenceToken(token, user.employeeId);
+
+    // Em produção: chamar backend para enviar e-mail
     console.log("Send reference link to:", interviewerEmail);
     console.log("Link:", link);
 
