@@ -5,12 +5,27 @@ import { useEmployee } from "../employees/hooks/useEmployee";
 import { useEvaluations } from "../evaluations/hooks/useEvaluations";
 import { useEmployers } from "../employers/hooks/useEmployers";
 import { CriteriaStars } from "./CriteriaStars";
+import { validateReferenceToken } from "./referenceTokensStore";
 
 export default function ReferenceReportPage() {
   const { employeeId, token } = useParams();
   const { employee, loading: loadingEmployee } = useEmployee(employeeId);
   const { evaluations, loading: loadingEvaluations } = useEvaluations();
   const { employers, loading: loadingEmployers } = useEmployers();
+
+  const isTokenValid = validateReferenceToken(token, employeeId);
+
+  if (!isTokenValid) {
+    return (
+      <div className="p-6">
+        <h1 className="text-xl font-bold mb-2">Invalid or expired link</h1>
+        <p className="text-gray-600">
+          This reference link is not valid anymore. Please ask the candidate to
+          generate a new reference link.
+        </p>
+      </div>
+    );
+  }
 
   if (loadingEmployee || loadingEvaluations || loadingEmployers)
     return <div className="p-6">Loading reference report...</div>;
@@ -99,3 +114,4 @@ export default function ReferenceReportPage() {
     </div>
   );
 }
+
