@@ -1,8 +1,10 @@
+// src/features/reference/ReferenceReportPage.jsx
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useEmployee } from "@/features/employees/hooks/useEmployee";
-import { useEvaluations } from "@/features/evaluations/hooks/useEvaluations";
-import { useEmployers } from "@/features/employers/hooks/useEmployers";
-// aqui você pode depois validar o token no backend; por enquanto, só estrutura
+import { useEmployee } from "../employees/hooks/useEmployee";
+import { useEvaluations } from "../evaluations/hooks/useEvaluations";
+import { useEmployers } from "../employers/hooks/useEmployers";
+import { CriteriaStars } from "./CriteriaStars";
 
 export default function ReferenceReportPage() {
   const { employeeId, token } = useParams();
@@ -11,9 +13,10 @@ export default function ReferenceReportPage() {
   const { employers, loading: loadingEmployers } = useEmployers();
 
   if (loadingEmployee || loadingEvaluations || loadingEmployers)
-    return <p>Loading...</p>;
+    return <div className="p-6">Loading reference report...</div>;
 
-  if (!employee) return <p>Employee not found.</p>;
+  if (!employee)
+    return <div className="p-6">Employee not found or link is invalid.</div>;
 
   const employeeEvaluations = evaluations.filter(
     (ev) => ev.employeeId === Number(employeeId)
@@ -26,6 +29,7 @@ export default function ReferenceReportPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
+      {/* Header do candidato */}
       <header className="border-b pb-4">
         <h1 className="text-2xl font-bold">
           Reference report for {employee.fullName}
@@ -33,18 +37,32 @@ export default function ReferenceReportPage() {
         <p className="text-gray-600">
           This report is based on evaluations provided by previous employers.
         </p>
+        <p className="text-xs text-gray-500 mt-2">
+          Access to this report is restricted to registered employers.
+        </p>
       </header>
 
+      {evaluationsWithEmployer.length === 0 && (
+        <p>This candidate has no evaluations yet.</p>
+      )}
+
       {evaluationsWithEmployer.map((ev) => (
-        <div key={ev.id} className="border rounded-lg p-4 bg-white shadow-sm">
-          <div className="flex justify-between">
+        <div
+          key={ev.id}
+          className="border rounded-lg p-4 bg-white shadow-sm space-y-3"
+        >
+          {/* Employer info + score geral */}
+          <div className="flex justify-between gap-4">
             <div>
-              <p className="font-semibold">{ev.employer.companyName}</p>
+              <p className="font-semibold">
+                {ev.employer?.companyName || "Unknown company"}
+              </p>
               <p className="text-sm text-gray-600">
-                {ev.employer.evaluatorName} — {ev.employer.evaluatorPosition}
+                {ev.employer?.evaluatorName} —{" "}
+                {ev.employer?.evaluatorPosition}
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                Contact: {ev.employer.email} · {ev.employer.phone}
+                Contact: {ev.employer?.email} · {ev.employer?.phone}
               </p>
             </div>
 
@@ -58,20 +76,26 @@ export default function ReferenceReportPage() {
             </div>
           </div>
 
+          {/* Critérios detalhados */}
+          <CriteriaStars evaluation={ev} />
+
+          {/* Comentários gerais */}
           {ev.comments && (
-            <p className="mt-3 text-gray-800">{ev.comments}</p>
+            <div className="mt-3">
+              <p className="text-sm text-gray-500 mb-1">General comments:</p>
+              <p className="text-gray-800">{ev.comments}</p>
+            </div>
           )}
 
-          <div className="mt-3 text-sm">
-            <p className="text-gray-500">Reference contact provided:</p>
-            <p className="font-medium">{ev.referenceContact}</p>
-          </div>
+          {/* Contato de referência */}
+          {ev.referenceContact && (
+            <div className="mt-3 text-sm">
+              <p className="text-gray-500">Reference contact provided:</p>
+              <p className="font-medium">{ev.referenceContact}</p>
+            </div>
+          )}
         </div>
       ))}
-
-      {evaluationsWithEmployer.length === 0 && (
-        <p>This candidate has no evaluations yet.</p>
-      )}
     </div>
   );
 }
