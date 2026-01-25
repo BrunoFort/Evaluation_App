@@ -9,7 +9,6 @@
     "start:all": "concurrently \"npm run api\" \"npm run dev\""
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.18",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
