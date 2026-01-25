@@ -7,8 +7,7 @@ export function useSaveEvaluation() {
   async function saveEvaluation(data) {
     setSaving(true);
 
-    // Aqui, em produção, você chamaria o backend (POST /evaluations)
-    // Por enquanto, só simulamos:
+    // Em produção: POST /evaluations
     console.log("Saving evaluation (mock):", data);
 
     await new Promise((resolve) => setTimeout(resolve, 600));
