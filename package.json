@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "api": "json-server --watch fake-api/db.json --port 4000",
-    "start:all": "concurrently \"npm run api\" \"npm run dev\""
+    "start:all": "concurrently \"npm run api\" \"npm run dev\"",
+    "install:ui-deps": "npm install date-fns @radix-ui/react-accordion @radix-ui/react-alert-dialog @radix-ui/react-aspect-ratio @radix-ui/react-avatar react-day-picker embla-carousel-react @radix-ui/react-checkbox @radix-ui/react-collapsible cmdk @radix-ui/react-context-menu @radix-ui/react-dialog vaul @radix-ui/react-dropdown-menu react-hook-form @radix-ui/react-hover-card input-otp @radix-ui/react-label @radix-ui/react-menubar @radix-ui/react-navigation-menu @radix-ui/react-popover @radix-ui/react-progress @radix-ui/react-radio-group react-resizable-panels @radix-ui/react-separator @radix-ui/react-slider next-themes sonner @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-toggle-group @radix-ui/react-toggle @radix-ui/react-tooltip"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
