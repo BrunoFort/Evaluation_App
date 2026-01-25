@@ -32,8 +32,9 @@ import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeC
 // Reference
 import ReferenceReportPage from "./features/reference/ReferenceReportPage";
 
-// Evaluation create page
+// Evaluation pages
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
+import EvaluationEditPage from "./features/evaluations/pages/EvaluationEditPage";
 
 export default function App() {
   return (
@@ -53,6 +54,16 @@ export default function App() {
         element={
           <RequireEmployerAuth>
             <EvaluationCreatePage />
+          </RequireEmployerAuth>
+        }
+      />
+
+      {/* 🆕 Editar avaliação */}
+      <Route
+        path="/evaluations/:id/edit"
+        element={
+          <RequireEmployerAuth>
+            <EvaluationEditPage />
           </RequireEmployerAuth>
         }
       />
