@@ -1,105 +1,149 @@
-import React from "react";
-import CompanyLayout from "../layouts/CompanyLayout";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Star, User, Bell } from "lucide-react";
+// src/Pages/EmployeeSelfService.jsx
+import React, { useMemo, useState } from "react";
+import { useAuth } from "../features/auth/AuthProvider";
+import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
+import { generateReferenceToken } from "../utils/generateReferenceToken";
 
 export default function EmployeeSelfService() {
-  // MOCK employee data
-  const employee = {
-    name: "John Doe",
-    position: "Software Developer",
-    email: "john.doe@company.com",
-    phone: "+1 613-555-1234",
-  };
+  const { user } = useAuth();
+  const { evaluations, loading } = useEvaluations();
 
-  // MOCK evaluations
-  const evaluations = [
-    { id: 1, date: "2024-11-15", average: 4.5 },
-    { id: 2, date: "2024-06-10", average: 4.2 },
-    { id: 3, date: "2023-12-05", average: 4.7 },
-  ];
+  const [interviewerEmail, setInterviewerEmail] = useState("");
+  const [lastLink, setLastLink] = useState("");
 
-  // MOCK notifications
-  const notifications = [
-    { id: 1, message: "Your new evaluation is available.", date: "2024-11-16" },
-    { id: 2, message: "Profile updated successfully.", date: "2024-10-02" },
-  ];
+  if (!user || user.role !== "employee") {
+    return (
+      <div className="p-6">
+        <p>You must be logged in as an employee to access this page.</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <p>Loading your evaluations...</p>
+      </div>
+    );
+  }
+
+  const employeeEvaluations = evaluations.filter(
+    (ev) => ev.employeeId === user.employeeId
+  );
+
+  const { avgScore, avgStars } = useMemo(() => {
+    if (employeeEvaluations.length === 0) {
+      return { avgScore: "N/A", avgStars: "N/A" };
+    }
+
+    const score =
+      employeeEvaluations.reduce((sum, ev) => sum + ev.score, 0) /
+      employeeEvaluations.length;
+
+    const stars =
+      employeeEvaluations.reduce((sum, ev) => sum + ev.starRating, 0) /
+      employeeEvaluations.length;
+
+    return {
+      avgScore: score.toFixed(1),
+      avgStars: stars.toFixed(1),
+    };
+  }, [employeeEvaluations]);
+
+  function handleSendLink(e) {
+    e.preventDefault();
+
+    if (!interviewerEmail) return;
+
+    const token = generateReferenceToken();
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "";
+    const link = `${origin}/reference/${user.employeeId}/${token}`;
+
+    // Aqui, em produção, você chamaria o backend para:
+    // - salvar o token vinculado ao employee
+    // - enviar o e-mail real para o interviewerEmail
+    // Por enquanto, só simulamos:
+    console.log("Send reference link to:", interviewerEmail);
+    console.log("Link:", link);
+
+    setLastLink(link);
+    setInterviewerEmail("");
+    alert("Reference link generated (simulated send).");
+  }
 
   return (
-    <CompanyLayout>
-      <h1 className="text-3xl font-bold text-slate-900 mb-8">
-        Employee Self-Service
-      </h1>
+    <div className="max-w-3xl mx-auto p-6 space-y-8">
+      {/* Header do employee */}
+      <section className="border-b pb-4">
+        <h1 className="text-3xl font-bold">{user.fullName}</h1>
+        <p className="text-gray-600">{user.email}</p>
+        <p className="text-sm text-gray-500 mt-2">
+          This is your personal profile. You can see a consolidated view of
+          your evaluations and share a reference link with future employers.
+        </p>
+      </section>
 
-      {/* Profile Section */}
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur mb-10">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-2">
-            <User className="text-blue-600" /> My Profile
-          </CardTitle>
-        </CardHeader>
+      {/* Visão consolidada */}
+      <section className="flex gap-6">
+        <div>
+          <p className="text-sm text-gray-500">Average Score</p>
+          <p className="text-2xl font-semibold">{avgScore}</p>
+        </div>
 
-        <CardContent className="p-6 space-y-3">
-          <p><strong>Name:</strong> {employee.name}</p>
-          <p><strong>Position:</strong> {employee.position}</p>
-          <p><strong>Email:</strong> {employee.email}</p>
-          <p><strong>Phone:</strong> {employee.phone}</p>
+        <div>
+          <p className="text-sm text-gray-500">Average Rating</p>
+          <p className="text-2xl font-semibold">
+            {avgStars === "N/A"
+              ? "N/A"
+              : "★".repeat(Math.round(Number(avgStars)))}
+          </p>
+        </div>
+      </section>
 
-          <Button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white">
-            Edit Profile
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Envio de link de referência */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Send Reference Link</h2>
+        <p className="text-sm text-gray-600">
+          During your interview, you can send a secure reference link to the
+          interviewer. They must be registered as an employer to access your
+          detailed reference report.
+        </p>
 
-      {/* Notifications Section */}
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur mb-10">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-2">
-            <Bell className="text-blue-600" /> My Notifications
-          </CardTitle>
-        </CardHeader>
+        <form onSubmit={handleSendLink} className="space-y-3 max-w-md">
+          <div>
+            <label className="block text-sm mb-1">
+              Interviewer&apos;s email
+            </label>
+            <input
+              type="email"
+              className="border p-2 w-full"
+              value={interviewerEmail}
+              onChange={(e) => setInterviewerEmail(e.target.value)}
+              placeholder="interviewer@company.com"
+              required
+            />
+          </div>
 
-        <CardContent className="p-6 space-y-4">
-          {notifications.map((n) => (
-            <div
-              key={n.id}
-              className="p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm"
-            >
-              <p className="text-slate-900">{n.message}</p>
-              <p className="text-slate-400 text-sm">{n.date}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Send reference link
+          </button>
+        </form>
 
-      {/* Evaluations Section */}
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-2">
-            <Star className="text-yellow-500" /> My Evaluations
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="p-6 space-y-6">
-          {evaluations.map((ev) => (
-            <div
-              key={ev.id}
-              className="p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm flex justify-between items-center"
-            >
-              <div>
-                <p className="text-slate-900 font-semibold">{ev.date}</p>
-                <p className="text-slate-600 text-sm">Evaluation #{ev.id}</p>
-              </div>
-
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-                <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                <span className="font-bold text-lg">{ev.average}</span>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </CompanyLayout>
+        {lastLink && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-500 mb-1">
+              Last generated link (for debugging / copy):
+            </p>
+            <code className="block bg-gray-100 p-2 text-xs break-all">
+              {lastLink}
+            </code>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }
