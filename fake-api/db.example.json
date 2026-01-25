@@ -1,0 +1,71 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "role": "Employee",
+      "departmentId": 1
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "role": "Manager",
+      "departmentId": 2
+    }
+  ],
+
+  "departments": [
+    {
+      "id": 1,
+      "name": "Human Resources"
+    },
+    {
+      "id": 2,
+      "name": "Engineering"
+    }
+  ],
+
+  "evaluations": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "score": 85,
+      "date": "2024-01-10",
+      "comments": "Consistent performance and strong teamwork."
+    },
+    {
+      "id": 2,
+      "employeeId": 2,
+      "score": 92,
+      "date": "2024-01-15",
+      "comments": "Excellent leadership and project delivery."
+    }
+  ],
+
+  "notifications": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "message": "Your evaluation is ready.",
+      "read": false
+    }
+  ],
+
+  "documents": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "title": "Employment Contract",
+      "url": "/docs/contract-john.pdf"
+    }
+  ],
+
+  "auditLogs": [
+    {
+      "id": 1,
+      "action": "Employee Created",
+      "timestamp": "2024-01-01T10:00:00Z",
+      "details": "Created employee John Doe"
+    }
+  ]
+}
