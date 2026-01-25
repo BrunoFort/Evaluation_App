@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
 
@@ -15,6 +16,9 @@ import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreateP
 // Public Evaluation Page
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
+// Company Panel (Employer Profile)
+import CompanyPanel from "./Pages/CompanyPanel";
+
 function App() {
   return (
     <Routes>
@@ -24,6 +28,16 @@ function App() {
       {/* Login and Registration */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
       <Route path="/employer/register" element={<EmployerRegisterPage />} />
+
+      {/* Protected: Company Panel */}
+      <Route
+        path="/company"
+        element={
+          <RequireEmployerAuth>
+            <CompanyPanel />
+          </RequireEmployerAuth>
+        }
+      />
 
       {/* Protected Dashboard */}
       <Route
