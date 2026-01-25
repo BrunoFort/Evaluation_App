@@ -8,7 +8,7 @@ import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
 // Páginas existentes
 import DashboardAnalytics from "./Pages/DashboardAnalytics";
 import CompanyReports from "./Pages/CompanyReports";
-import EvaluationList from "./Pages/EvaluationList";
+import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationDetails from "./Pages/EvaluationDetails";
 import AddEmployee from "./Pages/AddEmployee";
 import EmployeeEdit from "./Pages/EmployeeEdit";
@@ -44,7 +44,7 @@ export default function App() {
       {/* Rotas existentes */}
       <Route path="/dashboard" element={<DashboardAnalytics />} />
       <Route path="/reports" element={<CompanyReports />} />
-      <Route path="/evaluations" element={<EvaluationList />} />
+      <Route path="/evaluations" element={<EvaluationsList />} />
       <Route path="/evaluations/:id" element={<EvaluationDetails />} />
 
       {/* 🆕 Criar avaliação */}
