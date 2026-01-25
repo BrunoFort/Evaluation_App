@@ -1,99 +1,110 @@
+// src/Pages/EvaluationDetails.jsx
 import React from "react";
+import { useParams } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import { Star } from "lucide-react";
+import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
+import { useEmployees } from "../features/employees/hooks/useEmployees";
+import { useEmployers } from "../features/employers/hooks/useEmployers";
 
 export default function EvaluationDetails() {
-  // MOCK evaluation data
-  const evaluation = {
-    id: 1,
-    employeeName: "John Doe",
-    evaluatorName: "Sarah Miller",
-    date: "2024-11-15",
-    comments:
-      "John consistently delivers high-quality work and collaborates effectively with the team.",
-    ratings: {
-      quality_productivity: 4,
-      knowledge_skills: 5,
-      goal_achievement: 4,
-      teamwork_collaboration: 5,
-      initiative_proactivity: 4,
-      self_management: 5,
-      communication_interpersonal: 4,
-    },
-  };
+  const { id } = useParams();
+  const { evaluations, loading: loadingEval } = useEvaluations();
+  const { employees } = useEmployees();
+  const { employers } = useEmployers();
 
-  const ratingLabels = {
-    quality_productivity: "Quality & Productivity",
-    knowledge_skills: "Knowledge & Skills",
-    goal_achievement: "Goal Achievement",
-    teamwork_collaboration: "Teamwork & Collaboration",
-    initiative_proactivity: "Initiative & Proactivity",
-    self_management: "Self-Management",
-    communication_interpersonal: "Communication",
-  };
+  if (loadingEval) {
+    return (
+      <CompanyLayout>
+        <p>Loading evaluation...</p>
+      </CompanyLayout>
+    );
+  }
+
+  const evaluation = evaluations.find((ev) => String(ev.id) === String(id));
+
+  if (!evaluation) {
+    return (
+      <CompanyLayout>
+        <p>Evaluation not found.</p>
+      </CompanyLayout>
+    );
+  }
+
+  const employee = employees.find(
+    (emp) => emp.id === evaluation.employeeId
+  );
+
+  const employer = employers.find(
+    (emp) => emp.id === evaluation.employerId
+  );
 
   return (
     <CompanyLayout>
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur mb-8">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-slate-900">
-            Evaluation Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-slate-700">
-            <strong>Employee:</strong> {evaluation.employeeName}
-          </p>
-          <p className="text-slate-700">
-            <strong>Evaluator:</strong> {evaluation.evaluatorName}
-          </p>
-          <p className="text-slate-700">
-            <strong>Date:</strong> {evaluation.date}
-          </p>
-        </CardContent>
-      </Card>
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">
+        Evaluation Details
+      </h1>
 
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur mb-8">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-slate-900">
-            Ratings
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid sm:grid-cols-2 gap-6">
-          {Object.entries(evaluation.ratings).map(([key, value]) => (
-            <div key={key}>
-              <p className="font-medium text-slate-700 mb-1">
-                {ratingLabels[key]}
+      <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
+        <CardContent className="p-6 space-y-6">
+          {/* Header */}
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-900">
+                {employee?.fullName}
+              </h2>
+              <p className="text-slate-600">
+                Evaluated by: {employer?.evaluatorName} ({employer?.companyName})
               </p>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <Star
-                    key={n}
-                    size={22}
-                    className={
-                      n <= value
-                        ? "text-yellow-500 fill-yellow-500"
-                        : "text-slate-300"
-                    }
-                  />
-                ))}
-              </div>
+              <p className="text-slate-500 text-sm">{evaluation.date}</p>
             </div>
-          ))}
-        </CardContent>
-      </Card>
 
-      <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-slate-900">
-            Comments
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-slate-700 leading-relaxed bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-            {evaluation.comments}
-          </p>
+            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+              <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
+              <span className="font-bold text-xl">{evaluation.starRating}</span>
+            </div>
+          </div>
+
+          {/* Score */}
+          <div>
+            <p className="text-sm text-slate-500">Overall Score</p>
+            <p className="text-3xl font-bold">{evaluation.score}/100</p>
+          </div>
+
+          {/* Criteria */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              ["Quality & Productivity", evaluation.qualityProductivity],
+              ["Knowledge & Skills", evaluation.knowledgeSkills],
+              ["Goal Achievement", evaluation.goalAchievement],
+              ["Teamwork & Collaboration", evaluation.teamworkCollaboration],
+              ["Initiative & Proactivity", evaluation.initiativeProactivity],
+              ["Self-Management", evaluation.selfManagement],
+              ["Communication & Relationships", evaluation.communicationRelationships],
+            ].map(([label, value]) => (
+              <div key={label} className="p-4 border rounded bg-white shadow-sm">
+                <p className="text-sm text-slate-500">{label}</p>
+                <p className="text-xl font-semibold">{value ?? "N/A"}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Comments */}
+          {evaluation.comments && (
+            <div>
+              <p className="text-sm text-slate-500 mb-1">General Comments</p>
+              <p className="text-slate-800">{evaluation.comments}</p>
+            </div>
+          )}
+
+          {/* Reference Contact */}
+          {evaluation.referenceContact && (
+            <div>
+              <p className="text-sm text-slate-500 mb-1">Reference Contact</p>
+              <p className="text-slate-800">{evaluation.referenceContact}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </CompanyLayout>
