@@ -2,7 +2,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Páginas
+// Guards
+import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
+
+// Páginas existentes
 import DashboardAnalytics from "./Pages/DashboardAnalytics";
 import CompanyReports from "./Pages/CompanyReports";
 import EvaluationList from "./Pages/EvaluationList";
@@ -19,6 +22,9 @@ import DocumentCenter from "./Pages/DocumentCenter";
 import ThemeCustomizer from "./Pages/ThemeCustomizer";
 import AdminPanel from "./Pages/AdminPanel";
 
+// Nova página protegida (future employer)
+import ReferenceReportPage from "./features/reference/ReferenceReportPage";
+
 export default function App() {
   return (
     <Routes>
@@ -30,23 +36,4 @@ export default function App() {
       <Route path="/evaluations" element={<EvaluationList />} />
       <Route path="/evaluations/:id" element={<EvaluationDetails />} />
 
-      <Route path="/employees/add" element={<AddEmployee />} />
-      <Route path="/employees/edit/:id" element={<EmployeeEdit />} />
-
-      <Route path="/settings/company" element={<CompanySettings />} />
-      <Route path="/settings/theme" element={<ThemeCustomizer />} />
-
-      <Route path="/admin" element={<AdminPanel />} />
-      <Route path="/admin/roles" element={<RoleManagement />} />
-      <Route path="/admin/departments" element={<DepartmentManagement />} />
-      <Route path="/admin/audit-logs" element={<AuditLogs />} />
-
-      <Route path="/notifications" element={<NotificationsCenter />} />
-      <Route path="/documents" element={<DocumentCenter />} />
-      <Route path="/me" element={<EmployeeSelfService />} />
-
-      {/* 404 simples */}
-      <Route path="*" element={<div className="p-10 text-center">Page not found</div>} />
-    </Routes>
-  );
-}
+      <Route path="/employees/add" element={<AddEmployee />
