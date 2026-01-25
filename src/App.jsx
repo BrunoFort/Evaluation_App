@@ -24,8 +24,9 @@ import AdminPanel from "./Pages/AdminPanel";
 
 // Auth pages
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
+import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 
-// Nova página protegida (future employer)
+// Página protegida (future employer)
 import ReferenceReportPage from "./features/reference/ReferenceReportPage";
 
 export default function App() {
@@ -57,6 +58,9 @@ export default function App() {
 
       {/* 🔐 Login do Employer */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
+
+      {/* 🆕 Registro do Employer */}
+      <Route path="/employer/register" element={<EmployerRegisterPage />} />
 
       {/* 🔒 Rota protegida para o link de referência */}
       <Route
