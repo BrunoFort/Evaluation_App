@@ -1,54 +1,45 @@
-// src/App.jsx
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
-// Guards
+import { Routes, Route } from "react-router-dom";
 import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
 
-// Páginas existentes
+// Dashboard
 import DashboardAnalytics from "./Pages/DashboardAnalytics";
-import CompanyReports from "./Pages/CompanyReports";
-import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
-import EvaluationDetails from "./Pages/EvaluationDetails";
-import AddEmployee from "./Pages/AddEmployee";
-import EmployeeEdit from "./Pages/EmployeeEdit";
-import CompanySettings from "./Pages/CompanySettings";
-import RoleManagement from "./Pages/RoleManagement";
-import NotificationsCenter from "./Pages/NotificationsCenter";
-import DepartmentManagement from "./Pages/DepartmentManagement";
-import AuditLogs from "./Pages/AuditLogs";
-import EmployeeSelfService from "./Pages/EmployeeSelfService";
-import DocumentCenter from "./Pages/DocumentCenter";
-import ThemeCustomizer from "./Pages/ThemeCustomizer";
-import AdminPanel from "./Pages/AdminPanel";
 
 // Auth pages
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
 import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 
-// Employee auth
-import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeCompleteRegistrationPage";
-
-// Reference
-import ReferenceReportPage from "./features/reference/ReferenceReportPage";
-
-// Evaluation pages
+// Evaluations
+import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
-import EvaluationEditPage from "./features/evaluations/pages/EvaluationEditPage";
 
-export default function App() {
+function App() {
   return (
     <Routes>
-      {/* Rota padrão → Dashboard */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Login e Registro */}
+      <Route path="/employer/login" element={<EmployerLoginPage />} />
+      <Route path="/employer/register" element={<EmployerRegisterPage />} />
 
-      {/* Rotas existentes */}
-      <Route path="/dashboard" element={<DashboardAnalytics />} />
-      <Route path="/reports" element={<CompanyReports />} />
-      <Route path="/evaluations" element={<EvaluationsList />} />
-      <Route path="/evaluations/:id" element={<EvaluationDetails />} />
+      {/* Dashboard protegido */}
+      <Route
+        path="/"
+        element={
+          <RequireEmployerAuth>
+            <DashboardAnalytics />
+          </RequireEmployerAuth>
+        }
+      />
 
-      {/* 🆕 Criar avaliação */}
+      {/* Listagem de avaliações */}
+      <Route
+        path="/evaluations"
+        element={
+          <RequireEmployerAuth>
+            <EvaluationsList />
+          </RequireEmployerAuth>
+        }
+      />
+
+      {/* Criar nova avaliação */}
       <Route
         path="/evaluations/new"
         element={
@@ -57,59 +48,8 @@ export default function App() {
           </RequireEmployerAuth>
         }
       />
-
-      {/* 🆕 Editar avaliação */}
-      <Route
-        path="/evaluations/:id/edit"
-        element={
-          <RequireEmployerAuth>
-            <EvaluationEditPage />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route path="/employees/add" element={<AddEmployee />} />
-      <Route path="/employees/edit/:id" element={<EmployeeEdit />} />
-
-      <Route path="/settings/company" element={<CompanySettings />} />
-      <Route path="/settings/theme" element={<ThemeCustomizer />} />
-
-      <Route path="/admin" element={<AdminPanel />} />
-      <Route path="/admin/roles" element={<RoleManagement />} />
-      <Route path="/admin/departments" element={<DepartmentManagement />} />
-      <Route path="/admin/audit-logs" element={<AuditLogs />} />
-
-      <Route path="/notifications" element={<NotificationsCenter />} />
-      <Route path="/documents" element={<DocumentCenter />} />
-      <Route path="/me" element={<EmployeeSelfService />} />
-
-      {/* 🔐 Login do Employer */}
-      <Route path="/employer/login" element={<EmployerLoginPage />} />
-
-      {/* 🆕 Registro do Employer */}
-      <Route path="/employer/register" element={<EmployerRegisterPage />} />
-
-      {/* 🆕 Employee complete registration via token */}
-      <Route
-        path="/employee/complete-registration/:token"
-        element={<EmployeeCompleteRegistrationPage />}
-      />
-
-      {/* 🔒 Rota protegida para o link de referência */}
-      <Route
-        path="/reference/:employeeId/:token"
-        element={
-          <RequireEmployerAuth>
-            <ReferenceReportPage />
-          </RequireEmployerAuth>
-        }
-      />
-
-      {/* 404 */}
-      <Route
-        path="*"
-        element={<div className="p-10 text-center">Page not found</div>}
-      />
     </Routes>
   );
 }
+
+export default App;
