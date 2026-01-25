@@ -26,6 +26,9 @@ import AdminPanel from "./Pages/AdminPanel";
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
 import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 
+// Employee auth
+import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeCompleteRegistrationPage";
+
 // Página protegida (future employer)
 import ReferenceReportPage from "./features/reference/ReferenceReportPage";
 
@@ -61,6 +64,12 @@ export default function App() {
 
       {/* 🆕 Registro do Employer */}
       <Route path="/employer/register" element={<EmployerRegisterPage />} />
+
+      {/* 🆕 Employee complete registration via token */}
+      <Route
+        path="/employee/complete-registration/:token"
+        element={<EmployeeCompleteRegistrationPage />}
+      />
 
       {/* 🔒 Rota protegida para o link de referência */}
       <Route
