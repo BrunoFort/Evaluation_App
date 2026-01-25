@@ -1,7 +1,4 @@
 export async function validateBusinessNumber(bn) {
-  // Aqui estamos simulando a chamada real.
-  // Depois você pode substituir pela API oficial do Canadá.
-
   const cleaned = bn.replace(/\D/g, "");
 
   if (cleaned.length !== 9) {
