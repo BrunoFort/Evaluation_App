@@ -42,10 +42,16 @@ let evaluations = [
   },
 ];
 
+// ------------------------------------------------------
+// GET — retorna todas as avaliações
+// ------------------------------------------------------
 export function getEvaluations() {
   return evaluations;
 }
 
+// ------------------------------------------------------
+// ADD — adiciona uma nova avaliação
+// ------------------------------------------------------
 export function addEvaluation(newEval) {
   const nextId = evaluations.length
     ? Math.max(...evaluations.map((e) => e.id)) + 1
@@ -55,4 +61,19 @@ export function addEvaluation(newEval) {
   evaluations.push(evaluation);
 
   return evaluation;
+}
+
+// ------------------------------------------------------
+// UPDATE — atualiza uma avaliação existente
+// ------------------------------------------------------
+export function updateEvaluation(id, updatedData) {
+  const index = evaluations.findIndex((ev) => ev.id === Number(id));
+  if (index === -1) return null;
+
+  evaluations[index] = {
+    ...evaluations[index],
+    ...updatedData,
+  };
+
+  return evaluations[index];
 }
