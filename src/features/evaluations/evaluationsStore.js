@@ -77,3 +77,11 @@ export function updateEvaluation(id, updatedData) {
 
   return evaluations[index];
 }
+
+// ------------------------------------------------------
+// DELETE — remove uma avaliação existente
+// ------------------------------------------------------
+export function deleteEvaluation(id) {
+  evaluations = evaluations.filter((ev) => ev.id !== Number(id));
+  return true;
+}
