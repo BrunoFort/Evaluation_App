@@ -1,10 +1,10 @@
 // src/features/evaluations/pages/EvaluationCreatePage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useEmployees } from "@/features/employees/hooks/useEmployees";
-import { useSaveEvaluation } from "@/features/evaluations/hooks/useSaveEvaluation";
-import { EvaluationForm } from "@/features/evaluations/components/EvaluationForm";
-import { useAuth } from "@/features/auth/AuthProvider";
+import { useEmployees } from "../../employees/hooks/useEmployees";
+import { useSaveEvaluation } from "../hooks/useSaveEvaluation";
+import { EvaluationForm } from "../components/EvaluationForm";
+import { useAuth } from "../../auth/AuthProvider";
 
 export default function EvaluationCreatePage() {
   const navigate = useNavigate();
