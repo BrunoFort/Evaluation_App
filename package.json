@@ -10,6 +10,14 @@
     "preview": "vite preview",
     "api": "json-server --watch fake-api/db.json --port 4000"
   },
+  
+  "scripts": {
+  "dev": "vite",
+  "api": "json-server --watch fake-api/db.json --port 4000",
+
+  "start:all": "concurrently \"npm run api\" \"npm run dev\""
+},
+
   "dependencies": {
     "@base44/sdk": "^0.8.18",
     "@radix-ui/react-scroll-area": "^1.2.10",
