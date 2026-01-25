@@ -12,14 +12,20 @@ import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
 
+// Public Evaluation Page
+import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
+
 function App() {
   return (
     <Routes>
-      {/* Login e Registro */}
+      {/* Public route for viewing evaluations */}
+      <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
+
+      {/* Login and Registration */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
       <Route path="/employer/register" element={<EmployerRegisterPage />} />
 
-      {/* Dashboard protegido */}
+      {/* Protected Dashboard */}
       <Route
         path="/"
         element={
@@ -29,7 +35,7 @@ function App() {
         }
       />
 
-      {/* Listagem de avaliações */}
+      {/* Protected: Evaluations List */}
       <Route
         path="/evaluations"
         element={
@@ -39,7 +45,7 @@ function App() {
         }
       />
 
-      {/* Criar nova avaliação */}
+      {/* Protected: Create Evaluation */}
       <Route
         path="/evaluations/new"
         element={
