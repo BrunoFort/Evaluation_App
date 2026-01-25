@@ -1,19 +1,17 @@
 // src/features/auth/RequireEmployerAuth.jsx
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useEmployerAuth } from "./useEmployerAuth";
+import { useAuth } from "./AuthProvider";
 
 export function RequireEmployerAuth({ children }) {
-  const { employer, loading } = useEmployerAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return <p>Checking authentication...</p>;
-  }
-
-  if (!employer) {
+  // Se não estiver logado, redireciona para login
+  if (!user) {
     return <Navigate to="/employer/login" state={{ from: location }} replace />;
   }
 
+  // Se estiver logado, libera o acesso
   return children;
 }
