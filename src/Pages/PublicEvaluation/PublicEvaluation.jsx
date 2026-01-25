@@ -1,5 +1,5 @@
 import React from "react";
-import CompanyLayout from "../layouts/CompanyLayout";
+import CompanyLayout from "../../Layouts/CompanyLayout";
 import { Card, CardContent } from "../components/ui/card";
 import { Star } from "lucide-react";
 
