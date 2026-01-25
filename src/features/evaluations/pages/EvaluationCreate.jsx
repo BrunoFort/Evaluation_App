@@ -25,8 +25,11 @@ export default function EvaluationCreate() {
       <EvaluationForm
         defaultValues={{
           employeeId: "",
+          employerId: "",
           score: "",
+          starRating: "",
           date: "",
+          referenceContact: "",
           comments: "",
         }}
         onSubmit={handleCreate}
