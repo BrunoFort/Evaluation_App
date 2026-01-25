@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { DeleteEmployeeDialog } from "./DeleteEmployeeDialog";
 
 export function EmployeeTable({ employees, onDelete }) {
   return (
@@ -19,14 +20,17 @@ export function EmployeeTable({ employees, onDelete }) {
             <td className="p-3">{emp.id}</td>
             <td className="p-3">{emp.name}</td>
             <td className="p-3">{emp.role}</td>
+
             <td className="p-3 flex gap-2">
+              {/* EDIT BUTTON */}
               <Button variant="outline" asChild>
                 <Link to={`/employees/edit/${emp.id}`}>Edit</Link>
               </Button>
 
-              <Button variant="destructive" onClick={() => onDelete(emp.id)}>
-                Delete
-              </Button>
+              {/* DELETE WITH MODAL */}
+              <DeleteEmployeeDialog onConfirm={() => onDelete(emp.id)}>
+                <Button variant="destructive">Delete</Button>
+              </DeleteEmployeeDialog>
             </td>
           </tr>
         ))}
