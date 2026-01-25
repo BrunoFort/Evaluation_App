@@ -9,8 +9,12 @@ export function EvaluationTable({ evaluations, onDelete }) {
         <tr className="border-b">
           <th className="p-3 text-left">ID</th>
           <th className="p-3 text-left">Employee ID</th>
+          <th className="p-3 text-left">Employer ID</th>
           <th className="p-3 text-left">Score</th>
+          <th className="p-3 text-left">Stars</th>
           <th className="p-3 text-left">Date</th>
+          <th className="p-3 text-left">Reference Contact</th>
+          <th className="p-3 text-left">Comments</th>
           <th className="p-3 text-left">Actions</th>
         </tr>
       </thead>
@@ -20,8 +24,18 @@ export function EvaluationTable({ evaluations, onDelete }) {
           <tr key={ev.id} className="border-b">
             <td className="p-3">{ev.id}</td>
             <td className="p-3">{ev.employeeId}</td>
+            <td className="p-3">{ev.employerId}</td>
             <td className="p-3">{ev.score}</td>
+
+            {/* STAR RATING AS ★★★★☆ */}
+            <td className="p-3">
+              {"★".repeat(ev.starRating)}
+              {"☆".repeat(5 - ev.starRating)}
+            </td>
+
             <td className="p-3">{ev.date}</td>
+            <td className="p-3">{ev.referenceContact}</td>
+            <td className="p-3">{ev.comments || "-"}</td>
 
             <td className="p-3 flex gap-2">
               <Button variant="outline" asChild>
