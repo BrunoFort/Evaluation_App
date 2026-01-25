@@ -32,8 +32,11 @@ export default function EvaluationEdit() {
       <EvaluationForm
         defaultValues={{
           employeeId: evaluation.employeeId,
+          employerId: evaluation.employerId,
           score: evaluation.score,
+          starRating: evaluation.starRating,
           date: evaluation.date,
+          referenceContact: evaluation.referenceContact,
           comments: evaluation.comments || "",
         }}
         onSubmit={handleUpdate}
