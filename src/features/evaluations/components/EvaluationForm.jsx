@@ -2,14 +2,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-export function EvaluationForm({ employees, onSubmit, loading }) {
+export function EvaluationForm({ employees, onSubmit, loading, defaultValues }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm({
-    defaultValues: {
+    defaultValues: defaultValues || {
       score: 80,
       starRating: 4,
     },
