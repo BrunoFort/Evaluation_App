@@ -19,11 +19,14 @@ export default function EmployeeEdit() {
   const [loading, setLoading] = useState(true);
 
   // Buscar funcionário pelo ID
-  useEffect(() => {
-    api.get(`/employees/${id}`)
-      .then((data) => setEmployee(data))
-      .finally(() => setLoading(false));
-  }, [id]);
+ useEffect(() => {
+  api.get(`/employees/${id}`)
+    .then((data) => {
+      console.log("DADOS RECEBIDOS:", data); // <-- ADICIONE ISSO AQUI
+      setEmployee(data);
+    })
+    .finally(() => setLoading(false));
+}, [id]);
 
   const handleChange = (e) => {
     setEmployee({
