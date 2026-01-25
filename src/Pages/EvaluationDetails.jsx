@@ -3,6 +3,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
 import { Star } from "lucide-react";
 import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
 import { useEmployees } from "../features/employees/hooks/useEmployees";
@@ -42,9 +43,19 @@ export default function EvaluationDetails() {
 
   return (
     <CompanyLayout>
-      <h1 className="text-3xl font-bold text-slate-900 mb-6">
-        Evaluation Details
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-slate-900">
+          Evaluation Details
+        </h1>
+
+        {/* 🆕 Botão Edit */}
+        <Button
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+          onClick={() => (window.location.href = `/evaluations/${id}/edit`)}
+        >
+          Edit Evaluation
+        </Button>
+      </div>
 
       <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
         <CardContent className="p-6 space-y-6">
