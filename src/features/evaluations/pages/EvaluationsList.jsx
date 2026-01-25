@@ -9,7 +9,7 @@ import { createPageUrl } from "../../../utils";
 
 export default function EvaluationsList() {
   const { evaluations, loading } = useEvaluations();
-  const { deleteEvaluation } = useDeleteEvaluation();
+  const { remove, loading: deleting } = useDeleteEvaluation();
 
   if (loading) {
     return (
@@ -17,6 +17,15 @@ export default function EvaluationsList() {
         <p>Loading evaluations...</p>
       </CompanyLayout>
     );
+  }
+
+  async function handleDelete(id) {
+    const result = await remove(id);
+
+    if (result.success) {
+      alert("Evaluation deleted successfully.");
+      // Nada mais é necessário — useEvaluations() já reflete o store atualizado
+    }
   }
 
   return (
@@ -34,11 +43,15 @@ export default function EvaluationsList() {
 
       <EvaluationTable
         evaluations={evaluations}
-        onDelete={deleteEvaluation}
         onView={(id) =>
           (window.location.href = createPageUrl(`EvaluationDetails?id=${id}`))
         }
+        onDelete={handleDelete}
       />
+
+      {deleting && (
+        <p className="text-sm text-slate-500 mt-3">Deleting evaluation...</p>
+      )}
     </CompanyLayout>
   );
 }
