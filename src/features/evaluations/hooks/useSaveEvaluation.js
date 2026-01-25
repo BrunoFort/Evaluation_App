@@ -1,5 +1,6 @@
 // src/features/evaluations/hooks/useSaveEvaluation.js
 import { useState } from "react";
+import { addEvaluation } from "../evaluationsStore";
 
 export function useSaveEvaluation() {
   const [saving, setSaving] = useState(false);
@@ -7,10 +8,9 @@ export function useSaveEvaluation() {
   async function saveEvaluation(data) {
     setSaving(true);
 
-    // Em produção: POST /evaluations
-    console.log("Saving evaluation (mock):", data);
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    addEvaluation(data);
 
     setSaving(false);
     return { success: true };
