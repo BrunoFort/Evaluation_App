@@ -29,8 +29,11 @@ import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 // Employee auth
 import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeCompleteRegistrationPage";
 
-// Página protegida (future employer)
+// Reference
 import ReferenceReportPage from "./features/reference/ReferenceReportPage";
+
+// Evaluation create page
+import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
 
 export default function App() {
   return (
@@ -43,6 +46,16 @@ export default function App() {
       <Route path="/reports" element={<CompanyReports />} />
       <Route path="/evaluations" element={<EvaluationList />} />
       <Route path="/evaluations/:id" element={<EvaluationDetails />} />
+
+      {/* 🆕 Criar avaliação */}
+      <Route
+        path="/evaluations/new"
+        element={
+          <RequireEmployerAuth>
+            <EvaluationCreatePage />
+          </RequireEmployerAuth>
+        }
+      />
 
       <Route path="/employees/add" element={<AddEmployee />} />
       <Route path="/employees/edit/:id" element={<EmployeeEdit />} />
