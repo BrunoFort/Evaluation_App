@@ -1,14 +1,15 @@
 // src/features/evaluations/pages/EvaluationCreatePage.jsx
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import CompanyLayout from "../../../Layouts/CompanyLayout";
+import EmployerLayout from "@/Layouts/EmployerLayout";
 import { useAuth } from "../../auth/useAuth";
 import { generatePublicToken } from "../../../utils/generatePublicToken";
+import { ClipboardCheck } from "lucide-react";
 
 export default function EvaluationCreatePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const employerId = user?.id;
+  const { employer } = useAuth();
+  const employerId = employer?.id;
 
   const [searchParams] = useSearchParams();
   const employeeIdFromURL = searchParams.get("employeeId");
@@ -36,10 +37,10 @@ export default function EvaluationCreatePage() {
     const newEvaluation = {
       ...formData,
       employeeId: Number(formData.employeeId),
-      employerId: employerId,
+      employerId,
       createdAt: new Date().toISOString(),
       status: "pending",
-      publicToken: generatePublicToken(), // 🔥 token gerado automaticamente
+      publicToken: generatePublicToken(),
     };
 
     try {
@@ -58,13 +59,16 @@ export default function EvaluationCreatePage() {
   }
 
   return (
-    <CompanyLayout>
-      <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-lg shadow-sm p-6">
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">
-          Create Evaluation
-        </h1>
+    <EmployerLayout>
+      <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-xl shadow-sm p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <ClipboardCheck className="w-7 h-7 text-blue-600" />
+          <h1 className="text-2xl font-bold text-slate-900">
+            Create Evaluation
+          </h1>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Employee ID */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -75,7 +79,7 @@ export default function EvaluationCreatePage() {
               name="employeeId"
               value={formData.employeeId}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -90,7 +94,7 @@ export default function EvaluationCreatePage() {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -98,14 +102,14 @@ export default function EvaluationCreatePage() {
           {/* Score */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Score
+              Score (0–5)
             </label>
             <input
               type="number"
               name="score"
               value={formData.score}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               min="0"
               max="5"
               step="0.1"
@@ -116,12 +120,12 @@ export default function EvaluationCreatePage() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
             {saving ? "Saving..." : "Create Evaluation"}
           </button>
         </form>
       </div>
-    </CompanyLayout>
+    </EmployerLayout>
   );
 }
