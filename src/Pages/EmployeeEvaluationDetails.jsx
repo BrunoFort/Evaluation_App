@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import EmployeeLayout from "@/Layouts/CandidateLayout";
+import EmployeeLayout from "@/Layouts/EmployeeLayout";
 import { Star, Link as LinkIcon } from "lucide-react";
 
 function Stars({ score }) {
