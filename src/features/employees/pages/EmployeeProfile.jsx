@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import CompanyLayout from "../../../Layouts/CompanyLayout";
 import { useEmployee } from "../hooks/useEmployee";
+import { useEmployeeEvaluations } from "../../evaluations/hooks/useEmployeeEvaluations";
+import EmployeeEvaluationsTab from "../components/EmployeeEvaluationsTab";
+import { useAuth } from "../../auth/useAuth";
+
 import {
   User,
-  Briefcase,
-  Building2,
   FileText,
   History,
   BarChart3,
@@ -18,6 +20,16 @@ import {
 export default function EmployeeProfile() {
   const { id } = useParams();
   const { employee, loading } = useEmployee(id);
+
+  // usuário logado (empregador)
+  const { user } = useAuth();
+  const employerId = user?.id;
+
+  // avaliações do funcionário feitas por ESTE empregador
+  const {
+    evaluations,
+    loading: loadingEvaluations,
+  } = useEmployeeEvaluations(id, employerId);
 
   const [activeTab, setActiveTab] = useState("overview");
   const [openAccordion, setOpenAccordion] = useState(null);
@@ -92,7 +104,6 @@ export default function EmployeeProfile() {
       {/* TAB CONTENT */}
       {activeTab === "overview" && (
         <div className="space-y-4">
-          {/* Basic Info */}
           <AccordionSection
             title="Basic Information"
             icon={<User className="w-5 h-5" />}
@@ -111,14 +122,16 @@ export default function EmployeeProfile() {
       )}
 
       {activeTab === "evaluations" && (
-        <AccordionSection
-          title="Evaluations"
-          icon={<FileText className="w-5 h-5" />}
-          open={true}
-          onToggle={() => {}}
-        >
-          <p className="text-slate-600">Evaluation list will be integrated here.</p>
-        </AccordionSection>
+        <div>
+          {loadingEvaluations ? (
+            <p className="text-slate-500">Loading evaluations...</p>
+          ) : (
+            <EmployeeEvaluationsTab
+              evaluations={evaluations}
+              employeeId={employee.id}
+            />
+          )}
+        </div>
       )}
 
       {activeTab === "documents" && (
@@ -181,3 +194,4 @@ function AccordionSection({ title, icon, open, onToggle, children }) {
     </div>
   );
 }
+
