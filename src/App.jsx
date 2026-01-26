@@ -29,9 +29,9 @@ import EditEmployee from "./features/employees/pages/EditEmployee";
 
 // Employee (Empregado) pages — já existentes
 import EmployeeLogin from "./Pages/EmployeeLogin";
-import CandidateDashboard from "./Pages/CandidateDashboard";
-import CandidateEvaluationDetails from "./Pages/CandidateEvaluationDetails";
-import CandidateProfileEdit from "./Pages/CandidateProfileEdit";
+import CandidateDashboard from "./Pages/EmployeeDashboard";
+import CandidateEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
+import CandidateProfileEdit from "./Pages/EmployeeProfileEdit";
 
 function App() {
   return (
@@ -42,9 +42,9 @@ function App() {
 
       {/* Employee (Empregado) routes */}
       <Route path="/employee/login" element={<EmployeeLogin />} />
-      <Route path="/employee" element={<CandidateDashboard />} />
-      <Route path="/employee/evaluation/:id" element={<CandidateEvaluationDetails />} />
-      <Route path="/employee/profile/edit" element={<CandidateProfileEdit />} />
+      <Route path="/employee" element={<EmployeeDashboard />} />
+      <Route path="/employee/evaluation/:id" element={<EmployeeEvaluationDetails />} />
+      <Route path="/employee/profile/edit" element={<EmployeeProfileEdit />} />
 
       {/* Auth (Employer) */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
