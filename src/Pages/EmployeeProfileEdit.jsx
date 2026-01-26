@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import EmployeeLayout from "@/Layouts/CandidateLayout";
+import EmployeeLayout from "@/Layouts/EmployeeLayout";
 
 export default function EmployeeProfileEdit() {
   const [employee, setEmployee] = useState(null);
@@ -13,7 +13,7 @@ export default function EmployeeProfileEdit() {
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem("candidate"); // renomeamos depois
+    const stored = localStorage.getItem("employee");
     if (stored) {
       const emp = JSON.parse(stored);
       setEmployee(emp);
@@ -43,7 +43,7 @@ export default function EmployeeProfileEdit() {
       });
 
       const updated = await res.json();
-      localStorage.setItem("candidate", JSON.stringify(updated));
+      localStorage.setItem("employee", JSON.stringify(updated));
       alert("Profile updated successfully.");
     } catch (err) {
       console.error(err);
