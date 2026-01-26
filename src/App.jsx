@@ -12,8 +12,9 @@ import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 // Evaluations
 import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
+import PublicEvaluationView from "./features/evaluations/pages/PublicEvaluationView";
 
-// Public Evaluation Page
+// Public Evaluation Page (legacy)
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
 // Company Panel
@@ -28,8 +29,9 @@ import EditEmployee from "./features/employees/pages/EditEmployee";
 function App() {
   return (
     <Routes>
-      {/* Public route */}
+      {/* Public routes */}
       <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
+      <Route path="/evaluation/:token" element={<PublicEvaluationView />} />
 
       {/* Auth */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
