@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import CandidateLayout from "@/Layouts/CandidateLayout";
+import EmployeeLayout from "@/Layouts/CandidateLayout";
 import { Star, Link as LinkIcon } from "lucide-react";
 
 function Stars({ score }) {
@@ -21,7 +21,7 @@ function Stars({ score }) {
   );
 }
 
-export default function CandidateEvaluationDetails() {
+export default function EmployeeEvaluationDetails() {
   const { id } = useParams();
   const [evaluation, setEvaluation] = useState(null);
 
@@ -33,14 +33,14 @@ export default function CandidateEvaluationDetails() {
 
   if (!evaluation) {
     return (
-      <CandidateLayout>
+      <EmployeeLayout>
         <p className="text-slate-500">Loading...</p>
-      </CandidateLayout>
+      </EmployeeLayout>
     );
   }
 
   return (
-    <CandidateLayout>
+    <EmployeeLayout>
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
         <h2 className="text-xl font-bold text-slate-900">{evaluation.title}</h2>
 
@@ -53,7 +53,6 @@ export default function CandidateEvaluationDetails() {
           <Stars score={evaluation.overallScore} />
         </div>
 
-        {/* Consolidado */}
         <div className="space-y-2 pt-4 border-t border-slate-200">
           <p className="text-sm text-slate-700">
             <strong>Strengths:</strong> {evaluation.strengths || "—"}
@@ -67,7 +66,6 @@ export default function CandidateEvaluationDetails() {
           </p>
         </div>
 
-        {/* Critérios */}
         <div className="space-y-4 pt-4 border-t border-slate-200">
           <h3 className="text-lg font-semibold text-slate-900">
             Evaluation Criteria
@@ -91,7 +89,6 @@ export default function CandidateEvaluationDetails() {
           )}
         </div>
 
-        {/* Link público */}
         <div className="pt-4 border-t border-slate-200">
           <p className="text-sm text-slate-600 mb-2">Public Link</p>
           <div className="flex items-center gap-2">
@@ -115,6 +112,6 @@ export default function CandidateEvaluationDetails() {
           </div>
         </div>
       </div>
-    </CandidateLayout>
+    </EmployeeLayout>
   );
 }
