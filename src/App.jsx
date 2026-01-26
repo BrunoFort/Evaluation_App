@@ -12,9 +12,10 @@ import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 // Evaluations
 import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
+import EvaluationView from "./features/evaluations/pages/EvaluationView";
 import PublicEvaluationView from "./features/evaluations/pages/PublicEvaluationView";
 
-// Public Evaluation Page (legacy)
+// Legacy public evaluation page (optional)
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
 // Company Panel
@@ -109,6 +110,15 @@ function App() {
         element={
           <RequireEmployerAuth>
             <EvaluationCreatePage />
+          </RequireEmployerAuth>
+        }
+      />
+
+      <Route
+        path="/evaluations/:id"
+        element={
+          <RequireEmployerAuth>
+            <EvaluationView />
           </RequireEmployerAuth>
         }
       />
