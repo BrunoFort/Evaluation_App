@@ -1,7 +1,7 @@
 // src/features/employees/pages/EmployeesList.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import CompanyLayout from "../../../Layouts/CompanyLayout";
+import EmployerLayout from "@/Layouts/EmployerLayout";
 import { useEmployees } from "../hooks/useEmployees";
 import { Users, LayoutGrid, Table, Search } from "lucide-react";
 import EmployeeCard from "../components/EmployeeCard";
@@ -17,8 +17,9 @@ export default function EmployeesList() {
   );
 
   return (
-    <CompanyLayout>
-      <div className="flex items-center justify-between mb-6">
+    <EmployerLayout>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2">
           <Users className="w-7 h-7 text-blue-600" />
           Employees
@@ -84,6 +85,6 @@ export default function EmployeesList() {
           ))}
         </div>
       )}
-    </CompanyLayout>
+    </EmployerLayout>
   );
 }
