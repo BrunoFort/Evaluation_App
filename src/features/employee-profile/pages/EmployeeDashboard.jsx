@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import EmployeeLayout from "@/Layouts/CandidateLayout"; // se quiser, renomeamos depois
+import EmployeeLayout from "@/Layouts/EmployeeLayout";
 import { Link } from "react-router-dom";
 
 export default function EmployeeDashboard() {
@@ -7,7 +7,7 @@ export default function EmployeeDashboard() {
   const [evaluations, setEvaluations] = useState([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("candidate"); // podemos renomear depois
+    const stored = localStorage.getItem("employee");
     if (stored) {
       const emp = JSON.parse(stored);
       setEmployee(emp);
