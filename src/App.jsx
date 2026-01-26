@@ -16,20 +16,24 @@ import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreateP
 // Public Evaluation Page
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
-// Company Panel (Employer Profile)
+// Company Panel
 import CompanyPanel from "./Pages/CompanyPanel";
+
+// Employees
+import EmployeesList from "./features/employees/pages/EmployeesList";
+import AddEmployee from "./features/employees/pages/AddEmployee";
 
 function App() {
   return (
     <Routes>
-      {/* Public route for viewing evaluations */}
+      {/* Public route */}
       <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
 
-      {/* Login and Registration */}
+      {/* Auth */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
       <Route path="/employer/register" element={<EmployerRegisterPage />} />
 
-      {/* Protected: Company Panel */}
+      {/* Company Panel */}
       <Route
         path="/company"
         element={
@@ -39,7 +43,7 @@ function App() {
         }
       />
 
-      {/* Protected Dashboard */}
+      {/* Dashboard */}
       <Route
         path="/"
         element={
@@ -49,7 +53,25 @@ function App() {
         }
       />
 
-      {/* Protected: Evaluations List */}
+      {/* Employees */}
+      <Route
+        path="/employees"
+        element={
+          <RequireEmployerAuth>
+            <EmployeesList />
+          </RequireEmployerAuth>
+        }
+      />
+      <Route
+        path="/employees/new"
+        element={
+          <RequireEmployerAuth>
+            <AddEmployee />
+          </RequireEmployerAuth>
+        }
+      />
+
+      {/* Evaluations */}
       <Route
         path="/evaluations"
         element={
@@ -58,8 +80,6 @@ function App() {
           </RequireEmployerAuth>
         }
       />
-
-      {/* Protected: Create Evaluation */}
       <Route
         path="/evaluations/new"
         element={
@@ -73,3 +93,4 @@ function App() {
 }
 
 export default App;
+
