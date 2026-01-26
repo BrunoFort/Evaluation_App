@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import CandidateLayout from "@/Layouts/CandidateLayout";
+import EmployeeLayout from "@/Layouts/CandidateLayout";
 
-export default function CandidateProfileEdit() {
-  const [candidate, setCandidate] = useState(null);
+export default function EmployeeProfileEdit() {
+  const [employee, setEmployee] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,17 +13,17 @@ export default function CandidateProfileEdit() {
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem("candidate");
+    const stored = localStorage.getItem("candidate"); // renomeamos depois
     if (stored) {
-      const c = JSON.parse(stored);
-      setCandidate(c);
+      const emp = JSON.parse(stored);
+      setEmployee(emp);
       setForm({
-        name: c.name || "",
-        email: c.email || "",
-        photoUrl: c.photoUrl || "",
-        bio: c.bio || "",
-        linkedin: c.linkedin || "",
-        github: c.github || ""
+        name: emp.name || "",
+        email: emp.email || "",
+        photoUrl: emp.photoUrl || "",
+        bio: emp.bio || "",
+        linkedin: emp.linkedin || "",
+        github: emp.github || ""
       });
     }
   }, []);
@@ -33,10 +33,10 @@ export default function CandidateProfileEdit() {
   }
 
   async function handleSave() {
-    if (!candidate) return;
+    if (!employee) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/candidates/${candidate.id}`, {
+      const res = await fetch(`http://localhost:4000/candidates/${employee.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
@@ -51,20 +51,19 @@ export default function CandidateProfileEdit() {
     }
   }
 
-  if (!candidate) {
+  if (!employee) {
     return (
-      <CandidateLayout>
+      <EmployeeLayout>
         <p className="text-slate-500">Loading...</p>
-      </CandidateLayout>
+      </EmployeeLayout>
     );
   }
 
   return (
-    <CandidateLayout>
+    <EmployeeLayout>
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6 max-w-xl mx-auto">
         <h2 className="text-xl font-bold text-slate-900">Edit Profile</h2>
 
-        {/* Name */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             Name
@@ -78,7 +77,6 @@ export default function CandidateProfileEdit() {
           />
         </div>
 
-        {/* Email */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             Email
@@ -92,7 +90,6 @@ export default function CandidateProfileEdit() {
           />
         </div>
 
-        {/* Photo */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             Photo URL
@@ -114,7 +111,6 @@ export default function CandidateProfileEdit() {
           )}
         </div>
 
-        {/* Bio */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             Bio
@@ -128,7 +124,6 @@ export default function CandidateProfileEdit() {
           />
         </div>
 
-        {/* LinkedIn */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             LinkedIn
@@ -142,7 +137,6 @@ export default function CandidateProfileEdit() {
           />
         </div>
 
-        {/* GitHub */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
             GitHub
@@ -163,6 +157,7 @@ export default function CandidateProfileEdit() {
           Save Changes
         </button>
       </div>
-    </CandidateLayout>
+    </EmployeeLayout>
   );
 }
+
