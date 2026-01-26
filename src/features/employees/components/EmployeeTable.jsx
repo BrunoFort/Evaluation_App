@@ -1,40 +1,59 @@
-import { Button } from "@/components/ui/button";
+// src/features/employees/components/EmployeeTable.jsx
+import React from "react";
 import { Link } from "react-router-dom";
-import { DeleteEmployeeDialog } from "./DeleteEmployeeDialog";
+import { User, Briefcase, Building2, ArrowRight } from "lucide-react";
 
-export function EmployeeTable({ employees, onDelete }) {
+export default function EmployeeTable({ employees }) {
   return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="border-b">
-          <th className="p-3 text-left">ID</th>
-          <th className="p-3 text-left">Name</th>
-          <th className="p-3 text-left">Role</th>
-          <th className="p-3 text-left">Actions</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {employees.map((emp) => (
-          <tr key={emp.id} className="border-b">
-            <td className="p-3">{emp.id}</td>
-            <td className="p-3">{emp.name}</td>
-            <td className="p-3">{emp.role}</td>
-
-            <td className="p-3 flex gap-2">
-              {/* EDIT BUTTON */}
-              <Button variant="outline" asChild>
-                <Link to={`/employees/edit/${emp.id}`}>Edit</Link>
-              </Button>
-
-              {/* DELETE WITH MODAL */}
-              <DeleteEmployeeDialog onConfirm={() => onDelete(emp.id)}>
-                <Button variant="destructive">Delete</Button>
-              </DeleteEmployeeDialog>
-            </td>
+    <div className="overflow-x-auto bg-white border border-slate-200 rounded-lg shadow-sm">
+      <table className="w-full text-left">
+        <thead className="bg-slate-100 border-b border-slate-200">
+          <tr>
+            <th className="px-4 py-3 text-slate-700 font-semibold">Employee</th>
+            <th className="px-4 py-3 text-slate-700 font-semibold">Role</th>
+            <th className="px-4 py-3 text-slate-700 font-semibold">Department</th>
+            <th className="px-4 py-3 text-slate-700 font-semibold w-24"></th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {employees.map((emp) => (
+            <tr
+              key={emp.id}
+              className="border-b border-slate-100 hover:bg-slate-50 transition"
+            >
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <span className="font-medium text-slate-900">{emp.name}</span>
+                </div>
+              </td>
+
+              <td className="px-4 py-3 text-slate-700 flex items-center gap-1">
+                <Briefcase className="w-4 h-4 text-slate-500" />
+                {emp.role || "No role"}
+              </td>
+
+              <td className="px-4 py-3 text-slate-700 flex items-center gap-1">
+                <Building2 className="w-4 h-4 text-slate-500" />
+                {emp.department || "No department"}
+              </td>
+
+              <td className="px-4 py-3 text-right">
+                <Link
+                  to={`/employees/${emp.id}`}
+                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  View
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
