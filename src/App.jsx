@@ -2,10 +2,10 @@
 import { Routes, Route } from "react-router-dom";
 import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
 
-// Dashboard
+// Dashboard (Employer)
 import DashboardAnalytics from "./Pages/DashboardAnalytics";
 
-// Auth pages
+// Auth pages (Employer)
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
 import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 
@@ -18,7 +18,7 @@ import PublicEvaluationView from "./features/evaluations/pages/PublicEvaluationV
 // Legacy public evaluation page (optional)
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
-// Company Panel
+// Company Panel (Employer)
 import CompanyPanel from "./Pages/CompanyPanel";
 
 // Employees (Employer)
@@ -27,7 +27,8 @@ import AddEmployee from "./features/employees/pages/AddEmployee";
 import EmployeeProfile from "./features/employees/pages/EmployeeProfile";
 import EditEmployee from "./features/employees/pages/EditEmployee";
 
-// Candidate Pages (Your new pages)
+// Employee (Empregado) pages — já existentes
+import EmployeeLogin from "./Pages/EmployeeLogin";
 import CandidateDashboard from "./Pages/CandidateDashboard";
 import CandidateEvaluationDetails from "./Pages/CandidateEvaluationDetails";
 import CandidateProfileEdit from "./Pages/CandidateProfileEdit";
@@ -39,16 +40,17 @@ function App() {
       <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
       <Route path="/evaluation/:token" element={<PublicEvaluationView />} />
 
-      {/* Candidate routes */}
-      <Route path="/candidate" element={<CandidateDashboard />} />
-      <Route path="/candidate/evaluation/:id" element={<CandidateEvaluationDetails />} />
-      <Route path="/candidate/profile/edit" element={<CandidateProfileEdit />} />
+      {/* Employee (Empregado) routes */}
+      <Route path="/employee/login" element={<EmployeeLogin />} />
+      <Route path="/employee" element={<CandidateDashboard />} />
+      <Route path="/employee/evaluation/:id" element={<CandidateEvaluationDetails />} />
+      <Route path="/employee/profile/edit" element={<CandidateProfileEdit />} />
 
-      {/* Auth */}
+      {/* Auth (Employer) */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
       <Route path="/employer/register" element={<EmployerRegisterPage />} />
 
-      {/* Company Panel */}
+      {/* Company Panel (Employer) */}
       <Route
         path="/company"
         element={
@@ -58,7 +60,7 @@ function App() {
         }
       />
 
-      {/* Dashboard */}
+      {/* Dashboard (Employer) */}
       <Route
         path="/"
         element={
@@ -68,7 +70,7 @@ function App() {
         }
       />
 
-      {/* Employees */}
+      {/* Employees (Employer) */}
       <Route
         path="/employees"
         element={
@@ -105,7 +107,7 @@ function App() {
         }
       />
 
-      {/* Evaluations */}
+      {/* Evaluations (Employer) */}
       <Route
         path="/evaluations"
         element={
