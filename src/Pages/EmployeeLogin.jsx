@@ -54,7 +54,7 @@ export default function EmployeeLogin() {
           <p className="text-center text-sm text-slate-600 mt-6">
             Company login instead{" "}
             <span
-              onClick={() => navigate(createPageUrl("CompanyLogin"))}
+              onClick={() => navigate(createPageUrl("EmployeeLogin"))}
               className="text-blue-600 font-medium cursor-pointer hover:underline"
             >
               Click here
