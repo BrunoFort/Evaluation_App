@@ -9,7 +9,7 @@ import DashboardAnalytics from "./Pages/DashboardAnalytics";
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
 import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
 
-// Evaluations
+// Evaluations (Employer)
 import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
 import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
 import EvaluationView from "./features/evaluations/pages/EvaluationView";
@@ -21,11 +21,16 @@ import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 // Company Panel
 import CompanyPanel from "./Pages/CompanyPanel";
 
-// Employees
+// Employees (Employer)
 import EmployeesList from "./features/employees/pages/EmployeesList";
 import AddEmployee from "./features/employees/pages/AddEmployee";
 import EmployeeProfile from "./features/employees/pages/EmployeeProfile";
 import EditEmployee from "./features/employees/pages/EditEmployee";
+
+// Candidate Pages (Your new pages)
+import CandidateDashboard from "./Pages/CandidateDashboard";
+import CandidateEvaluationDetails from "./Pages/CandidateEvaluationDetails";
+import CandidateProfileEdit from "./Pages/CandidateProfileEdit";
 
 function App() {
   return (
@@ -33,6 +38,11 @@ function App() {
       {/* Public routes */}
       <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
       <Route path="/evaluation/:token" element={<PublicEvaluationView />} />
+
+      {/* Candidate routes */}
+      <Route path="/candidate" element={<CandidateDashboard />} />
+      <Route path="/candidate/evaluation/:id" element={<CandidateEvaluationDetails />} />
+      <Route path="/candidate/profile/edit" element={<CandidateProfileEdit />} />
 
       {/* Auth */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
