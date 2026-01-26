@@ -29,9 +29,9 @@ import EditEmployee from "./features/employees/pages/EditEmployee";
 
 // Employee (Empregado) pages — já existentes
 import EmployeeLogin from "./Pages/EmployeeLogin";
-import CandidateDashboard from "./Pages/EmployeeDashboard";
-import CandidateEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
-import CandidateProfileEdit from "./Pages/EmployeeProfileEdit";
+import EmployeeDashboard from "./Pages/EmployeeDashboard";
+import EmployeeEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
+import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
 
 function App() {
   return (
