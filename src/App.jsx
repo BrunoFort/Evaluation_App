@@ -22,6 +22,8 @@ import CompanyPanel from "./Pages/CompanyPanel";
 // Employees
 import EmployeesList from "./features/employees/pages/EmployeesList";
 import AddEmployee from "./features/employees/pages/AddEmployee";
+import EmployeeProfile from "./features/employees/pages/EmployeeProfile";
+import EditEmployee from "./features/employees/pages/EditEmployee";
 
 function App() {
   return (
@@ -62,11 +64,30 @@ function App() {
           </RequireEmployerAuth>
         }
       />
+
       <Route
         path="/employees/new"
         element={
           <RequireEmployerAuth>
             <AddEmployee />
+          </RequireEmployerAuth>
+        }
+      />
+
+      <Route
+        path="/employees/:id"
+        element={
+          <RequireEmployerAuth>
+            <EmployeeProfile />
+          </RequireEmployerAuth>
+        }
+      />
+
+      <Route
+        path="/employees/:id/edit"
+        element={
+          <RequireEmployerAuth>
+            <EditEmployee />
           </RequireEmployerAuth>
         }
       />
@@ -80,6 +101,7 @@ function App() {
           </RequireEmployerAuth>
         }
       />
+
       <Route
         path="/evaluations/new"
         element={
@@ -93,4 +115,3 @@ function App() {
 }
 
 export default App;
-
