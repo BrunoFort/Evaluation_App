@@ -1,49 +1,77 @@
-// src/Pages/DashboardAnalytics.jsx
-import React from "react";
-import EmployerLayout from "@/Layouts/EmployerLayout";
-import { Users, ClipboardCheck, Building2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import CompanyLayout from "../Layouts/CompanyLayout";
 
 export default function DashboardAnalytics() {
+  const [stats, setStats] = useState({
+    employees: 0,
+    evaluations: 0,
+    pendingEvaluations: 0,
+  });
+
+  useEffect(() => {
+    async function loadData() {
+      const [employeesRes, evaluationsRes] = await Promise.all([
+        fetch("http://localhost:4000/employees"),
+        fetch("http://localhost:4000/evaluations"),
+      ]);
+
+      const employees = await employeesRes.json();
+      const evaluations = await evaluationsRes.json();
+
+      const pending = evaluations.filter((ev) => ev.status === "pending").length;
+
+      setStats({
+        employees: employees.length,
+        evaluations: evaluations.length,
+        pendingEvaluations: pending,
+      });
+    }
+
+    loadData();
+  }, []);
+
   return (
-    <EmployerLayout>
-      <h1 className="text-3xl font-bold text-slate-900 mb-8">
-        Dashboard
-      </h1>
+    <CompanyLayout>
+      <div className="space-y-8">
+        <h1 className="text-2xl font-bold text-slate-900">
+          Dashboard
+        </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <DashboardCard
-          icon={<Users className="w-8 h-8 text-blue-600" />}
-          title="Employees"
-          value="24"
-        />
+        {/* Cards de resumo */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <StatCard
+            label="Employees"
+            value={stats.employees}
+          />
+          <StatCard
+            label="Evaluations"
+            value={stats.evaluations}
+          />
+          <StatCard
+            label="Pending Evaluations"
+            value={stats.pendingEvaluations}
+          />
+        </div>
 
-        <DashboardCard
-          icon={<ClipboardCheck className="w-8 h-8 text-green-600" />}
-          title="Evaluations"
-          value="58"
-        />
-
-        <DashboardCard
-          icon={<Building2 className="w-8 h-8 text-purple-600" />}
-          title="Companies"
-          value="1"
-        />
+        {/* Espaço para próximos gráficos / listas */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900 mb-2">
+            Activity
+          </h2>
+          <p className="text-slate-500 text-sm">
+            Here you’ll soon see recent evaluations, trends and key metrics.
+          </p>
+        </div>
       </div>
-    </EmployerLayout>
+    </CompanyLayout>
   );
 }
 
-function DashboardCard({ icon, title, value }) {
+function StatCard({ label, value }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex items-center gap-4 hover:shadow-md transition">
-      <div className="p-3 bg-slate-100 rounded-lg">
-        {icon}
-      </div>
-
-      <div>
-        <p className="text-slate-500 text-sm">{title}</p>
-        <p className="text-2xl font-bold text-slate-900">{value}</p>
-      </div>
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
     </div>
   );
 }
