@@ -14,7 +14,7 @@ export default function EmployeeLayout({ children }) {
       <header className="w-full max-w-3xl flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-blue-700">Employee Panel</h1>
 
-        import Button from "../components/ui/Button";
+        import Button from "../components/ui/button.jsx";
 
       <Button variant="danger" onClick={handleLogout}>
       Logout
