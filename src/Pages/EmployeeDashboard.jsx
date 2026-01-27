@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PublicLayout from "../Layouts/PublicLayout";
+import EmployeeLayout from "../Layouts/EmployeeLayout";
 import { Link } from "react-router-dom";
 
 export default function EmployeeDashboard() {
@@ -26,14 +26,14 @@ export default function EmployeeDashboard() {
 
   if (!employee) {
     return (
-      <PublicLayout>
+      <EmployeeLayout>
         <p className="text-slate-500">Loading...</p>
-      </PublicLayout>
+      </EmployeeLayout>
     );
   }
 
   return (
-    <PublicLayout>
+    <EmployeeLayout>
       <div className="space-y-6">
 
         {/* Header com logout */}
@@ -79,6 +79,6 @@ export default function EmployeeDashboard() {
           )}
         </div>
       </div>
-    </PublicLayout>
+    </EmployeeLayout>
   );
 }
