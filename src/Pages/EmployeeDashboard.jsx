@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
-import EmployeeLayout from "../Layouts/EmployeeLayout";
 import { Link } from "react-router-dom";
+
+import EmployeeLayout from "../Layouts/EmployeeLayout";
+import Card from "/src/components/ui/card.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function EmployeeDashboard() {
   const [employee, setEmployee] = useState(null);
@@ -28,31 +33,39 @@ export default function EmployeeDashboard() {
 
   return (
     <EmployeeLayout>
-      <div className="space-y-10">
+      <div className="max-w-3xl mx-auto space-y-10">
 
-        {/* Título */}
-        <h1 className="text-2xl font-bold text-slate-900">
-          Welcome back, {employee.name}
-        </h1>
+        <PageHeader
+          title={`Welcome back, ${employee.name}`}
+          subtitle="Here is an overview of your evaluations"
+        />
 
-        {/* Cards de resumo */}
+        {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <DashboardCard
-            label="Total Evaluations"
-            value={evaluations.length}
-          />
-          <DashboardCard
-            label="Completed"
-            value={evaluations.filter((ev) => ev.status === "completed").length}
-          />
-          <DashboardCard
-            label="Pending"
-            value={evaluations.filter((ev) => ev.status === "pending").length}
-          />
+          <Card className="text-center py-6">
+            <p className="text-sm text-slate-500">Total Evaluations</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900">
+              {evaluations.length}
+            </p>
+          </Card>
+
+          <Card className="text-center py-6">
+            <p className="text-sm text-slate-500">Completed</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900">
+              {evaluations.filter((ev) => ev.status === "completed").length}
+            </p>
+          </Card>
+
+          <Card className="text-center py-6">
+            <p className="text-sm text-slate-500">Pending</p>
+            <p className="mt-2 text-2xl font-bold text-slate-900">
+              {evaluations.filter((ev) => ev.status === "pending").length}
+            </p>
+          </Card>
         </div>
 
-        {/* Card de perfil */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-6">
+        {/* Profile Card */}
+        <Card className="flex items-center gap-6">
           {employee.photoUrl ? (
             <img
               src={employee.photoUrl}
@@ -66,7 +79,9 @@ export default function EmployeeDashboard() {
           )}
 
           <div className="flex-1">
-            <p className="text-xl font-semibold text-slate-900">{employee.name}</p>
+            <p className="text-xl font-semibold text-slate-900">
+              {employee.name}
+            </p>
             <p className="text-slate-600">{employee.email}</p>
 
             <Link
@@ -76,14 +91,10 @@ export default function EmployeeDashboard() {
               View Profile →
             </Link>
           </div>
-        </div>
+        </Card>
 
-        {/* Lista de avaliações */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">
-            Your Evaluations
-          </h2>
-
+        {/* Evaluations List */}
+        <SectionCard title="Your Evaluations">
           {evaluations.length === 0 ? (
             <p className="text-slate-500">No evaluations yet.</p>
           ) : (
@@ -100,24 +111,19 @@ export default function EmployeeDashboard() {
                     {ev.title}
                   </Link>
 
-                  <p className="text-sm text-slate-500">
-                    {new Date(ev.createdAt).toLocaleDateString()}
-                  </p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-sm text-slate-500">
+                      {new Date(ev.createdAt).toLocaleDateString()}
+                    </p>
+
+                    <StatusPill status={ev.status} />
+                  </div>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </SectionCard>
       </div>
     </EmployeeLayout>
-  );
-}
-
-function DashboardCard({ label, value }) {
-  return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
-    </div>
   );
 }
