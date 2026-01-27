@@ -58,7 +58,7 @@ function App() {
         path="/employee/evaluation/:id"
         element={
           <RequireEmployeeAuth>
-            <EmployeeEvaluationDetails />
+            <EvaluationDetailsPage />
           </RequireEmployeeAuth>
         }
       />
