@@ -1,54 +1,31 @@
-// src/features/evaluations/pages/EvaluationView.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import CompanyLayout from "../../../Layouts/CompanyLayout";
-import { generatePublicToken } from "../../../utils/generatePublicToken";
-import { FileText, Link as LinkIcon, Loader2 } from "lucide-react";
 
 export default function EvaluationView() {
   const { id } = useParams();
   const [evaluation, setEvaluation] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  async function fetchEvaluation() {
-    try {
-      const res = await fetch(`http://localhost:4000/evaluations/${id}`);
-      const data = await res.json();
-      setEvaluation(data);
-    } catch (error) {
-      console.error("Error loading evaluation:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [employee, setEmployee] = useState(null);
 
   useEffect(() => {
-    fetchEvaluation();
+    async function loadData() {
+      const evRes = await fetch(`http://localhost:4000/evaluations/${id}`);
+      const ev = await evRes.json();
+      setEvaluation(ev);
+
+      if (ev.employeeId) {
+        const empRes = await fetch(
+          `http://localhost:4000/employees/${ev.employeeId}`
+        );
+        const emp = await empRes.json();
+        setEmployee(emp);
+      }
+    }
+
+    loadData();
   }, [id]);
 
-  async function handleGenerateLink() {
-    setSaving(true);
-
-    const token = generatePublicToken();
-    const updated = { ...evaluation, publicToken: token };
-
-    try {
-      await fetch(`http://localhost:4000/evaluations/${evaluation.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      });
-
-      setEvaluation(updated);
-    } catch (error) {
-      console.error("Error generating public link:", error);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  if (loading) {
+  if (!evaluation) {
     return (
       <CompanyLayout>
         <p className="text-slate-500">Loading evaluation...</p>
@@ -56,88 +33,109 @@ export default function EvaluationView() {
     );
   }
 
-  if (!evaluation) {
-    return (
-      <CompanyLayout>
-        <p className="text-red-600">Evaluation not found.</p>
-      </CompanyLayout>
-    );
-  }
-
   return (
     <CompanyLayout>
-      <div className="max-w-3xl mx-auto bg-white border border-slate-200 rounded-lg shadow-sm p-6">
+      <div className="space-y-10">
+
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <FileText className="w-8 h-8 text-blue-600" />
-          <h1 className="text-2xl font-bold text-slate-900">
-            Evaluation #{evaluation.id}
-          </h1>
-        </div>
-
-        {/* Basic Info */}
-        <div className="space-y-2 text-slate-700 mb-6">
-          <p>
-            <strong>Date:</strong>{" "}
-            {new Date(evaluation.createdAt).toLocaleDateString()}
-          </p>
-
-          <p>
-            <strong>Status:</strong> {evaluation.status}
-          </p>
-
-          {evaluation.score && (
-            <p>
-              <strong>Score:</strong> {evaluation.score}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">
+              {evaluation.title}
+            </h1>
+            <p className="text-slate-500 text-sm">
+              Created on{" "}
+              {new Date(evaluation.createdAt).toLocaleDateString()}
             </p>
-          )}
+          </div>
+
+          <StatusPill status={evaluation.status} />
         </div>
 
-        {/* Public Link Section */}
-        <div className="border-t border-slate-200 pt-6 mt-6">
-          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <LinkIcon className="w-5 h-5 text-blue-600" />
-            Public Access Link
+        {/* Employee Info */}
+        {employee && (
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-6">
+            {employee.photoUrl ? (
+              <img
+                src={employee.photoUrl}
+                alt={employee.name}
+                className="h-20 w-20 rounded-full object-cover border"
+              />
+            ) : (
+              <div className="h-20 w-20 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                No Photo
+              </div>
+            )}
+
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-slate-900">
+                {employee.name}
+              </h2>
+              <p className="text-slate-600">{employee.email}</p>
+
+              <Link
+                to={`/employees/${employee.id}`}
+                className="text-sm text-blue-600 hover:text-blue-800 mt-2 inline-block"
+              >
+                View Employee →
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Evaluation Content */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Evaluation Details
           </h2>
 
-          {evaluation.publicToken ? (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-slate-700 mb-2">
-                Share this link with employers:
-              </p>
-
-              <code className="block p-2 bg-white border rounded text-blue-700 break-all">
-                {`${window.location.origin}/evaluation/${evaluation.publicToken}`}
-              </code>
-            </div>
-          ) : (
-            <button
-              onClick={handleGenerateLink}
-              disabled={saving}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-            >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              Generate Public Link
-            </button>
-          )}
+          <div className="space-y-4 text-slate-700">
+            {evaluation.description ? (
+              <p className="whitespace-pre-line">{evaluation.description}</p>
+            ) : (
+              <p className="text-slate-500">No description provided.</p>
+            )}
+          </div>
         </div>
 
-        {/* Sections */}
-        <div className="pt-6 border-t border-slate-200 mt-6">
-          <h2 className="text-lg font-semibold mb-4">Evaluation Details</h2>
-
-          {evaluation.sections?.length > 0 ? (
-            evaluation.sections.map((section, index) => (
-              <div key={index} className="mb-4">
-                <p className="font-medium text-slate-800">{section.title}</p>
-                <p className="text-slate-600">{section.comment}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-slate-500">No sections added yet.</p>
-          )}
+        {/* Actions */}
+        <div className="flex justify-end gap-3">
+          <Link
+            to="/evaluations"
+            className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+          >
+            Back
+          </Link>
         </div>
       </div>
     </CompanyLayout>
   );
 }
+
+function StatusPill({ status }) {
+  const base =
+    "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
+
+  if (status === "completed") {
+    return (
+      <span className={`${base} bg-emerald-50 text-emerald-700`}>
+        Completed
+      </span>
+    );
+  }
+
+  if (status === "pending") {
+    return (
+      <span className={`${base} bg-amber-50 text-amber-700`}>
+        Pending
+      </span>
+    );
+  }
+
+  return (
+    <span className={`${base} bg-slate-50 text-slate-600`}>
+      {status || "Unknown"}
+    </span>
+  );
+}
+
