@@ -20,14 +20,14 @@ export default function EmployeeDashboard() {
 
   if (!employee) {
     return (
-      <EmployeeLayout>
+      <PublicLayout>
         <p className="text-slate-500">Loading...</p>
-      </EmployeeLayout>
+      </PuclicLayout>
     );
   }
 
   return (
-    <EmployeeLayout>
+    <PublicLayout>
       <div className="space-y-6">
         <h1 className="text-xl font-bold text-slate-900">
           Welcome, {employee.name}
