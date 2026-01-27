@@ -1,6 +1,7 @@
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
+import { RequireEmployeeAuth } from "./features/auth/RequireEmployeeAuth";
 
 // Dashboard (Employer)
 import DashboardAnalytics from "./Pages/DashboardAnalytics";
@@ -42,9 +43,33 @@ function App() {
 
       {/* Employee (Empregado) routes */}
       <Route path="/employee/login" element={<EmployeeLogin />} />
-      <Route path="/employee" element={<EmployeeDashboard />} />
-      <Route path="/employee/evaluation/:id" element={<EmployeeEvaluationDetails />} />
-      <Route path="/employee/profile/edit" element={<EmployeeProfileEdit />} />
+
+      <Route
+        path="/employee"
+        element={
+          <RequireEmployeeAuth>
+            <EmployeeDashboard />
+          </RequireEmployeeAuth>
+        }
+      />
+
+      <Route
+        path="/employee/evaluation/:id"
+        element={
+          <RequireEmployeeAuth>
+            <EmployeeEvaluationDetails />
+          </RequireEmployeeAuth>
+        }
+      />
+
+      <Route
+        path="/employee/profile/edit"
+        element={
+          <RequireEmployeeAuth>
+            <EmployeeProfileEdit />
+          </RequireEmployeeAuth>
+        }
+      />
 
       {/* Auth (Employer) */}
       <Route path="/employer/login" element={<EmployerLoginPage />} />
