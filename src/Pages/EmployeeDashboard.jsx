@@ -6,6 +6,12 @@ export default function EmployeeDashboard() {
   const [employee, setEmployee] = useState(null);
   const [evaluations, setEvaluations] = useState([]);
 
+  // Logout do empregado
+  function handleLogout() {
+    localStorage.removeItem("employee");
+    window.location.href = "/employee/login";
+  }
+
   useEffect(() => {
     const stored = localStorage.getItem("employee");
     if (stored) {
@@ -29,9 +35,20 @@ export default function EmployeeDashboard() {
   return (
     <PublicLayout>
       <div className="space-y-6">
-        <h1 className="text-xl font-bold text-slate-900">
-          Welcome, {employee.name}
-        </h1>
+
+        {/* Header com logout */}
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold text-slate-900">
+            Welcome, {employee.name}
+          </h1>
+
+          <button
+            onClick={handleLogout}
+            className="text-sm text-red-600 hover:text-red-800"
+          >
+            Logout
+          </button>
+        </div>
 
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">
