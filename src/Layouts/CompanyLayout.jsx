@@ -15,12 +15,12 @@ export default function CompanyLayout({ children }) {
             Employer Panel
           </h1>
 
-          <button
-            onClick={logout}
-            className="text-sm text-red-600 hover:text-red-800 font-medium"
-          >
-            Logout
-          </button>
+          import Button from "../components/ui/Button";
+
+          <Button variant="danger" onClick={logout}>
+          Logout
+          </Button>
+
         </div>
       </header>
 
