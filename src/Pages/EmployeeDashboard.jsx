@@ -28,10 +28,31 @@ export default function EmployeeDashboard() {
 
   return (
     <EmployeeLayout>
-      <div className="space-y-8">
+      <div className="space-y-10">
 
-        {/* Perfil resumido */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+        {/* Título */}
+        <h1 className="text-2xl font-bold text-slate-900">
+          Welcome back, {employee.name}
+        </h1>
+
+        {/* Cards de resumo */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <DashboardCard
+            label="Total Evaluations"
+            value={evaluations.length}
+          />
+          <DashboardCard
+            label="Completed"
+            value={evaluations.filter((ev) => ev.status === "completed").length}
+          />
+          <DashboardCard
+            label="Pending"
+            value={evaluations.filter((ev) => ev.status === "pending").length}
+          />
+        </div>
+
+        {/* Card de perfil */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-6">
           {employee.photoUrl ? (
             <img
               src={employee.photoUrl}
@@ -45,19 +66,19 @@ export default function EmployeeDashboard() {
           )}
 
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-900">{employee.name}</h1>
+            <p className="text-xl font-semibold text-slate-900">{employee.name}</p>
             <p className="text-slate-600">{employee.email}</p>
 
             <Link
-              to="/employee/profile/edit"
+              to="/employee/profile"
               className="text-sm text-blue-600 hover:text-blue-800 mt-2 inline-block"
             >
-              Edit Profile →
+              View Profile →
             </Link>
           </div>
         </div>
 
-        {/* Avaliações */}
+        {/* Lista de avaliações */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">
             Your Evaluations
@@ -70,7 +91,7 @@ export default function EmployeeDashboard() {
               {evaluations.map((ev) => (
                 <li
                   key={ev.id}
-                  className="border border-slate-200 rounded-lg p-4 bg-slate-50"
+                  className="border border-slate-200 rounded-lg p-4 bg-slate-50 hover:bg-slate-100 transition"
                 >
                   <Link
                     to={`/employee/evaluation/${ev.id}`}
@@ -89,5 +110,14 @@ export default function EmployeeDashboard() {
         </div>
       </div>
     </EmployeeLayout>
+  );
+}
+
+function DashboardCard({ label, value }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
+    </div>
   );
 }
