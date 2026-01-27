@@ -15,7 +15,7 @@ export default function CompanyLayout({ children }) {
             Employer Panel
           </h1>
 
-          import Button from "../components/ui/Button.jsx";
+          import Button from "../components/ui/button.jsx";
 
           <Button variant="danger" onClick={logout}>
           Logout
