@@ -32,9 +32,11 @@ export default function EvaluationsList() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Evaluations</h1>
 
+          import Button from "../../../components/ui/Button.jsx";
           <Button as={Link} to="/evaluations/new">
-          New Evaluation
+            New Evaluation
           </Button>
+
 
         </div>
 
