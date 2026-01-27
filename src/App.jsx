@@ -27,9 +27,9 @@ import AddEmployee from "./features/employees/pages/AddEmployee";
 import EmployeeProfile from "./features/employees/pages/EmployeeProfile";
 import EditEmployee from "./features/employees/pages/EditEmployee";
 
-// Employee (Empregado) pages — já existentes
+// Employee (Empregado)
 import EmployeeLogin from "./Pages/EmployeeLogin";
-import EmployeeDashboard from "./features/employee-profile/pages/EmployeeDashboard";
+import EmployeeDashboard from "./Pages/EmployeeDashboard";
 import EmployeeEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
 import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
 
