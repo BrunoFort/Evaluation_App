@@ -1,77 +1,81 @@
-// src/Layouts/CompanyLayout.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../features/auth/AuthProvider";
-import { Building2, LayoutDashboard, Users, ClipboardCheck, LogOut } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../features/auth/useAuth";
 
 export default function CompanyLayout({ children }) {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  function handleLogout() {
-    logout();
-    navigate("/employer/login");
-  }
+  const { logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 shadow-sm flex flex-col">
-        <div className="p-6 border-b border-slate-200">
-          <div className="flex items-center gap-2">
-            <Building2 className="w-6 h-6 text-blue-600" />
-            <h1 className="text-xl font-bold text-slate-900">ProRef</h1>
-          </div>
-          <p className="text-sm text-slate-500 mt-1">{user?.companyName}</p>
-        </div>
+    <div className="min-h-screen bg-slate-100 flex flex-col">
 
-        <nav className="flex-1 p-4 space-y-2">
-          <Link
-            to="/company"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition"
-          >
-            <Building2 className="w-5 h-5" />
-            Company Panel
-          </Link>
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-blue-700 tracking-tight">
+            Employer Panel
+          </h1>
 
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition"
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            Dashboard
-          </Link>
-
-          <Link
-            to="/employees"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition"
-          >
-            <Users className="w-5 h-5" />
-            Employees
-          </Link>
-
-          <Link
-            to="/evaluations"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition"
-          >
-            <ClipboardCheck className="w-5 h-5" />
-            Evaluations
-          </Link>
-        </nav>
-
-        <div className="p-4 border-t border-slate-200">
           <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition"
+            onClick={logout}
+            className="text-sm text-red-600 hover:text-red-800 font-medium"
           >
-            <LogOut className="w-5 h-5" />
             Logout
           </button>
         </div>
-      </aside>
+      </header>
+
+      {/* Navigation */}
+      <nav className="bg-white border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex gap-6 text-sm font-medium text-slate-600">
+
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+            }
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/company"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+            }
+          >
+            Company
+          </NavLink>
+
+          <NavLink
+            to="/employees"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+            }
+          >
+            Employees
+          </NavLink>
+
+          <NavLink
+            to="/evaluations"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+            }
+          >
+            Evaluations
+          </NavLink>
+        </div>
+      </nav>
 
       {/* Main content */}
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1 max-w-6xl mx-auto px-6 py-10">
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} ProRef — Employer Access
+      </footer>
     </div>
   );
 }
+
