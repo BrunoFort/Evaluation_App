@@ -184,21 +184,18 @@ export default function EditEmployee() {
 
           {/* Buttons */}
           <div className="pt-4 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => navigate(`/employees/${id}`)}
-              className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+            <Button
+            variant="outline"
+            type="button"
+            onClick={() => navigate(`/employees/${id}`)}
             >
-              Cancel
-            </button>
+            Cancel
+            </Button>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
+            <Button type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save Changes"}
+            </Button>
+
           </div>
         </form>
       </div>
