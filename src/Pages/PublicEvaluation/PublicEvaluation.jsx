@@ -1,6 +1,6 @@
 import React from "react";
 import CompanyLayout from "../../Layouts/CompanyLayout";
-import { Card, CardContent } from "../../components/ui/card";
+import Card from "/src/components/ui/card.jsx";
 import { Star } from "lucide-react";
 
 export default function PublicEvaluation() {

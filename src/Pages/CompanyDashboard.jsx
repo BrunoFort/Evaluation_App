@@ -1,6 +1,6 @@
 import React from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
-import { Card, CardContent } from "../components/ui/card";
+import Card from "/src/components/ui/card.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import { createPageUrl } from "../utils";
 import { Users, FileText, UserPlus, LogOut } from "lucide-react";

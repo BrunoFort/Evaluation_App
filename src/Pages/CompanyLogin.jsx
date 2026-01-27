@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "/src/components/ui/Button.jsx";
 import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
+import Card from "/src/components/ui/card.jsx";
 import { createPageUrl } from "../utils";
 
 export default function CompanyLogin() {

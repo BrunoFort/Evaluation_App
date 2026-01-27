@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from "/src/components/ui/Button.jsx";
 import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
+import Card from "/src/components/ui/card.jsx";
 import { Building2, UserCheck, ClipboardCheck, Shield, ArrowRight, Star, User, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 const createPageUrl = (path) => `/${path}`;
