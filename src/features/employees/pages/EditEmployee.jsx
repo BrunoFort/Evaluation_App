@@ -1,35 +1,39 @@
-// src/features/employees/pages/EditEmployee.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import CompanyLayout from "../../../Layouts/CompanyLayout";
-import { useEmployee } from "../hooks/useEmployee";
 
 export default function EditEmployee() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { employee, loading } = useEmployee(id);
 
+  const [employee, setEmployee] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
     role: "",
     department: "",
+    status: "",
+    photoUrl: "",
   });
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // Load employee data into form
   useEffect(() => {
-    if (employee) {
-      setForm({
-        name: employee.name || "",
-        email: employee.email || "",
-        role: employee.role || "",
-        department: employee.department || "",
+    fetch(`http://localhost:4000/employees/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEmployee(data);
+        setForm({
+          name: data.name || "",
+          email: data.email || "",
+          role: data.role || "",
+          department: data.department || "",
+          status: data.status || "",
+          photoUrl: data.photoUrl || "",
+        });
       });
-    }
-  }, [employee]);
+  }, [id]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -53,13 +57,13 @@ export default function EditEmployee() {
       navigate(`/employees/${id}`);
     } catch (err) {
       console.error(err);
-      setError("There was an error updating the employee. Please try again.");
+      setError("There was an error updating this employee.");
     } finally {
       setSaving(false);
     }
   }
 
-  if (loading) {
+  if (!employee) {
     return (
       <CompanyLayout>
         <p className="text-slate-500">Loading employee...</p>
@@ -67,38 +71,43 @@ export default function EditEmployee() {
     );
   }
 
-  if (!employee) {
-    return (
-      <CompanyLayout>
-        <p className="text-red-600">Employee not found.</p>
-      </CompanyLayout>
-    );
-  }
-
   return (
     <CompanyLayout>
-      <div className="max-w-xl">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">Edit Employee</h1>
+      <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
 
-          <Link
-            to={`/employees/${id}`}
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            Back to profile
-          </Link>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Edit Employee</h1>
 
         {error && (
-          <div className="mb-4 rounded-md bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg">
             {error}
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 bg-white p-6 rounded-lg border border-slate-200 shadow-sm"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Photo */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Photo URL
+            </label>
+            <input
+              name="photoUrl"
+              value={form.photoUrl}
+              onChange={handleChange}
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              placeholder="https://example.com/photo.jpg"
+            />
+
+            {form.photoUrl && (
+              <img
+                src={form.photoUrl}
+                alt="Preview"
+                className="h-24 w-24 rounded-full object-cover mt-3 border"
+              />
+            )}
+          </div>
+
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Name
@@ -108,11 +117,11 @@ export default function EditEmployee() {
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Employee full name"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
             />
           </div>
 
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Email
@@ -123,11 +132,11 @@ export default function EditEmployee() {
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="email@example.com"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
             />
           </div>
 
+          {/* Role */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Role
@@ -136,11 +145,12 @@ export default function EditEmployee() {
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Job title"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              placeholder="e.g. Software Engineer"
             />
           </div>
 
+          {/* Department */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Department
@@ -149,18 +159,38 @@ export default function EditEmployee() {
               name="department"
               value={form.department}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Department name"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              placeholder="e.g. Engineering"
             />
           </div>
 
-          <div className="pt-2 flex justify-end gap-3">
-            <Link
-              to={`/employees/${id}`}
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Status
+            </label>
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+            >
+              <option value="">Select status</option>
+              <option value="active">Active</option>
+              <option value="terminated">Terminated</option>
+              <option value="on_leave">On Leave</option>
+            </select>
+          </div>
+
+          {/* Buttons */}
+          <div className="pt-4 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => navigate(`/employees/${id}`)}
               className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
             >
               Cancel
-            </Link>
+            </button>
 
             <button
               type="submit"
