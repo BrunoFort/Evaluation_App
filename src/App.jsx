@@ -33,6 +33,7 @@ import EmployeeLogin from "./Pages/EmployeeLogin";
 import EmployeeDashboard from "./Pages/EmployeeDashboard";
 import EmployeeEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
 import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
+import EmployeeProfileView from "./Pages/EmployeeProfile"; // <-- NOVO
 
 function App() {
   return (
@@ -58,6 +59,15 @@ function App() {
         element={
           <RequireEmployeeAuth>
             <EmployeeEvaluationDetails />
+          </RequireEmployeeAuth>
+        }
+      />
+
+      <Route
+        path="/employee/profile"
+        element={
+          <RequireEmployeeAuth>
+            <EmployeeProfileView />
           </RequireEmployeeAuth>
         }
       />
