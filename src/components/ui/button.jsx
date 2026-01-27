@@ -5,7 +5,7 @@ export default function Button({
   ...props
 }) {
   const base =
-    "px-4 py-2 rounded-lg font-medium transition focus:outline-none";
+    "px-4 py-2 rounded-lg font-medium transition focus:outline-none disabled:opacity-60";
 
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
@@ -23,4 +23,3 @@ export default function Button({
     </button>
   );
 }
-
