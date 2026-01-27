@@ -16,7 +16,7 @@ import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreateP
 import EvaluationView from "./features/evaluations/pages/EvaluationView";
 import PublicEvaluationView from "./features/evaluations/pages/PublicEvaluationView";
 
-// Legacy public evaluation page (optional)
+// Public evaluation (legacy)
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
 // Company Panel (Employer)
@@ -31,9 +31,11 @@ import EditEmployee from "./features/employees/pages/EditEmployee";
 // Employee (Empregado)
 import EmployeeLogin from "./Pages/EmployeeLogin";
 import EmployeeDashboard from "./Pages/EmployeeDashboard";
-import EmployeeEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
 import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
-import EmployeeProfileView from "./Pages/EmployeeProfile"; // <-- NOVO
+import EmployeeProfileView from "./Pages/EmployeeProfile";
+
+// ⭐ Novo import correto
+import EvaluationDetailsPage from "./features/evaluations/pages/EvaluationDetailsPage";
 
 function App() {
   return (
