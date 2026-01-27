@@ -22,7 +22,7 @@ export default function EmployeeDashboard() {
     return (
       <PublicLayout>
         <p className="text-slate-500">Loading...</p>
-      </PuclicLayout>
+      </PublicLayout>
     );
   }
 
