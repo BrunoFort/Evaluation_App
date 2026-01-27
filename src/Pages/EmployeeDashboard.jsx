@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import EmployeeLayout from "@/Layouts/EmployeeLayout";
+import PublicLayout from "../Layouts/PublicLayout";
 import { Link } from "react-router-dom";
 
 export default function EmployeeDashboard() {
