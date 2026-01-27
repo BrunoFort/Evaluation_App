@@ -1,7 +1,7 @@
 import { useProjects } from "../hooks/useProjects";
 import { useDeleteProject } from "../hooks/useDeleteProject";
 import { ProjectTable } from "../components/ProjectTable";
-import { Button } from "@/components/ui/button";
+import Button from "/src/components/ui/Button.jsx";;
 import { Link } from "react-router-dom";
 
 export default function ProjectsList() {

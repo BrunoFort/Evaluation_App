@@ -3,7 +3,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { Star } from "lucide-react";
 import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
 import { useEmployees } from "../features/employees/hooks/useEmployees";

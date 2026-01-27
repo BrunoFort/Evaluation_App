@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../components/ui/select";
 
 export default function RoleManagement() {

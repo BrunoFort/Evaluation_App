@@ -1,7 +1,7 @@
 import { useDepartments } from "../hooks/useDepartments";
 import { useDeleteDepartment } from "../hooks/useDeleteDepartment";
 import { DepartmentTable } from "../components/DepartmentTable";
-import { Button } from "@/components/ui/button";
+import Button from "/src/components/ui/Button.jsx";;
 import { Link } from "react-router-dom";
 
 export default function DepartmentsList() {

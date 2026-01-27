@@ -2,7 +2,7 @@ import React from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { Star, Mail, Phone, FileText } from "lucide-react";
 import { createPageUrl } from "../utils";
 

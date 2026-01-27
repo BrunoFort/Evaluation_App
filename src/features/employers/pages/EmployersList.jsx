@@ -1,7 +1,7 @@
 import { useEmployers } from "../hooks/useEmployers";
 import { useDeleteEmployer } from "../hooks/useDeleteEmployer";
 import { EmployerTable } from "../components/EmployerTable";
-import { Button } from "@/components/ui/button";
+import Button from "/src/components/ui/Button.jsx";;
 import { Link } from "react-router-dom";
 
 export default function EmployersList() {

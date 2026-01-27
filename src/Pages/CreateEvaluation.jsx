@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { Textarea } from "../components/ui/textarea";
 import { Star } from "lucide-react";
 

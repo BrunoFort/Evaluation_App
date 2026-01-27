@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { api } from "../utils/api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { createPageUrl } from "../utils/createPageUrl";
 
 export default function EmployeeList() {

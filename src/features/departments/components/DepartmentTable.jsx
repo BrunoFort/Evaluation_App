@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import Button from "/src/components/ui/Button.jsx";;
 import { Link } from "react-router-dom";
 import { DeleteDepartmentDialog } from "./DeleteDepartmentDialog";
 

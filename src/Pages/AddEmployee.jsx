@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CompanyLayout from "../layouts/CompanyLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import Button from "/src/components/ui/Button.jsx";
 import { createPageUrl } from "../utils";
 
 export default function AddEmployee() {
