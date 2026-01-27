@@ -25,16 +25,16 @@ import CompanyPanel from "./Pages/CompanyPanel";
 // Employees (Employer)
 import EmployeesList from "./features/employees/pages/EmployeesList";
 import AddEmployee from "./features/employees/pages/AddEmployee";
-import EmployeeProfile from "./features/employees/pages/EmployeeProfile";
+import EmployeeProfileAdmin from "./features/employees/pages/EmployeeProfileAdmin";
 import EditEmployee from "./features/employees/pages/EditEmployee";
 
 // Employee (Empregado)
 import EmployeeLogin from "./Pages/EmployeeLogin";
 import EmployeeDashboard from "./Pages/EmployeeDashboard";
 import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
-import EmployeeProfileView from "./Pages/EmployeeProfile";
+import EmployeeProfileView from "./Pages/EmployeeProfileView";
 
-// ⭐ Novo import correto
+// Evaluation details (Employee)
 import EvaluationDetailsPage from "./features/evaluations/pages/EvaluationDetailsPage";
 
 function App() {
@@ -130,7 +130,7 @@ function App() {
         path="/employees/:id"
         element={
           <RequireEmployerAuth>
-            <EmployeeProfile />
+            <EmployeeProfileAdmin />
           </RequireEmployerAuth>
         }
       />
