@@ -29,7 +29,7 @@ import EditEmployee from "./features/employees/pages/EditEmployee";
 
 // Employee (Empregado) pages — já existentes
 import EmployeeLogin from "./Pages/EmployeeLogin";
-import EmployeeDashboard from "./Pages/EmployeeDashboard";
+import EmployeeDashboard from "./features/employee-profile/pages/EmployeeDashboard";
 import EmployeeEvaluationDetails from "./Pages/EmployeeEvaluationDetails";
 import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
 
