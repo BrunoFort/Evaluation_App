@@ -54,9 +54,12 @@ export default function EmployeeEvaluationDetails() {
 
         {/* Back button */}
         <div className="flex justify-end">
+          import Button from "../components/ui/Button.jsx";
+
           <Button as={Link} to="/employee" variant="outline">
-          Back
+            Back
           </Button>
+
 
         </div>
       </div>
