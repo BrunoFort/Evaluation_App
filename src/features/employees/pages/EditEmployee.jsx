@@ -184,17 +184,20 @@ export default function EditEmployee() {
 
           {/* Buttons */}
           <div className="pt-4 flex justify-end gap-3">
-            <Button
+            import Button from "../../../components/ui/Button.jsx";
+
+          <Button
             variant="outline"
             type="button"
             onClick={() => navigate(`/employees/${id}`)}
-            >
+          >
             Cancel
-            </Button>
-
-            <Button type="submit" disabled={saving}>
+          </Button>
+          
+          <Button type="submit" disabled={saving}>
             {saving ? "Saving..." : "Save Changes"}
-            </Button>
+          </Button>
+
 
           </div>
         </form>
