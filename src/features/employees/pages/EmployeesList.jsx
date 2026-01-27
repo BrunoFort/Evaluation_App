@@ -24,11 +24,12 @@ export default function EmployeesList() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Employees</h1>
 
-          import Button from "../../../components/ui/Button";
+          import Button from "../../../components/ui/Button.jsx";
 
           <Button as={Link} to="/employees/new">
-          Add Employee
+            Add Employee
           </Button>
+
 
         </div>
 
