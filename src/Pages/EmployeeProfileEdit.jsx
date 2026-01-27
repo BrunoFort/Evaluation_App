@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import EmployeeLayout from "@/Layouts/EmployeeLayout";
+import PublicLayout from "../Layouts/PublicLayout";
 
 export default function EmployeeProfileEdit() {
   const [employee, setEmployee] = useState(null);
