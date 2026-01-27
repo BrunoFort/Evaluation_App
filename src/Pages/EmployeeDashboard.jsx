@@ -6,12 +6,6 @@ export default function EmployeeDashboard() {
   const [employee, setEmployee] = useState(null);
   const [evaluations, setEvaluations] = useState([]);
 
-  // Logout do empregado
-  function handleLogout() {
-    localStorage.removeItem("employee");
-    window.location.href = "/employee/login";
-  }
-
   useEffect(() => {
     const stored = localStorage.getItem("employee");
     if (stored) {
@@ -34,22 +28,36 @@ export default function EmployeeDashboard() {
 
   return (
     <EmployeeLayout>
-      <div className="space-y-6">
+      <div className="space-y-8">
 
-        {/* Header com logout */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-900">
-            Welcome, {employee.name}
-          </h1>
+        {/* Perfil resumido */}
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-4">
+          {employee.photoUrl ? (
+            <img
+              src={employee.photoUrl}
+              alt="Profile"
+              className="h-20 w-20 rounded-full object-cover border"
+            />
+          ) : (
+            <div className="h-20 w-20 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+              No Photo
+            </div>
+          )}
 
-          <button
-            onClick={handleLogout}
-            className="text-sm text-red-600 hover:text-red-800"
-          >
-            Logout
-          </button>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-slate-900">{employee.name}</h1>
+            <p className="text-slate-600">{employee.email}</p>
+
+            <Link
+              to="/employee/profile/edit"
+              className="text-sm text-blue-600 hover:text-blue-800 mt-2 inline-block"
+            >
+              Edit Profile →
+            </Link>
+          </div>
         </div>
 
+        {/* Avaliações */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">
             Your Evaluations
@@ -70,6 +78,7 @@ export default function EmployeeDashboard() {
                   >
                     {ev.title}
                   </Link>
+
                   <p className="text-sm text-slate-500">
                     {new Date(ev.createdAt).toLocaleDateString()}
                   </p>
