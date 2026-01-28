@@ -1,6 +1,18 @@
-export default function StatusPill({ status }) {
+import { CheckCircle, Clock, UserCheck, XCircle, Minus } from "lucide-react";
+
+export default function StatusPill({
+  status = "default",
+  size = "md",
+  showIcon = true,
+  className = "",
+}) {
   const base =
-    "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
+    "inline-flex items-center gap-1.5 rounded-full font-medium capitalize";
+
+  const sizes = {
+    sm: "text-xs px-2 py-0.5",
+    md: "text-xs px-3 py-1",
+  };
 
   const variants = {
     completed: "bg-emerald-50 text-emerald-700",
@@ -10,7 +22,21 @@ export default function StatusPill({ status }) {
     default: "bg-slate-50 text-slate-600",
   };
 
-  const variant = variants[status] || variants.default;
+  const icons = {
+    completed: <CheckCircle className="w-3 h-3" />,
+    pending: <Clock className="w-3 h-3" />,
+    active: <UserCheck className="w-3 h-3" />,
+    terminated: <XCircle className="w-3 h-3" />,
+    default: <Minus className="w-3 h-3" />,
+  };
 
-  return <span className={`${base} ${variant}`}>{status}</span>;
+  const variant = variants[status] || variants.default;
+  const icon = icons[status] || icons.default;
+
+  return (
+    <span className={`${base} ${sizes[size]} ${variant} ${className}`}>
+      {showIcon && icon}
+      {status}
+    </span>
+  );
 }
