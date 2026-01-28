@@ -1,178 +1,80 @@
-// src/App.jsx
-import { Routes, Route } from "react-router-dom";
-import { RequireEmployerAuth } from "./features/auth/RequireEmployerAuth";
-import { RequireEmployeeAuth } from "./features/auth/RequireEmployeeAuth";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Dashboard (Employer)
-import DashboardAnalytics from "./Pages/DashboardAnalytics";
+// EMPLOYER AUTH
+import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
+import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAuth";
 
-// Auth pages (Employer)
+// EMPLOYEE AUTH
+import { EmployeeAuthProvider } from "./features/auth/employee/EmployeeAuthProvider";
+import { RequireEmployeeAuth } from "./features/auth/employee/RequireEmployeeAuth";
+
+// EMPLOYER PAGES
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
 import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
+import EmployerForgotPasswordPage from "./features/auth/EmployerForgotPasswordPage";
+import EmployerResetPasswordPage from "./features/auth/EmployerResetPasswordPage";
+import EmployerDashboardPage from "./features/employer-dashboard/EmployerDashboardPage"; // exemplo
 
-// Evaluations (Employer)
-import EvaluationsList from "./features/evaluations/pages/EvaluationsList";
-import EvaluationCreatePage from "./features/evaluations/pages/EvaluationCreatePage";
-import EvaluationView from "./features/evaluations/pages/EvaluationView";
-import PublicEvaluationView from "./features/evaluations/pages/PublicEvaluationView";
+// EMPLOYEE PAGES
+import EmployeeLoginPage from "./features/auth/EmployeeLoginPage";
+import EmployeeRegisterPage from "./features/auth/EmployeeRegisterPage";
+import EmployeeForgotPasswordPage from "./features/auth/EmployeeForgotPasswordPage";
+import EmployeeResetPasswordPage from "./features/auth/EmployeeResetPasswordPage";
+import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeCompleteRegistrationPage";
+import EmployeeDashboardPage from "./features/employee-dashboard/EmployeeDashboardPage"; // exemplo
 
-// Public evaluation (legacy)
-import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
-
-// Company Panel (Employer)
-import CompanyPanel from "./Pages/CompanyPanel";
-
-// Employees (Employer)
-import EmployeesList from "./features/employees/pages/EmployeesList";
-import AddEmployee from "./features/employees/pages/AddEmployee";
-import EmployeeProfileAdmin from "./features/employees/pages/EmployeeProfileAdmin";
-import EditEmployee from "./features/employees/pages/EditEmployee";
-
-// Employee (Empregado)
-import EmployeeLogin from "./Pages/EmployeeLogin";
-import EmployeeDashboard from "./Pages/EmployeeDashboard";
-import EmployeeProfileEdit from "./Pages/EmployeeProfileEdit";
-import EmployeeProfileView from "./Pages/EmployeeProfileView";
-
-// Evaluation details (Employee)
-import EvaluationDetailsPage from "./features/evaluations/pages/EvaluationDetailsPage";
-
-function App() {
+export default function App() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/PublicEvaluation" element={<PublicEvaluation />} />
-      <Route path="/evaluation/:token" element={<PublicEvaluationView />} />
+    <BrowserRouter>
 
-      {/* Employee (Empregado) routes */}
-      <Route path="/employee/login" element={<EmployeeLogin />} />
+      {/** EMPLOYER PROVIDER */}
+      <EmployerAuthProvider>
+        <Routes>
 
-      <Route
-        path="/employee"
-        element={
-          <RequireEmployeeAuth>
-            <EmployeeDashboard />
-          </RequireEmployeeAuth>
-        }
-      />
+          {/** EMPLOYER PUBLIC ROUTES */}
+          <Route path="/employer/login" element={<EmployerLoginPage />} />
+          <Route path="/employer/signup" element={<EmployerRegisterPage />} />
+          <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
+          <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
-      <Route
-        path="/employee/evaluation/:id"
-        element={
-          <RequireEmployeeAuth>
-            <EvaluationDetailsPage />
-          </RequireEmployeeAuth>
-        }
-      />
+          {/** EMPLOYER PROTECTED ROUTES */}
+          <Route
+            path="/employer"
+            element={
+              <RequireEmployerAuth>
+                <EmployerDashboardPage />
+              </RequireEmployerAuth>
+            }
+          />
 
-      <Route
-        path="/employee/profile"
-        element={
-          <RequireEmployeeAuth>
-            <EmployeeProfileView />
-          </RequireEmployeeAuth>
-        }
-      />
+        </Routes>
+      </EmployerAuthProvider>
 
-      <Route
-        path="/employee/profile/edit"
-        element={
-          <RequireEmployeeAuth>
-            <EmployeeProfileEdit />
-          </RequireEmployeeAuth>
-        }
-      />
+      {/** EMPLOYEE PROVIDER */}
+      <EmployeeAuthProvider>
+        <Routes>
 
-      {/* Auth (Employer) */}
-      <Route path="/employer/login" element={<EmployerLoginPage />} />
-      <Route path="/employer/register" element={<EmployerRegisterPage />} />
+          {/** EMPLOYEE PUBLIC ROUTES */}
+          <Route path="/employee/login" element={<EmployeeLoginPage />} />
+          <Route path="/employee/signup" element={<EmployeeRegisterPage />} />
+          <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
+          <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
+          <Route path="/employee/complete-registration" element={<EmployeeCompleteRegistrationPage />} />
 
-      {/* Company Panel (Employer) */}
-      <Route
-        path="/company"
-        element={
-          <RequireEmployerAuth>
-            <CompanyPanel />
-          </RequireEmployerAuth>
-        }
-      />
+          {/** EMPLOYEE PROTECTED ROUTES */}
+          <Route
+            path="/employee"
+            element={
+              <RequireEmployeeAuth>
+                <EmployeeDashboardPage />
+              </RequireEmployeeAuth>
+            }
+          />
 
-      {/* Dashboard (Employer) */}
-      <Route
-        path="/"
-        element={
-          <RequireEmployerAuth>
-            <DashboardAnalytics />
-          </RequireEmployerAuth>
-        }
-      />
+        </Routes>
+      </EmployeeAuthProvider>
 
-      {/* Employees (Employer) */}
-      <Route
-        path="/employees"
-        element={
-          <RequireEmployerAuth>
-            <EmployeesList />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route
-        path="/employees/new"
-        element={
-          <RequireEmployerAuth>
-            <AddEmployee />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route
-        path="/employees/:id"
-        element={
-          <RequireEmployerAuth>
-            <EmployeeProfileAdmin />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route
-        path="/employees/:id/edit"
-        element={
-          <RequireEmployerAuth>
-            <EditEmployee />
-          </RequireEmployerAuth>
-        }
-      />
-
-      {/* Evaluations (Employer) */}
-      <Route
-        path="/evaluations"
-        element={
-          <RequireEmployerAuth>
-            <EvaluationsList />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route
-        path="/evaluations/new"
-        element={
-          <RequireEmployerAuth>
-            <EvaluationCreatePage />
-          </RequireEmployerAuth>
-        }
-      />
-
-      <Route
-        path="/evaluations/:id"
-        element={
-          <RequireEmployerAuth>
-            <EvaluationView />
-          </RequireEmployerAuth>
-        }
-      />
-    </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App;
