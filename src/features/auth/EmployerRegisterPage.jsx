@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "./AuthProvider";
+import { useEmployerAuth } from "../auth/employer/useEmployerAuth";
 
 import { EmployerRegisterForm } from "./components/EmployerRegisterForm";
 
@@ -9,7 +9,7 @@ import PageHeader from "/src/components/ui/PageHeader.jsx";
 import Button from "/src/components/ui/Button.jsx";
 
 export default function EmployerRegisterPage() {
-  const { login } = useAuth();
+  const { login } = useEmployerAuth();
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
@@ -29,7 +29,7 @@ export default function EmployerRegisterPage() {
         ...data,
       });
 
-      navigate("/");
+      navigate("/employer");
     } catch (err) {
       console.error(err);
       setError("There was an error creating your account. Please try again.");
@@ -75,3 +75,4 @@ export default function EmployerRegisterPage() {
     </div>
   );
 }
+
