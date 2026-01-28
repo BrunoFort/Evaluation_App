@@ -1,18 +1,19 @@
 // src/Pages/EmployeeSelfService.jsx
 import React, { useMemo, useState } from "react";
-import { useAuth } from "../features/auth/AuthProvider";
+import { useEmployeeAuth } from "../features/auth/employee/useEmployeeAuth";
 import { useEvaluations } from "../features/evaluations/hooks/useEvaluations";
 import { generateReferenceToken } from "../utils/generateReferenceToken";
 import { saveReferenceToken } from "../features/reference/referenceTokensStore";
 
 export default function EmployeeSelfService() {
-  const { user } = useAuth();
+  const { employee } = useEmployeeAuth();
   const { evaluations, loading } = useEvaluations();
 
   const [interviewerEmail, setInterviewerEmail] = useState("");
   const [lastLink, setLastLink] = useState("");
 
-  if (!user || user.role !== "employee") {
+  // Proteção de rota
+  if (!employee || employee.role !== "employee") {
     return (
       <div className="p-6">
         <p>You must be logged in as an employee to access this page.</p>
@@ -28,8 +29,9 @@ export default function EmployeeSelfService() {
     );
   }
 
+  // Ajuste importante: employee.id (não employeeId)
   const employeeEvaluations = evaluations.filter(
-    (ev) => ev.employeeId === user.employeeId
+    (ev) => ev.employeeId === employee.id
   );
 
   const { avgScore, avgStars } = useMemo(() => {
@@ -59,10 +61,10 @@ export default function EmployeeSelfService() {
     const token = generateReferenceToken();
     const origin =
       typeof window !== "undefined" ? window.location.origin : "";
-    const link = `${origin}/reference/${user.employeeId}/${token}`;
+    const link = `${origin}/reference/${employee.id}/${token}`;
 
     // Registra o token vinculado ao employee (simulado)
-    saveReferenceToken(token, user.employeeId);
+    saveReferenceToken(token, employee.id);
 
     // Em produção: chamar backend para enviar e-mail
     console.log("Send reference link to:", interviewerEmail);
@@ -77,8 +79,8 @@ export default function EmployeeSelfService() {
     <div className="max-w-3xl mx-auto p-6 space-y-8">
       {/* Header do employee */}
       <section className="border-b pb-4">
-        <h1 className="text-3xl font-bold">{user.fullName}</h1>
-        <p className="text-gray-600">{user.email}</p>
+        <h1 className="text-3xl font-bold">{employee.fullName}</h1>
+        <p className="text-gray-600">{employee.email}</p>
         <p className="text-sm text-gray-500 mt-2">
           This is your personal profile. You can see a consolidated view of
           your evaluations and share a reference link with future employers.
