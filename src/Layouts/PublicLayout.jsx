@@ -8,15 +8,26 @@ export default function PublicLayout({ children }) {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="text-xl font-bold text-blue-700 tracking-tight">
+
+          <Link
+            to="/"
+            className="text-xl font-bold text-blue-700 tracking-tight hover:text-blue-800 transition"
+          >
             ProRef
           </Link>
 
           <nav className="flex gap-6 text-sm font-medium text-slate-600">
-            <Link to="/employee/login" className="hover:text-blue-600">
+            <Link
+              to="/employee/login"
+              className="hover:text-blue-600 transition"
+            >
               Employee Login
             </Link>
-            <Link to="/employer/login" className="hover:text-blue-600">
+
+            <Link
+              to="/employer/login"
+              className="hover:text-blue-600 transition"
+            >
               Employer Login
             </Link>
           </nav>
