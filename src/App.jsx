@@ -30,58 +30,69 @@ import EmployeeDashboardPage from "./features/employee-dashboard/EmployeeDashboa
 
 export default function App() {
   return (
-    <>
-      {/* EMPLOYER PROVIDER */}
-      <EmployerAuthProvider>
-        <Routes>
-          {/* PUBLIC */}
-          <Route path="/employer/login" element={<EmployerLoginPage />} />
-          <Route path="/employer/signup" element={<EmployerRegisterPage />} />
-          <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
-          <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
+    <Routes>
 
-          {/* PROTECTED */}
-          <Route
-            path="/employer"
-            element={
-              <RequireEmployerAuth>
-                <EmployerDashboardPage />
-              </RequireEmployerAuth>
-            }
-          />
+      {/* EMPLOYER ROUTES */}
+      <Route
+        element={
+          <EmployerAuthProvider>
+            <></>
+          </EmployerAuthProvider>
+        }
+      >
+        {/* PUBLIC */}
+        <Route path="/employer/login" element={<EmployerLoginPage />} />
+        <Route path="/employer/signup" element={<EmployerRegisterPage />} />
+        <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
+        <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
-          <Route
-            path="/employer/analytics"
-            element={
-              <RequireEmployerAuth>
-                <EmployerAnalyticsPage />
-              </RequireEmployerAuth>
-            }
-          />
-        </Routes>
-      </EmployerAuthProvider>
+        {/* PROTECTED */}
+        <Route
+          path="/employer"
+          element={
+            <RequireEmployerAuth>
+              <EmployerDashboardPage />
+            </RequireEmployerAuth>
+          }
+        />
 
-      {/* EMPLOYEE PROVIDER */}
-      <EmployeeAuthProvider>
-        <Routes>
-          {/* PUBLIC */}
-          <Route path="/employee/login" element={<EmployeeLoginPage />} />
-          <Route path="/employee/signup" element={<EmployeeRegisterPage />} />
-          <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
-          <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
-          <Route path="/employee/complete-registration" element={<EmployeeCompleteRegistrationPage />} />
+        <Route
+          path="/employer/analytics"
+          element={
+            <RequireEmployerAuth>
+              <EmployerAnalyticsPage />
+            </RequireEmployerAuth>
+          }
+        />
+      </Route>
 
-          {/* PROTECTED */}
-          <Route
-            path="/employee"
-            element={
-              <RequireEmployeeAuth>
-                <EmployeeDashboardPage />
-              </RequireEmployeeAuth>
-            }
-          />
-        </Routes>
-      </EmployeeAuthProvider>
-    </>
+      {/* EMPLOYEE ROUTES */}
+      <Route
+        element={
+          <EmployeeAuthProvider>
+            <></>
+          </EmployeeAuthProvider>
+        }
+      >
+        {/* PUBLIC */}
+        <Route path="/employee/login" element={<EmployeeLoginPage />} />
+        <Route path="/employee/signup" element={<EmployeeRegisterPage />} />
+        <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
+        <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
+        <Route path="/employee/complete-registration" element={<EmployeeCompleteRegistrationPage />} />
+
+        {/* PROTECTED */}
+        <Route
+          path="/employee"
+          element={
+            <RequireEmployeeAuth>
+              <EmployeeDashboardPage />
+            </RequireEmployeeAuth>
+          }
+        />
+      </Route>
+
+    </Routes>
   );
 }
+
