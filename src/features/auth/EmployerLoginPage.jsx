@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "./AuthProvider";
+import { useEmployerAuth } from "../auth/employer/useEmployerAuth";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -8,7 +8,7 @@ import Button from "/src/components/ui/Button.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 
 export default function EmployerLoginPage() {
-  const { login } = useAuth();
+  const { login } = useEmployerAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -37,7 +37,7 @@ export default function EmployerLoginPage() {
         employerId: 1,
       });
 
-      navigate("/");
+      navigate("/employer");
     }, 600);
   }
 
