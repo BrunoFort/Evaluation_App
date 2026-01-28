@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import Button from "/src/components/ui/Button.jsx";
 
 export default function EmployeeLayout({ children }) {
   function handleLogout() {
@@ -14,17 +15,15 @@ export default function EmployeeLayout({ children }) {
       <header className="w-full max-w-3xl flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-blue-700">Employee Panel</h1>
 
-        import Button from "../components/ui/button.jsx";
-
-      <Button variant="danger" onClick={handleLogout}>
-      Logout
-      </Button>
-
+        <Button variant="danger" onClick={handleLogout}>
+          Logout
+        </Button>
       </header>
 
       {/* Mini Menu */}
       <nav className="w-full max-w-3xl mb-8">
         <ul className="flex gap-6 text-sm font-medium text-slate-600">
+
           <li>
             <NavLink
               to="/employee"
@@ -53,7 +52,7 @@ export default function EmployeeLayout({ children }) {
 
           <li>
             <NavLink
-              to="/employee/profile/edit"
+              to="/employee/profile"
               className={({ isActive }) =>
                 isActive
                   ? "text-blue-600 font-semibold"
@@ -63,11 +62,14 @@ export default function EmployeeLayout({ children }) {
               My Profile
             </NavLink>
           </li>
+
         </ul>
       </nav>
 
       {/* Main content */}
-      <main className="w-full max-w-3xl">{children}</main>
+      <main className="w-full max-w-3xl">
+        {children}
+      </main>
 
       {/* Footer */}
       <footer className="mt-10 text-xs text-slate-400">
@@ -76,3 +78,4 @@ export default function EmployeeLayout({ children }) {
     </div>
   );
 }
+
