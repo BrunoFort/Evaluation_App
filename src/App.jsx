@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
@@ -30,19 +30,17 @@ import EmployeeDashboardPage from "./features/employee-dashboard/EmployeeDashboa
 
 export default function App() {
   return (
-    <BrowserRouter>
-
+    <>
       {/* EMPLOYER PROVIDER */}
       <EmployerAuthProvider>
         <Routes>
-
-          {/* EMPLOYER PUBLIC ROUTES */}
+          {/* PUBLIC */}
           <Route path="/employer/login" element={<EmployerLoginPage />} />
           <Route path="/employer/signup" element={<EmployerRegisterPage />} />
           <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
           <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
-          {/* EMPLOYER PROTECTED ROUTES */}
+          {/* PROTECTED */}
           <Route
             path="/employer"
             element={
@@ -60,22 +58,20 @@ export default function App() {
               </RequireEmployerAuth>
             }
           />
-
         </Routes>
       </EmployerAuthProvider>
 
       {/* EMPLOYEE PROVIDER */}
       <EmployeeAuthProvider>
         <Routes>
-
-          {/* EMPLOYEE PUBLIC ROUTES */}
+          {/* PUBLIC */}
           <Route path="/employee/login" element={<EmployeeLoginPage />} />
           <Route path="/employee/signup" element={<EmployeeRegisterPage />} />
           <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
           <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
           <Route path="/employee/complete-registration" element={<EmployeeCompleteRegistrationPage />} />
 
-          {/* EMPLOYEE PROTECTED ROUTES */}
+          {/* PROTECTED */}
           <Route
             path="/employee"
             element={
@@ -84,10 +80,8 @@ export default function App() {
               </RequireEmployeeAuth>
             }
           />
-
         </Routes>
       </EmployeeAuthProvider>
-
-    </BrowserRouter>
+    </>
   );
 }
