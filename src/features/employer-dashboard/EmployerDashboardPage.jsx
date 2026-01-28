@@ -1,11 +1,10 @@
 import React from "react";
-import CompanyLayout from "../layouts/CompanyLayout";
+import CompanyLayout from "../../Layouts/CompanyLayout";
 import Card from "/src/components/ui/card.jsx";
 import Button from "/src/components/ui/Button.jsx";
-import { createPageUrl } from "../utils";
 import { Users, FileText, UserPlus, LogOut } from "lucide-react";
 
-export default function CompanyDashboard() {
+export default function EmployerDashboardPage() {
   return (
     <CompanyLayout>
       <h1 className="text-4xl font-bold text-slate-900 mb-10">
@@ -14,7 +13,7 @@ export default function CompanyDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
-          <CardContent className="p-6 flex flex-col items-center text-center">
+          <div className="p-6 flex flex-col items-center text-center">
             <Users className="h-12 w-12 text-blue-600 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 mb-2">
               Manage Employees
@@ -24,15 +23,15 @@ export default function CompanyDashboard() {
             </p>
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => (window.location.href = createPageUrl("ViewEmployee"))}
+              onClick={() => (window.location.href = "/employer/employees")}
             >
               Open
             </Button>
-          </CardContent>
+          </div>
         </Card>
 
         <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
-          <CardContent className="p-6 flex flex-col items-center text-center">
+          <div className="p-6 flex flex-col items-center text-center">
             <FileText className="h-12 w-12 text-blue-600 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 mb-2">
               Create Evaluation
@@ -42,15 +41,15 @@ export default function CompanyDashboard() {
             </p>
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => (window.location.href = createPageUrl("CreateEvaluation"))}
+              onClick={() => (window.location.href = "/employer/evaluations/create")}
             >
               Start
             </Button>
-          </CardContent>
+          </div>
         </Card>
 
         <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
-          <CardContent className="p-6 flex flex-col items-center text-center">
+          <div className="p-6 flex flex-col items-center text-center">
             <UserPlus className="h-12 w-12 text-blue-600 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 mb-2">
               Add Employee
@@ -60,15 +59,15 @@ export default function CompanyDashboard() {
             </p>
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => (window.location.href = createPageUrl("AddEmployee"))}
+              onClick={() => (window.location.href = "/employer/employees/add")}
             >
               Add
             </Button>
-          </CardContent>
+          </div>
         </Card>
 
         <Card className="shadow-lg border-2 border-blue-100 bg-white/80 backdrop-blur">
-          <CardContent className="p-6 flex flex-col items-center text-center">
+          <div className="p-6 flex flex-col items-center text-center">
             <LogOut className="h-12 w-12 text-red-500 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 mb-2">
               Logout
@@ -79,13 +78,14 @@ export default function CompanyDashboard() {
             <Button
               variant="outline"
               className="w-full border-red-300 text-red-600 hover:bg-red-50"
-              onClick={() => (window.location.href = createPageUrl("CompanyLogin"))}
+              onClick={() => (window.location.href = "/employer/login")}
             >
               Logout
             </Button>
-          </CardContent>
+          </div>
         </Card>
       </div>
     </CompanyLayout>
   );
 }
+
