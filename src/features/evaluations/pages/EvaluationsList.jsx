@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Card from "../../../components/ui/Card.jsx";
-import Button from "../../../components/ui/Button.jsx";
-import PageHeader from "../../../components/ui/PageHeader.jsx";
-import StatusPill from "../../../components/ui/StatusPill.jsx";
+import Card from "/src/components/ui/card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function EvaluationsList() {
   const [evaluations, setEvaluations] = useState([]);
@@ -30,13 +30,13 @@ export default function EvaluationsList() {
         }
       />
 
-      <Card>
+      <Card className="p-0">
         <div className="divide-y divide-slate-200">
           {evaluations.map((ev) => (
             <Link
               key={ev.id}
               to={`/evaluations/${ev.id}`}
-              className="flex items-center justify-between py-4 hover:bg-slate-50 px-2 rounded-lg transition"
+              className="flex items-center justify-between py-4 px-4 hover:bg-slate-50 transition"
             >
               <div>
                 <p className="font-medium text-slate-900">{ev.title}</p>
@@ -50,6 +50,12 @@ export default function EvaluationsList() {
               <StatusPill status={ev.status || "pending"} />
             </Link>
           ))}
+
+          {evaluations.length === 0 && (
+            <p className="text-center text-slate-500 py-6">
+              No evaluations found.
+            </p>
+          )}
         </div>
       </Card>
     </div>
