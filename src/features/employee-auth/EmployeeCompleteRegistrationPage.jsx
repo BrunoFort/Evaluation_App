@@ -1,32 +1,39 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthProvider";
+import { useEmployeeAuth } from "../auth/employee/useEmployeeAuth";
 import { EmployeeCompleteRegistrationForm } from "./components/EmployeeCompleteRegistrationForm";
 
 export default function EmployeeCompleteRegistrationPage() {
   const { token } = useParams();
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useEmployeeAuth();
 
   function handleComplete(data) {
-    // Aqui você salvaria no backend
+    // Aqui você faria a validação do token e salvaria no backend
     // Por enquanto, simulamos login automático
 
     login({
+      id: data.id,
+      name: data.name,
+      email: data.email,
       role: "employee",
-      ...data,
     });
 
-    navigate("/me");
+    navigate("/employee");
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Complete Your Registration</h1>
-      <p className="text-gray-600 mb-6">
-        Please complete your profile to activate your account.
-      </p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+      <div className="w-full max-w-lg space-y-8">
+        <h1 className="text-3xl font-bold text-center text-slate-900">
+          Complete Your Registration
+        </h1>
 
-      <EmployeeCompleteRegistrationForm onSubmit={handleComplete} />
+        <p className="text-center text-slate-600">
+          Set your password and finish creating your employee account.
+        </p>
+
+        <EmployeeCompleteRegistrationForm onSubmit={handleComplete} />
+      </div>
     </div>
   );
 }
