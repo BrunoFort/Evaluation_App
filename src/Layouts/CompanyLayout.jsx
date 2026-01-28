@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../features/auth/useAuth";
 
+import Button from "/src/components/ui/Button.jsx";
+
 export default function CompanyLayout({ children }) {
   const { logout } = useAuth();
 
@@ -15,12 +17,9 @@ export default function CompanyLayout({ children }) {
             Employer Panel
           </h1>
 
-          import Button from "../components/ui/button.jsx";
-
           <Button variant="danger" onClick={logout}>
-          Logout
+            Logout
           </Button>
-
         </div>
       </header>
 
@@ -31,7 +30,9 @@ export default function CompanyLayout({ children }) {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
             }
           >
             Dashboard
@@ -40,7 +41,9 @@ export default function CompanyLayout({ children }) {
           <NavLink
             to="/company"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
             }
           >
             Company
@@ -49,7 +52,9 @@ export default function CompanyLayout({ children }) {
           <NavLink
             to="/employees"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
             }
           >
             Employees
@@ -58,7 +63,9 @@ export default function CompanyLayout({ children }) {
           <NavLink
             to="/evaluations"
             className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-600"
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
             }
           >
             Evaluations
@@ -78,4 +85,3 @@ export default function CompanyLayout({ children }) {
     </div>
   );
 }
-
