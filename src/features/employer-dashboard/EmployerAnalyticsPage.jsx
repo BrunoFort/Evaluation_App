@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import CompanyLayout from "../Layouts/CompanyLayout";
+import CompanyLayout from "../../Layouts/CompanyLayout";
 
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import Card from "/src/components/ui/card.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
 
-export default function DashboardAnalytics() {
+export default function EmployerAnalyticsPage() {
   const [stats, setStats] = useState({
     employees: 0,
     evaluations: 0,
@@ -39,18 +39,16 @@ export default function DashboardAnalytics() {
       <div className="max-w-5xl mx-auto space-y-10">
 
         <PageHeader
-          title="Dashboard"
+          title="Dashboard Analytics"
           subtitle="Overview of your company activity"
         />
 
-        {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <StatCard label="Employees" value={stats.employees} />
           <StatCard label="Evaluations" value={stats.evaluations} />
           <StatCard label="Pending Evaluations" value={stats.pendingEvaluations} />
         </div>
 
-        {/* Activity Section */}
         <SectionCard title="Activity">
           <p className="text-slate-600 text-sm">
             Here you’ll soon see recent evaluations, trends and key metrics.
