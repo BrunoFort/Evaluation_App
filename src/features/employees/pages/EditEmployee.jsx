@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Card from "../../../components/ui/Card.jsx";
-import Input from "../../../components/ui/Input.jsx";
-import Button from "../../../components/ui/Button.jsx";
-import PageHeader from "../../../components/ui/PageHeader.jsx";
-import SectionCard from "../../../components/ui/SectionCard.jsx";
+import Card from "/src/components/ui/card.jsx";
+import Input from "/src/components/ui/input.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
 
 export default function EditEmployee() {
   const { id } = useParams();
@@ -37,11 +37,16 @@ export default function EditEmployee() {
   }
 
   if (!employee) {
-    return <p className="text-slate-500">Loading...</p>;
+    return (
+      <div className="max-w-3xl mx-auto py-10">
+        <p className="text-slate-500">Loading employee...</p>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">
+
       <PageHeader
         title="Edit Employee"
         subtitle="Update employee information"
@@ -55,27 +60,41 @@ export default function EditEmployee() {
         }
       />
 
-      <Card>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <SectionCard title="Basic Information">
-            <Input
-              label="Name"
-              value={employee.name}
-              onChange={(e) =>
-                setEmployee({ ...employee, name: e.target.value })
-              }
-            />
+      <Card className="p-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
 
-            <Input
-              label="Email"
-              value={employee.email}
-              onChange={(e) =>
-                setEmployee({ ...employee, email: e.target.value })
-              }
-            />
+          <SectionCard title="Basic Information">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Name
+                </label>
+                <Input
+                  value={employee.name}
+                  onChange={(e) =>
+                    setEmployee({ ...employee, name: e.target.value })
+                  }
+                  placeholder="Employee full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  value={employee.email}
+                  onChange={(e) =>
+                    setEmployee({ ...employee, email: e.target.value })
+                  }
+                  placeholder="email@example.com"
+                />
+              </div>
+            </div>
           </SectionCard>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4">
             <Button
               variant="outline"
               type="button"
