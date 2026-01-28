@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Card from "../../../components/ui/Card.jsx";
-import Button from "../../../components/ui/Button.jsx";
-import PageHeader from "../../../components/ui/PageHeader.jsx";
-import StatusPill from "../../../components/ui/StatusPill.jsx";
+import Card from "/src/components/ui/card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function EmployeesList() {
   const [employees, setEmployees] = useState([]);
@@ -30,13 +30,13 @@ export default function EmployeesList() {
         }
       />
 
-      <Card>
+      <Card className="p-0">
         <div className="divide-y divide-slate-200">
           {employees.map((emp) => (
             <Link
               key={emp.id}
               to={`/employees/${emp.id}`}
-              className="flex items-center justify-between py-4 hover:bg-slate-50 px-2 rounded-lg transition"
+              className="flex items-center justify-between py-4 px-4 hover:bg-slate-50 transition"
             >
               <div>
                 <p className="font-medium text-slate-900">{emp.name}</p>
@@ -46,6 +46,12 @@ export default function EmployeesList() {
               <StatusPill status={emp.status || "active"} />
             </Link>
           ))}
+
+          {employees.length === 0 && (
+            <p className="text-center text-slate-500 py-6">
+              No employees found.
+            </p>
+          )}
         </div>
       </Card>
     </div>
