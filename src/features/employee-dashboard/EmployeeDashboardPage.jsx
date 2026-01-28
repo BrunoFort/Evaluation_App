@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import EmployeeLayout from "../Layouts/EmployeeLayout";
+import EmployeeLayout from "../../Layouts/EmployeeLayout";
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
 
-export default function EmployeeDashboard() {
+export default function EmployeeDashboardPage() {
   const [employee, setEmployee] = useState(null);
   const [evaluations, setEvaluations] = useState([]);
 
@@ -40,7 +40,6 @@ export default function EmployeeDashboard() {
           subtitle="Here is an overview of your evaluations"
         />
 
-        {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <Card className="text-center py-6">
             <p className="text-sm text-slate-500">Total Evaluations</p>
@@ -64,7 +63,6 @@ export default function EmployeeDashboard() {
           </Card>
         </div>
 
-        {/* Profile Card */}
         <Card className="flex items-center gap-6">
           {employee.photoUrl ? (
             <img
@@ -93,7 +91,6 @@ export default function EmployeeDashboard() {
           </div>
         </Card>
 
-        {/* Evaluations List */}
         <SectionCard title="Your Evaluations">
           {evaluations.length === 0 ? (
             <p className="text-slate-500">No evaluations yet.</p>
@@ -127,3 +124,4 @@ export default function EmployeeDashboard() {
     </EmployeeLayout>
   );
 }
+
