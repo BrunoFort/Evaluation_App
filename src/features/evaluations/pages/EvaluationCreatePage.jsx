@@ -1,9 +1,16 @@
-// src/features/evaluations/pages/EvaluationCreatePage.jsx
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import EmployerLayout from "@/Layouts/EmployerLayout";
+
+import CompanyLayout from "../../../Layouts/CompanyLayout";
 import { useAuth } from "../../auth/useAuth";
 import { generatePublicToken } from "../../../utils/generatePublicToken";
+
+import Card from "/src/components/ui/card.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
+import Input from "/src/components/ui/input.jsx";
+import Button from "/src/components/ui/Button.jsx";
+
 import { ClipboardCheck } from "lucide-react";
 
 export default function EvaluationCreatePage() {
@@ -59,73 +66,85 @@ export default function EvaluationCreatePage() {
   }
 
   return (
-    <EmployerLayout>
-      <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-xl shadow-sm p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <ClipboardCheck className="w-7 h-7 text-blue-600" />
-          <h1 className="text-2xl font-bold text-slate-900">
-            Create Evaluation
-          </h1>
-        </div>
+    <CompanyLayout>
+      <div className="max-w-xl mx-auto space-y-10">
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Employee ID */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Employee ID
-            </label>
-            <input
-              type="number"
-              name="employeeId"
-              value={formData.employeeId}
-              onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        <PageHeader
+          title="Create Evaluation"
+          subtitle="Start a new evaluation for an employee"
+          right={
+            <Button variant="outline" onClick={() => navigate("/evaluations")}>
+              Cancel
+            </Button>
+          }
+        />
 
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+        <Card className="p-8 space-y-8">
 
-          {/* Score */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Score (0–5)
-            </label>
-            <input
-              type="number"
-              name="score"
-              value={formData.score}
-              onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              min="0"
-              max="5"
-              step="0.1"
-            />
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          <SectionCard
+            title={
+              <div className="flex items-center gap-2">
+                <ClipboardCheck className="w-5 h-5 text-blue-600" />
+                Evaluation Details
+              </div>
+            }
           >
-            {saving ? "Saving..." : "Create Evaluation"}
-          </button>
-        </form>
-      </div>
-    </EmployerLayout>
-  );
-}
+            <div className="space-y-4">
+
+              {/* Employee ID */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Employee ID
+                </label>
+                <Input
+                  type="number"
+                  name="employeeId"
+                  value={formData.employeeId}
+                  onChange={handleChange}
+                  placeholder="Enter employee ID"
+                  required
+                />
+              </div>
+
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Title
+                </label>
+                <Input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="Evaluation title"
+                  required
+                />
+              </div>
+
+              {/* Score */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Score (0–5)
+                </label>
+                <Input
+                  type="number"
+                  name="score"
+                  value={formData.score}
+                  onChange={handleChange}
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  placeholder="Optional score"
+                />
+              </div>
+
+            </div>
+          </SectionCard>
+
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={saving}
+            className="w-full py-3"
+          >
+            {saving ? "Saving..." : "Create Evaluation
