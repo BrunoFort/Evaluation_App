@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+
 import CompanyLayout from "../../../Layouts/CompanyLayout";
+import Card from "/src/components/ui/card.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function EvaluationView() {
   const { id } = useParams();
@@ -35,26 +40,17 @@ export default function EvaluationView() {
 
   return (
     <CompanyLayout>
-      <div className="space-y-10">
+      <div className="max-w-3xl mx-auto space-y-10">
 
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              {evaluation.title}
-            </h1>
-            <p className="text-slate-500 text-sm">
-              Created on{" "}
-              {new Date(evaluation.createdAt).toLocaleDateString()}
-            </p>
-          </div>
-
-          <StatusPill status={evaluation.status} />
-        </div>
+        <PageHeader
+          title={evaluation.title}
+          subtitle={`Created on ${new Date(evaluation.createdAt).toLocaleDateString()}`}
+          right={<StatusPill status={evaluation.status} />}
+        />
 
         {/* Employee Info */}
         {employee && (
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-6">
+          <Card className="flex items-center gap-6 p-6">
             {employee.photoUrl ? (
               <img
                 src={employee.photoUrl}
@@ -80,26 +76,22 @@ export default function EvaluationView() {
                 View Employee →
               </Link>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Evaluation Content */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Evaluation Details
-          </h2>
-
-          <div className="space-y-4 text-slate-700">
-            {evaluation.description ? (
-              <p className="whitespace-pre-line">{evaluation.description}</p>
-            ) : (
-              <p className="text-slate-500">No description provided.</p>
-            )}
-          </div>
-        </div>
+        <SectionCard title="Evaluation Details">
+          {evaluation.description ? (
+            <p className="text-slate-700 whitespace-pre-line">
+              {evaluation.description}
+            </p>
+          ) : (
+            <p className="text-slate-500">No description provided.</p>
+          )}
+        </SectionCard>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end">
           <Link
             to="/evaluations"
             className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -109,33 +101,6 @@ export default function EvaluationView() {
         </div>
       </div>
     </CompanyLayout>
-  );
-}
-
-function StatusPill({ status }) {
-  const base =
-    "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
-
-  if (status === "completed") {
-    return (
-      <span className={`${base} bg-emerald-50 text-emerald-700`}>
-        Completed
-      </span>
-    );
-  }
-
-  if (status === "pending") {
-    return (
-      <span className={`${base} bg-amber-50 text-amber-700`}>
-        Pending
-      </span>
-    );
-  }
-
-  return (
-    <span className={`${base} bg-slate-50 text-slate-600`}>
-      {status || "Unknown"}
-    </span>
   );
 }
 
