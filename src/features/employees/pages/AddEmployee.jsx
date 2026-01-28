@@ -1,7 +1,12 @@
-// src/features/employees/pages/AddEmployee.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+
 import CompanyLayout from "../../../Layouts/CompanyLayout";
+import Card from "/src/components/ui/card.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import Input from "/src/components/ui/input.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
 
 export default function AddEmployee() {
   const navigate = useNavigate();
@@ -51,98 +56,109 @@ export default function AddEmployee() {
 
   return (
     <CompanyLayout>
-      <div className="max-w-xl">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">Add Employee</h1>
+      <div className="max-w-2xl mx-auto space-y-10">
 
-          <Link
-            to="/employees"
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            Back to list
-          </Link>
-        </div>
-
-        {error && (
-          <div className="mb-4 rounded-md bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Name
-            </label>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Employee full name"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="email@example.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Role
-            </label>
-            <input
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Job title"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Department
-            </label>
-            <input
-              name="department"
-              value={form.department}
-              onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-              placeholder="Department name"
-            />
-          </div>
-
-          <div className="pt-2 flex justify-end gap-3">
+        <PageHeader
+          title="Add Employee"
+          subtitle="Register a new team member"
+          right={
             <Link
               to="/employees"
-              className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="text-sm text-blue-600 hover:text-blue-800"
             >
-              Cancel
+              Back to list
             </Link>
+          }
+        />
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save Employee"}
-            </button>
-          </div>
-        </form>
+        {error && (
+          <Card className="border-red-200 bg-red-50 text-red-700 p-4">
+            {error}
+          </Card>
+        )}
+
+        <Card className="p-8">
+          <form onSubmit={handleSubmit} className="space-y-8">
+
+            <SectionCard title="Basic Information">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Name
+                  </label>
+                  <Input
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Employee full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Email
+                  </label>
+                  <Input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="email@example.com"
+                  />
+                </div>
+              </div>
+            </SectionCard>
+
+            <SectionCard title="Job Details">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Role
+                  </label>
+                  <Input
+                    name="role"
+                    value={form.role}
+                    onChange={handleChange}
+                    placeholder="Job title"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Department
+                  </label>
+                  <Input
+                    name="department"
+                    value={form.department}
+                    onChange={handleChange}
+                    placeholder="Department name"
+                  />
+                </div>
+              </div>
+            </SectionCard>
+
+            <div className="pt-4 flex justify-end gap-3">
+              <Link
+                to="/employees"
+                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                Cancel
+              </Link>
+
+              <Button
+                type="submit"
+                disabled={saving}
+                className="px-6 py-3"
+              >
+                {saving ? "Saving..." : "Save Employee"}
+              </Button>
+            </div>
+          </form>
+        </Card>
       </div>
     </CompanyLayout>
   );
 }
+
