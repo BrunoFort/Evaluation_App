@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import PublicLayout from "../../../Layouts/PublicLayout";
+import Card from "/src/components/ui/card.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function PublicEvaluationView() {
   const { token } = useParams();
@@ -9,13 +13,17 @@ export default function PublicEvaluationView() {
 
   useEffect(() => {
     async function loadData() {
-      const evRes = await fetch(`http://localhost:4000/evaluations?token=${token}`);
+      const evRes = await fetch(
+        `http://localhost:4000/evaluations?token=${token}`
+      );
       const evList = await evRes.json();
       const ev = evList[0];
       setEvaluation(ev);
 
       if (ev?.employeeId) {
-        const empRes = await fetch(`http://localhost:4000/employees/${ev.employeeId}`);
+        const empRes = await fetch(
+          `http://localhost:4000/employees/${ev.employeeId}`
+        );
         const emp = await empRes.json();
         setEmployee(emp);
       }
@@ -37,26 +45,24 @@ export default function PublicEvaluationView() {
       <div className="space-y-10 max-w-3xl mx-auto">
 
         {/* Header */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <Card className="p-6 space-y-4">
           <h1 className="text-2xl font-bold text-slate-900">
             {evaluation.title}
           </h1>
 
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 text-sm">
             Created on{" "}
             {evaluation.createdAt
               ? new Date(evaluation.createdAt).toLocaleDateString()
               : "Unknown date"}
           </p>
 
-          <div className="mt-4">
-            <StatusPill status={evaluation.status} />
-          </div>
-        </div>
+          <StatusPill status={evaluation.status} />
+        </Card>
 
         {/* Employee Info */}
         {employee && (
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex items-center gap-6">
+          <Card className="flex items-center gap-6 p-6">
             {employee.photoUrl ? (
               <img
                 src={employee.photoUrl}
@@ -75,48 +81,17 @@ export default function PublicEvaluationView() {
               </h2>
               <p className="text-slate-600">{employee.email}</p>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Evaluation Content */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Evaluation Details
-          </h2>
-
+        <SectionCard title="Evaluation Details">
           <p className="text-slate-700 whitespace-pre-line">
             {evaluation.description || "No description provided."}
           </p>
-        </div>
+        </SectionCard>
       </div>
     </PublicLayout>
-  );
-}
-
-function StatusPill({ status }) {
-  const base =
-    "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
-
-  if (status === "completed") {
-    return (
-      <span className={`${base} bg-emerald-50 text-emerald-700`}>
-        Completed
-      </span>
-    );
-  }
-
-  if (status === "pending") {
-    return (
-      <span className={`${base} bg-amber-50 text-amber-700`}>
-        Pending
-      </span>
-    );
-  }
-
-  return (
-    <span className={`${base} bg-slate-50 text-slate-600`}>
-      {status || "Unknown"}
-    </span>
   );
 }
 
