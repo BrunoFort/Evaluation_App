@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
@@ -36,7 +36,7 @@ export default function App() {
       <Route
         element={
           <EmployerAuthProvider>
-            <></>
+            <Outlet />
           </EmployerAuthProvider>
         }
       >
@@ -70,7 +70,7 @@ export default function App() {
       <Route
         element={
           <EmployeeAuthProvider>
-            <></>
+            <Outlet />
           </EmployeeAuthProvider>
         }
       >
