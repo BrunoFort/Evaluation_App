@@ -3,6 +3,9 @@ import { Routes, Route, Outlet } from "react-router-dom";
 // HOME
 import Home from "./Pages/Home";
 
+// PUBLIC
+import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
+
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
 import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAuth";
@@ -37,6 +40,9 @@ export default function App() {
 
       {/* PUBLIC HOME */}
       <Route path="/" element={<Home />} />
+
+      {/* PUBLIC EVALUATION PAGE */}
+      <Route path="/reference/public" element={<PublicEvaluation />} />
 
       {/* EMPLOYER ROUTES */}
       <Route
