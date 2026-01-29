@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from "/src/components/ui/Button.jsx";
-import { Input } from "../components/ui/input";
+import Input from "/src/components/ui/input.jsx";
 import Card, { CardContent } from "/src/components/ui/card.jsx";
 import { Building2, UserCheck, ClipboardCheck, Shield, ArrowRight, Star, User, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -93,7 +93,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-indigo-600/5" />
@@ -133,8 +132,6 @@ export default function Home() {
             </p>
             
             <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-              
-              {/* Register Company */}
               <Link to="/employer/signup" className="w-full">
                 <Button size="lg" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-6 text-base rounded-xl shadow-lg hover:shadow-xl transition-all">
                   <Building2 className="w-5 h-5 mr-2" />
@@ -142,7 +139,6 @@ export default function Home() {
                 </Button>
               </Link>
 
-              {/* Company Login */}
               <Link to="/employer/login" className="w-full">
                 <Button size="lg" variant="outline" className="w-full border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-6 py-6 text-base rounded-xl">
                   <Building2 className="w-5 h-5 mr-2" />
@@ -150,17 +146,14 @@ export default function Home() {
                 </Button>
               </Link>
 
-              {/* Employee Login */}
               <Link to="/employee/login" className="w-full">
                 <Button size="lg" variant="outline" className="w-full border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-6 py-6 text-base rounded-xl">
                   <User className="w-5 h-5 mr-2" />
                   Employee Sign-In
                 </Button>
               </Link>
-
             </div>
 
-            {/* View Evaluation Section */}
             <ViewEvaluationSection />
           </motion.div>
         </div>
@@ -228,7 +221,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
@@ -245,4 +237,3 @@ export default function Home() {
     </div>
   );
 }
-
