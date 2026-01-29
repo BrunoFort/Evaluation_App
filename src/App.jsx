@@ -42,7 +42,7 @@ export default function App() {
       <Route path="/" element={<Home />} />
 
       {/* PUBLIC EVALUATION PAGE */}
-      <Route path="/reference/public" element={<PublicEvaluation />} />
+      <Route path="/reference/:token" element={<PublicEvaluation />} />
 
       {/* EMPLOYER ROUTES */}
       <Route
