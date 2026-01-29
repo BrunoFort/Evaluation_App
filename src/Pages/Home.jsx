@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from "/src/components/ui/Button.jsx";
-import { Input } from "../components/ui/input";
-import Card from "/src/components/ui/card.jsx";
+import Input from "/src/components/ui/input.jsx";
+import Card, { CardContent } from "/src/components/ui/card.jsx";
 import { Building2, UserCheck, ClipboardCheck, Shield, ArrowRight, Star, User, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-const createPageUrl = (path) => `/${path}`;
-
 
 function ViewEvaluationSection() {
   const navigate = useNavigate();
@@ -16,24 +14,21 @@ function ViewEvaluationSection() {
     e.preventDefault();
     if (!evaluationLink) return;
 
-    // Extract token from full URL or use as token directly
     let token = evaluationLink;
     try {
       if (evaluationLink.includes('token=')) {
         const url = new URL(evaluationLink);
         token = url.searchParams.get('token');
       } else if (evaluationLink.includes('/')) {
-        // If it's a path, extract the token parameter
         const params = new URLSearchParams(evaluationLink.split('?')[1]);
         token = params.get('token');
       }
     } catch (e) {
-      // If not a valid URL, assume it's just the token
       token = evaluationLink;
     }
 
     if (token) {
-      navigate(createPageUrl(`PublicEvaluation?token=${token}`));
+      navigate(`/reference/public?token=${token}`);
     }
   };
 
@@ -137,19 +132,21 @@ export default function Home() {
             </p>
             
             <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-              <Link to={createPageUrl('CompanyRegistration')} className="w-full">
+              <Link to="/employer/signup" className="w-full">
                 <Button size="lg" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-6 text-base rounded-xl shadow-lg hover:shadow-xl transition-all">
                   <Building2 className="w-5 h-5 mr-2" />
                   Register Company
                 </Button>
               </Link>
-              <Link to={createPageUrl('CompanyLogin')} className="w-full">
+
+              <Link to="/employer/login" className="w-full">
                 <Button size="lg" variant="outline" className="w-full border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-6 py-6 text-base rounded-xl">
                   <Building2 className="w-5 h-5 mr-2" />
                   Company Sign-In
                 </Button>
               </Link>
-              <Link to={createPageUrl('EmployeeLogin')} className="w-full">
+
+              <Link to="/employee/login" className="w-full">
                 <Button size="lg" variant="outline" className="w-full border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-6 py-6 text-base rounded-xl">
                   <User className="w-5 h-5 mr-2" />
                   Employee Sign-In
@@ -157,7 +154,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* View Evaluation Section */}
             <ViewEvaluationSection />
           </motion.div>
         </div>
@@ -216,7 +212,7 @@ export default function Home() {
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Register your company today and start building a verified reference database for your employees.
           </p>
-          <Link to={createPageUrl('CompanyRegistration')}>
+          <Link to="/employer/signup">
             <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-6 text-lg rounded-xl">
               Start Registration
               <ArrowRight className="ml-2 w-5 h-5" />
@@ -225,7 +221,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
