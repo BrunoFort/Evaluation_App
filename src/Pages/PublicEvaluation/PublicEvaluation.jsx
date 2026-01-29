@@ -1,11 +1,11 @@
 import React from "react";
-import CompanyLayout from "../../Layouts/CompanyLayout";
+import PublicLayout from "../../Layouts/PublicLayout";
 import Card from "/src/components/ui/card.jsx";
 import { Star } from "lucide-react";
 
 export default function PublicEvaluation() {
   return (
-    <CompanyLayout>
+    <PublicLayout>
       <Card className="shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur p-8">
         <h1 className="text-3xl font-bold text-slate-900 mb-6">
           Employee Evaluation
@@ -16,6 +16,6 @@ export default function PublicEvaluation() {
           <span className="text-xl font-bold">4.5</span>
         </div>
       </Card>
-    </CompanyLayout>
+    </PublicLayout>
   );
 }
