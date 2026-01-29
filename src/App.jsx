@@ -1,5 +1,8 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 
+// HOME
+import Home from "./Pages/Home";
+
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
 import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAuth";
@@ -31,6 +34,9 @@ import EmployeeDashboardPage from "./features/employee-dashboard/EmployeeDashboa
 export default function App() {
   return (
     <Routes>
+
+      {/* PUBLIC HOME */}
+      <Route path="/" element={<Home />} />
 
       {/* EMPLOYER ROUTES */}
       <Route
@@ -95,4 +101,3 @@ export default function App() {
     </Routes>
   );
 }
-
