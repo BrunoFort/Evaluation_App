@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEmployerAuth } from "../auth/employer/useEmployerAuth";
-import { supabase } from "/src/supabaseClient";
+import { supabase } from "../../supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -23,14 +23,13 @@ export default function EmployerLoginPage() {
     setError("");
     setLoading(true);
 
-    // 1. Validar campos
     if (!email || !password) {
       setError("Please enter your email and password.");
       setLoading(false);
       return;
     }
 
-    // 2. Login real via Supabase
+    // 🔐 Login real via Supabase
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -42,22 +41,21 @@ export default function EmployerLoginPage() {
       return;
     }
 
-    // 3. Garantir que o usuário existe
     const user = data?.user;
+
     if (!user) {
       setError("Authentication failed. Please try again.");
       setLoading(false);
       return;
     }
 
-    // 4. Registrar no seu contexto global
+    // Atualiza o contexto global do employer
     login({
       role: "employer",
       email: user.email,
-      employerId: user.id, // <- agora vem do Supabase
+      employerId: user.id, // agora vem do Supabase
     });
 
-    // 5. Redirecionar
     navigate("/employer");
   }
 
