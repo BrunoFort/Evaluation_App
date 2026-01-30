@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEmployerAuth } from "../auth/employer/useEmployerAuth";
+import { supabase } from "/src/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -17,28 +18,47 @@ export default function EmployerLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // MOCK login — substituir por backend real depois
-    setTimeout(() => {
-      if (!email || !password) {
-        setError("Please enter your email and password.");
-        setLoading(false);
-        return;
-      }
+    // 1. Validar campos
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      setLoading(false);
+      return;
+    }
 
-      login({
-        role: "employer",
-        email,
-        companyName: "Demo Company",
-        employerId: 1,
-      });
+    // 2. Login real via Supabase
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      navigate("/employer");
-    }, 600);
+    if (authError) {
+      setError(authError.message);
+      setLoading(false);
+      return;
+    }
+
+    // 3. Garantir que o usuário existe
+    const user = data?.user;
+    if (!user) {
+      setError("Authentication failed. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    // 4. Registrar no seu contexto global
+    login({
+      role: "employer",
+      email: user.email,
+      employerId: user.id, // <- agora vem do Supabase
+    });
+
+    // 5. Redirecionar
+    navigate("/employer");
   }
 
   return (
