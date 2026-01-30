@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import EmployerLayout from "@/Layouts/EmployerLayout";
-import { useAuth } from "../../auth/useAuth";
+import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
 import { Building2, Save } from "lucide-react";
 
 export default function EmployerSettings() {
-  const { employer, setEmployer } = useAuth();
+  const { employer, login } = useEmployerAuth(); // login usado para atualizar employer no contexto
+
   const [form, setForm] = useState({
     companyName: "",
     website: "",
@@ -35,14 +36,21 @@ export default function EmployerSettings() {
     setSaving(true);
 
     try {
-      const res = await fetch(`http://localhost:4000/employers/${employer.id}`, {
+      // ⚠️ Ainda usando seu backend antigo (json-server)
+      const res = await fetch(`http://localhost:4000/employers/${employer.employerId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });
 
       const updated = await res.json();
-      setEmployer(updated);
+
+      // Atualiza o contexto (temporário até migrar para Supabase)
+      login({
+        ...employer,
+        ...updated
+      });
+
       alert("Settings saved successfully.");
     } catch (err) {
       console.error(err);
