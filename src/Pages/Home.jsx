@@ -197,6 +197,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
 
+      <div className="bg-red-500 text-white p-4 text-center">
+      TESTE TAILWIND
+      </div>
+
+
       {/* Header */}
       <header className="w-full border-b border-slate-200 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
