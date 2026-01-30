@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Estilo B (STRIPE PREMIUM — Minimalista, Sofisticado)
+// Home.jsx — Versão C‑Prime (Clean, Moderna, Jovem, Profissional)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -32,7 +32,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-10">
         <Link to="/employer">
-          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base">
+          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base shadow-md hover:shadow-lg transition">
             Go to Employer Dashboard
           </Button>
         </Link>
@@ -44,7 +44,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-10">
         <Link to="/employee">
-          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base">
+          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base shadow-md hover:shadow-lg transition">
             Go to Employee Dashboard
           </Button>
         </Link>
@@ -85,8 +85,8 @@ function ViewEvaluationSection() {
   };
 
   return (
-    <section className="max-w-3xl mx-auto px-6 mt-24">
-      <Card className="p-10 border border-slate-200 shadow-sm bg-white">
+    <section className="max-w-4xl mx-auto px-6 mt-24">
+      <Card className="p-10 border border-slate-200 shadow-sm bg-white rounded-2xl">
         <h3 className="text-xl font-semibold text-slate-900 mb-2">
           View an Evaluation
         </h3>
@@ -101,7 +101,10 @@ function ViewEvaluationSection() {
             placeholder="Paste link or token..."
             className="flex-1"
           />
-          <Button disabled={!evaluationLink} className="bg-blue-600 text-white">
+          <Button
+            disabled={!evaluationLink}
+            className="bg-blue-600 text-white px-6 hover:bg-blue-700 transition"
+          >
             View
           </Button>
         </form>
@@ -112,29 +115,29 @@ function ViewEvaluationSection() {
 
 
 // ---------------------------------------------------------
-// HOME PAGE — STRIPE PREMIUM STYLE
+// HOME PAGE — C‑Prime
 // ---------------------------------------------------------
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
 
       {/* Header */}
-      <header className="w-full border-b border-slate-200 py-4 bg-white">
+      <header className="w-full border-b border-slate-200 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <span className="text-xl font-semibold text-slate-900 tracking-tight">
             ProRef
           </span>
 
           <div className="flex items-center gap-6 text-sm">
-            <Link to="/employer/login" className="text-slate-700 hover:text-slate-900">
+            <Link to="/employer/login" className="text-slate-700 hover:text-blue-600 transition">
               Employer Login
             </Link>
-            <Link to="/employee/login" className="text-slate-700 hover:text-slate-900">
+            <Link to="/employee/login" className="text-slate-700 hover:text-blue-600 transition">
               Employee Login
             </Link>
 
             <Link to="/employer/signup">
-              <Button className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm">
+              <Button className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm shadow hover:bg-blue-700 transition">
                 Register Company
               </Button>
             </Link>
@@ -145,31 +148,30 @@ export default function Home() {
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 py-32 text-center">
         <h1 className="text-6xl font-bold text-slate-900 tracking-tight mb-8 leading-tight">
-          Verified Employee References,
-          <br />
-          Built for Modern Hiring.
+          Clear, Modern Employee References  
+          <span className="block text-blue-600">Built for Today’s Hiring</span>
         </h1>
 
         <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-          A streamlined platform for creating, managing, and sharing professional
-          employee evaluations with clarity and confidence.
+          ProRef helps companies create structured, trustworthy evaluations that candidates
+          can share with confidence — and hiring teams can rely on.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/employer/signup">
-            <Button className="bg-blue-600 text-white px-10 py-4 rounded-lg text-lg">
+            <Button className="bg-blue-600 text-white px-10 py-4 rounded-xl text-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition">
               Register Company
             </Button>
           </Link>
 
           <Link to="/employer/login">
-            <Button variant="outline" className="px-10 py-4 border-slate-300 text-lg">
+            <Button variant="outline" className="px-10 py-4 border-slate-300 text-lg rounded-xl hover:border-blue-600 hover:text-blue-600 transition">
               Employer Login
             </Button>
           </Link>
 
           <Link to="/employee/login">
-            <Button variant="outline" className="px-10 py-4 border-slate-300 text-lg">
+            <Button variant="outline" className="px-10 py-4 border-slate-300 text-lg rounded-xl hover:border-blue-600 hover:text-blue-600 transition">
               Employee Login
             </Button>
           </Link>
@@ -182,55 +184,60 @@ export default function Home() {
       <ViewEvaluationSection />
 
       {/* Features */}
-      <section className="max-w-7xl mx-auto px-6 py-32">
-        <h2 className="text-4xl font-bold text-slate-900 text-center mb-20">
-          What You Can Do with ProRef
-        </h2>
+      <section className="bg-slate-50 py-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl font-bold text-slate-900 text-center mb-20">
+            What You Can Do with ProRef
+          </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-16">
-          {[
-            {
-              icon: Building2,
-              title: "Company Verification",
-              desc: "Register your organization with validated business details.",
-            },
-            {
-              icon: UserCheck,
-              title: "Employee Management",
-              desc: "Maintain structured employee profiles and work history.",
-            },
-            {
-              icon: ClipboardCheck,
-              title: "Performance Evaluations",
-              desc: "Create consistent, criteria‑based evaluations with ease.",
-            },
-            {
-              icon: Shield,
-              title: "Secure Sharing",
-              desc: "Share evaluations safely with hiring teams and recruiters.",
-            },
-          ].map((f, i) => (
-            <div key={i} className="text-center">
-              <f.icon className="w-10 h-10 text-blue-600 mx-auto mb-6" />
-              <h3 className="font-semibold text-slate-900 text-lg mb-2">{f.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed max-w-xs mx-auto">
-                {f.desc}
-              </p>
-            </div>
-          ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {[
+              {
+                icon: Building2,
+                title: "Company Verification",
+                desc: "Register your organization with validated business details.",
+              },
+              {
+                icon: UserCheck,
+                title: "Employee Management",
+                desc: "Maintain structured employee profiles and work history.",
+              },
+              {
+                icon: ClipboardCheck,
+                title: "Performance Evaluations",
+                desc: "Create consistent, criteria‑based evaluations with ease.",
+              },
+              {
+                icon: Shield,
+                title: "Secure Sharing",
+                desc: "Share evaluations safely with hiring teams and recruiters.",
+              },
+            ].map((f, i) => (
+              <Card
+                key={i}
+                className="p-8 border border-slate-200 bg-white rounded-2xl shadow-sm hover:shadow-lg transition cursor-pointer text-center"
+              >
+                <f.icon className="w-10 h-10 text-blue-600 mx-auto mb-6" />
+                <h3 className="font-semibold text-slate-900 text-lg mb-2">{f.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {f.desc}
+                </p>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-slate-900 py-24 text-center text-white">
-        <h2 className="text-4xl font-bold mb-4">
+      <section className="py-24 text-center bg-white">
+        <h2 className="text-4xl font-bold text-slate-900 mb-4">
           Start Building Trusted References
         </h2>
-        <p className="text-slate-300 mb-10 text-lg">
+        <p className="text-slate-600 mb-10 text-lg">
           Register your company and begin creating verified evaluations today.
         </p>
         <Link to="/employer/signup">
-          <Button className="bg-white text-slate-900 px-10 py-4 rounded-lg text-lg hover:bg-slate-100">
+          <Button className="bg-blue-600 text-white px-10 py-4 rounded-xl text-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition">
             Register Company
           </Button>
         </Link>
@@ -243,4 +250,3 @@ export default function Home() {
     </div>
   );
 }
-
