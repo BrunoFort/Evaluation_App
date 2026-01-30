@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Estilo NOTION / BASECAMP (Clean, Humano)
+// Home.jsx — Estilo A (DEEL / RIPPLING — Enterprise)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -11,11 +11,10 @@ import Card from "/src/components/ui/card.jsx";
 
 import {
   Building2,
-  User,
-  ExternalLink,
-  Shield,
-  ClipboardCheck,
   UserCheck,
+  ClipboardCheck,
+  Shield,
+  ExternalLink,
 } from "lucide-react";
 
 import { useEmployerAuth } from "@/features/auth/employer/useEmployerAuth";
@@ -23,20 +22,17 @@ import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
 
 
 // ---------------------------------------------------------
-// Dashboard Shortcut (safe even if provider missing)
+// Dashboard Shortcut
 // ---------------------------------------------------------
 function DashboardShortcut() {
   const employerAuth = useEmployerAuth?.();
   const employeeAuth = useEmployeeAuth?.();
 
-  const employer = employerAuth?.employer;
-  const employee = employeeAuth?.employee;
-
-  if (employer) {
+  if (employerAuth?.employer) {
     return (
-      <div className="mt-6">
+      <div className="flex justify-center mt-8">
         <Link to="/employer">
-          <Button className="bg-slate-900 text-white px-6 py-2 rounded-md text-sm">
+          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg">
             Go to Employer Dashboard
           </Button>
         </Link>
@@ -44,11 +40,11 @@ function DashboardShortcut() {
     );
   }
 
-  if (employee) {
+  if (employeeAuth?.employee) {
     return (
-      <div className="mt-6">
+      <div className="flex justify-center mt-8">
         <Link to="/employee">
-          <Button className="bg-slate-900 text-white px-6 py-2 rounded-md text-sm">
+          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg">
             Go to Employee Dashboard
           </Button>
         </Link>
@@ -89,30 +85,23 @@ function ViewEvaluationSection() {
   };
 
   return (
-    <section className="max-w-4xl mx-auto px-6 mt-16">
-      <Card className="p-6 border border-slate-200 bg-white">
-        <div className="flex items-center gap-2 mb-2">
-          <ExternalLink className="w-4 h-4 text-slate-700" />
-          <h3 className="text-sm font-semibold text-slate-900">
-            View an employee evaluation
-          </h3>
-        </div>
-
-        <p className="text-xs text-slate-600 mb-4">
-          Paste an evaluation link or token to access a candidate’s professional reference.
+    <section className="max-w-5xl mx-auto px-6 mt-24">
+      <Card className="p-10 border border-slate-200 shadow-md bg-white">
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">
+          Access an Employee Evaluation
+        </h3>
+        <p className="text-slate-600 mb-6">
+          Enter an evaluation link or token to view a candidate’s verified reference.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleSubmit} className="flex gap-3">
           <Input
             value={evaluationLink}
             onChange={(e) => setEvaluationLink(e.target.value)}
             placeholder="Paste link or token..."
-            className="flex-1 text-sm"
+            className="flex-1"
           />
-          <Button
-            disabled={!evaluationLink}
-            className="bg-slate-900 text-white px-5 py-2 text-sm rounded-md"
-          >
+          <Button disabled={!evaluationLink} className="bg-blue-600 text-white">
             View
           </Button>
         </form>
@@ -123,95 +112,66 @@ function ViewEvaluationSection() {
 
 
 // ---------------------------------------------------------
-// HOME PAGE — Notion / Basecamp
+// HOME PAGE — DEEL / RIPPLING STYLE
 // ---------------------------------------------------------
 export default function Home() {
-  const features = [
-    {
-      icon: Building2,
-      title: "Company accounts",
-      desc: "Register your organization with verified business details.",
-    },
-    {
-      icon: UserCheck,
-      title: "Employee records",
-      desc: "Maintain structured employee profiles and work history.",
-    },
-    {
-      icon: ClipboardCheck,
-      title: "Evaluations",
-      desc: "Create consistent, criteria‑based performance assessments.",
-    },
-    {
-      icon: Shield,
-      title: "Secure sharing",
-      desc: "Share references safely with hiring teams.",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
 
       {/* Header */}
-      <header className="w-full border-b border-slate-200 bg-white">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-slate-900" />
-            <span className="text-sm font-semibold text-slate-900 tracking-tight">
-              ProRef
-            </span>
-          </div>
+      <header className="w-full border-b border-slate-200 py-4 bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <span className="text-xl font-semibold text-slate-900 tracking-tight">
+            ProRef
+          </span>
 
-          <div className="flex gap-4 text-xs">
+          <div className="flex items-center gap-6 text-sm">
             <Link to="/employer/login" className="text-slate-700 hover:text-slate-900">
-              Employer login
+              Employer Login
             </Link>
             <Link to="/employee/login" className="text-slate-700 hover:text-slate-900">
-              Employee login
+              Employee Login
+            </Link>
+
+            <Link to="/employer/signup">
+              <Button className="bg-blue-600 text-white px-5 py-2 rounded-md text-sm">
+                Register Company
+              </Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <main className="max-w-6xl mx-auto px-6 py-16">
-        <section className="grid md:grid-cols-2 gap-12 items-start">
+      <section className="bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 py-28 grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <p className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">
-              Professional reference platform
-            </p>
-
-            <h1 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4 leading-snug">
-              Clear, verified employee references for confident hiring.
+            <h1 className="text-5xl font-bold text-slate-900 leading-tight mb-6">
+              A Trusted Platform for Verified Employee References
             </h1>
 
-            <p className="text-sm text-slate-600 mb-8 leading-relaxed max-w-md">
-              ProRef helps organizations document performance, collect structured feedback,
-              and share professional references in a consistent, secure way.
+            <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+              ProRef enables organizations to create, manage, and securely share
+              structured employee evaluations—supporting better hiring decisions
+              across the industry.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/employer/signup">
-                <Button className="bg-slate-900 text-white px-6 py-2 rounded-md text-sm">
-                  Register company
+                <Button className="bg-blue-600 text-white px-10 py-3 rounded-lg text-base">
+                  Register Company
                 </Button>
               </Link>
 
               <Link to="/employer/login">
-                <Button
-                  variant="outline"
-                  className="px-6 py-2 border-slate-300 text-sm text-slate-800 bg-white"
-                >
-                  Employer login
+                <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
+                  Employer Login
                 </Button>
               </Link>
 
               <Link to="/employee/login">
-                <Button
-                  variant="outline"
-                  className="px-6 py-2 border-slate-300 text-sm text-slate-800 bg-white"
-                >
-                  Employee login
+                <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
+                  Employee Login
                 </Button>
               </Link>
             </div>
@@ -219,69 +179,80 @@ export default function Home() {
             <DashboardShortcut />
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-lg p-6 text-sm text-slate-800 shadow-sm">
-            <h2 className="text-sm font-semibold text-slate-900 mb-3">
-              How ProRef fits into your hiring process
+          <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-md">
+            <h2 className="text-xl font-semibold text-slate-900 mb-4">
+              Why companies trust ProRef
             </h2>
-            <ul className="space-y-2 text-xs text-slate-600">
-              <li>• Capture structured performance evaluations for current employees.</li>
-              <li>• Generate professional references that are consistent and easy to interpret.</li>
-              <li>• Share evaluation links securely with hiring managers and recruiters.</li>
-              <li>• Give candidates a transparent, portable record of their work history.</li>
+
+            <ul className="space-y-3 text-slate-700 text-sm">
+              <li>• Standardized, structured evaluations</li>
+              <li>• Secure sharing with hiring teams</li>
+              <li>• Verified company and employee accounts</li>
+              <li>• Clear, consistent reference format</li>
             </ul>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* View Evaluation */}
-        <ViewEvaluationSection />
+      {/* View Evaluation */}
+      <ViewEvaluationSection />
 
-        {/* Features */}
-        <section className="mt-20">
-          <h2 className="text-sm font-semibold text-slate-900 mb-6">
-            What you can manage with ProRef
-          </h2>
+      {/* Features */}
+      <section className="max-w-7xl mx-auto px-6 py-28">
+        <h2 className="text-3xl font-bold text-slate-900 mb-16 text-center">
+          Platform Capabilities
+        </h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f, i) => (
-              <Card
-                key={i}
-                className="p-5 border border-slate-200 bg-white text-sm shadow-sm"
-              >
-                <f.icon className="w-5 h-5 text-slate-800 mb-3" />
-                <h3 className="font-semibold text-slate-900 mb-1 text-sm">
-                  {f.title}
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {f.desc}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </section>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {[
+            {
+              icon: Building2,
+              title: "Verified Company Accounts",
+              desc: "Register your organization with validated business information.",
+            },
+            {
+              icon: UserCheck,
+              title: "Employee Profiles",
+              desc: "Maintain structured employee records and work history.",
+            },
+            {
+              icon: ClipboardCheck,
+              title: "Standardized Evaluations",
+              desc: "Create consistent, criteria‑based performance assessments.",
+            },
+            {
+              icon: Shield,
+              title: "Secure Reference Sharing",
+              desc: "Share evaluations safely with hiring teams and recruiters.",
+            },
+          ].map((f, i) => (
+            <Card key={i} className="p-8 border border-slate-200 shadow-sm bg-white">
+              <f.icon className="w-8 h-8 text-blue-600 mb-4" />
+              <h3 className="font-semibold text-slate-900 mb-2">{f.title}</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+            </Card>
+          ))}
+        </div>
+      </section>
 
-        {/* CTA */}
-        <section className="mt-20 border border-dashed border-slate-300 rounded-lg p-6 bg-slate-50">
-          <h2 className="text-sm font-semibold text-slate-900 mb-2">
-            Ready to formalize your reference process?
-          </h2>
-          <p className="text-xs text-slate-600 mb-4 max-w-md">
-            Create a company account and start building structured, reusable evaluations
-            for your team.
-          </p>
-          <Link to="/employer/signup">
-            <Button className="bg-slate-900 text-white px-6 py-2 rounded-md text-sm">
-              Register company
-            </Button>
-          </Link>
-        </section>
-      </main>
+      {/* CTA */}
+      <section className="bg-blue-600 py-20 text-center text-white">
+        <h2 className="text-3xl font-bold mb-4">
+          Build a Reliable Reference Framework
+        </h2>
+        <p className="text-blue-100 mb-8">
+          Register your company and start creating verified evaluations today.
+        </p>
+        <Link to="/employer/signup">
+          <Button className="bg-white text-blue-600 px-10 py-3 rounded-lg text-base hover:bg-blue-50">
+            Register Company
+          </Button>
+        </Link>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-6 mt-10">
-        <div className="max-w-6xl mx-auto px-6 flex justify-between items-center text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} ProRef — Professional reference platform</span>
-          <span>Built for Canadian businesses</span>
-        </div>
+      <footer className="border-t border-slate-200 py-10 text-center text-sm text-slate-500">
+        © {new Date().getFullYear()} ProRef — Professional Reference Platform
       </footer>
     </div>
   );
