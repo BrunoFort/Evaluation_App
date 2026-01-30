@@ -8,15 +8,16 @@ import {
   Menu,
   LogOut,
 } from "lucide-react";
-import { useAuth } from "@/features/auth/useAuth";
+
+import { useEmployerAuth } from "@/features/auth/employer/useEmployerAuth";
 
 export default function EmployerLayout({ children }) {
-  const { employer, logout } = useAuth();
+  const { employer, logout } = useEmployerAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     navigate("/employer/login");
   }
 
