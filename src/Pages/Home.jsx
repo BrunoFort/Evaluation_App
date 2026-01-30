@@ -24,7 +24,7 @@ import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
 
 
 // ---------------------------------------------------------
-// Back Button (universal, discreto, moderno)
+// Back Button
 // ---------------------------------------------------------
 function BackButton() {
   const navigate = useNavigate();
@@ -41,11 +41,14 @@ function BackButton() {
 
 
 // ---------------------------------------------------------
-// Dashboard Shortcut (se já estiver logado)
+// Dashboard Shortcut (safe even if provider is missing)
 // ---------------------------------------------------------
 function DashboardShortcut() {
-  const { employer } = useEmployerAuth();
-  const { employee } = useEmployeeAuth();
+  const employerAuth = useEmployerAuth?.();
+  const employeeAuth = useEmployeeAuth?.();
+
+  const employer = employerAuth?.employer;
+  const employee = employeeAuth?.employee;
 
   if (employer) {
     return (
@@ -172,7 +175,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative">
 
-      {/* Back Button */}
       <BackButton />
 
       {/* Hero Section */}
@@ -215,13 +217,11 @@ export default function Home() {
               Make informed hiring decisions with comprehensive performance assessments.
             </p>
 
-            {/* Dashboard Shortcut (if logged in) */}
             <DashboardShortcut />
 
-            {/* Modern CTA Grid */}
+            {/* CTA Grid */}
             <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
 
-              {/* Register Company */}
               <Link to="/employer/signup">
                 <Card className="p-6 shadow-lg hover:shadow-xl transition bg-white/80 backdrop-blur rounded-xl text-center">
                   <Building2 className="w-8 h-8 mx-auto text-blue-600 mb-3" />
@@ -233,7 +233,6 @@ export default function Home() {
                 </Card>
               </Link>
 
-              {/* Company Login */}
               <Link to="/employer/login">
                 <Card className="p-6 shadow-lg hover:shadow-xl transition bg-white/80 backdrop-blur rounded-xl text-center">
                   <Building2 className="w-8 h-8 mx-auto text-blue-600 mb-3" />
@@ -245,7 +244,6 @@ export default function Home() {
                 </Card>
               </Link>
 
-              {/* Employee Login */}
               <Link to="/employee/login">
                 <Card className="p-6 shadow-lg hover:shadow-xl transition bg-white/80 backdrop-blur rounded-xl text-center">
                   <User className="w-8 h-8 mx-auto text-blue-600 mb-3" />
@@ -343,3 +341,4 @@ export default function Home() {
     </div>
   );
 }
+
