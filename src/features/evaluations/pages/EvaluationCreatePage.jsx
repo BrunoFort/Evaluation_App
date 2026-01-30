@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import CompanyLayout from "../../../Layouts/CompanyLayout";
-import { useAuth } from "../../auth/useAuth";
+import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
 import { generatePublicToken } from "../../../utils/generatePublicToken";
 
 import Card from "/src/components/ui/card.jsx";
@@ -15,8 +15,8 @@ import { ClipboardCheck } from "lucide-react";
 
 export default function EvaluationCreatePage() {
   const navigate = useNavigate();
-  const { employer } = useAuth();
-  const employerId = employer?.id;
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [searchParams] = useSearchParams();
   const employeeIdFromURL = searchParams.get("employeeId");
@@ -147,4 +147,11 @@ export default function EvaluationCreatePage() {
             disabled={saving}
             className="w-full py-3"
           >
-            {saving ? "Saving..." : "Create Evaluation
+            {saving ? "Saving..." : "Create Evaluation"}
+          </Button>
+
+        </Card>
+      </div>
+    </CompanyLayout>
+  );
+}
