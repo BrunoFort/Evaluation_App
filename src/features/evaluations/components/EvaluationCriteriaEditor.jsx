@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import EmployerLayout from "@/Layouts/EmployerLayout";
-import { useAuth } from "../../auth/useAuth";
+import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
 import { generatePublicToken } from "../../../utils/generatePublicToken";
-import EvaluationCriteriaEditor from "../components/EvaluationCriteriaEditor";
+import CriteriaEditor from "../components/EvaluationCriteriaEditor";
 import { ClipboardCheck } from "lucide-react";
 
 export default function EvaluationCreatePage() {
   const navigate = useNavigate();
-  const { employer } = useAuth();
-  const employerId = employer?.id;
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [searchParams] = useSearchParams();
   const employeeIdFromURL = searchParams.get("employeeId");
@@ -108,10 +108,7 @@ export default function EvaluationCreatePage() {
           </div>
 
           {/* Criteria Editor */}
-          <EvaluationCriteriaEditor
-            criteria={criteria}
-            setCriteria={setCriteria}
-          />
+          <CriteriaEditor criteria={criteria} setCriteria={setCriteria} />
 
           {/* Submit */}
           <button
