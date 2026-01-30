@@ -1,28 +1,30 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useEvaluations } from "@/features/evaluations/hooks/useEvaluations";
-import { useAuth } from "@/features/auth/useAuth"; // supõe um hook simples de auth
+import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
 
 export default function EmployeeProfilePage() {
-  const { user } = useAuth(); // user = employee logado
+  const { employee } = useEmployeeAuth(); // employee logado
   const { evaluations, loading } = useEvaluations();
 
-  if (!user || user.role !== "employee") {
+  if (!employee || employee.role !== "employee") {
     return <p>Unauthorized.</p>;
   }
 
   if (loading) return <p>Loading...</p>;
 
   const employeeEvaluations = evaluations.filter(
-    (ev) => ev.employeeId === user.employeeId
+    (ev) => ev.employeeId === employee.employeeId
   );
 
   const { avgScore, avgStars } = useMemo(() => {
     if (employeeEvaluations.length === 0) {
       return { avgScore: "N/A", avgStars: "N/A" };
     }
+
     const score =
       employeeEvaluations.reduce((sum, ev) => sum + ev.score, 0) /
       employeeEvaluations.length;
+
     const stars =
       employeeEvaluations.reduce((sum, ev) => sum + ev.starRating, 0) /
       employeeEvaluations.length;
@@ -36,8 +38,8 @@ export default function EmployeeProfilePage() {
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{user.fullName}</h1>
-        <p className="text-gray-600">{user.email}</p>
+        <h1 className="text-3xl font-bold">{employee.fullName}</h1>
+        <p className="text-gray-600">{employee.email}</p>
       </div>
 
       <div className="flex gap-6">
