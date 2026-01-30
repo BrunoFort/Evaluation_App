@@ -9,7 +9,8 @@ import SectionCard from "/src/components/ui/SectionCard.jsx";
 import { useEmployee } from "../hooks/useEmployee";
 import { useEmployeeEvaluations } from "../../evaluations/hooks/useEmployeeEvaluations";
 import EmployeeEvaluationsTab from "../components/EmployeeEvaluationsTab";
-import { useAuth } from "../../auth/useAuth";
+
+import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
 
 import {
   User,
@@ -24,8 +25,10 @@ import {
 export default function EmployeeProfileAdmin() {
   const { id } = useParams();
   const { employee, loading } = useEmployee(id);
-  const { user } = useAuth();
-  const employerId = user?.id;
+
+  // 🔥 Hook correto: employer logado
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const {
     evaluations,
