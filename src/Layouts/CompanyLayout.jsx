@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../features/auth/useAuth";
+import { useEmployerAuth } from "../features/auth/employer/useEmployerAuth";
 
 import Button from "/src/components/ui/Button.jsx";
 
 export default function CompanyLayout({ children }) {
-  const { logout } = useAuth();
+  const { logout } = useEmployerAuth();
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">
