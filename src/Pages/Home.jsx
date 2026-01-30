@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Versão C‑Prime (Clean, Moderna, Jovem, Profissional)
+// Home.jsx — Versão C‑Plus (Clean, Moderna, Jovem, com Carrossel)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -15,6 +15,8 @@ import {
   ClipboardCheck,
   Shield,
   ExternalLink,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 
 import { useEmployerAuth } from "@/features/auth/employer/useEmployerAuth";
@@ -115,7 +117,82 @@ function ViewEvaluationSection() {
 
 
 // ---------------------------------------------------------
-// HOME PAGE — C‑Prime
+// Carrossel de Features (C‑Plus)
+// ---------------------------------------------------------
+function FeatureCarousel() {
+  const slides = [
+    {
+      icon: Building2,
+      title: "Verified Company Accounts",
+      desc: "Register your organization with validated business information.",
+    },
+    {
+      icon: UserCheck,
+      title: "Employee Profiles",
+      desc: "Maintain structured employee records and work history.",
+    },
+    {
+      icon: ClipboardCheck,
+      title: "Standardized Evaluations",
+      desc: "Create consistent, criteria‑based performance assessments.",
+    },
+    {
+      icon: Shield,
+      title: "Secure Reference Sharing",
+      desc: "Share evaluations safely with hiring teams and recruiters.",
+    },
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  const next = () => setIndex((prev) => (prev + 1) % slides.length);
+  const prev = () => setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+
+  const slide = slides[index];
+
+  return (
+    <div className="max-w-xl mx-auto text-center">
+      <div className="relative p-10 bg-white rounded-2xl shadow-sm border border-slate-200 transition">
+        <slide.icon className="w-12 h-12 text-blue-600 mx-auto mb-6" />
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">{slide.title}</h3>
+        <p className="text-slate-600 text-sm leading-relaxed">{slide.desc}</p>
+
+        {/* Controls */}
+        <div className="flex justify-between mt-8">
+          <button
+            onClick={prev}
+            className="p-2 rounded-full border border-slate-300 hover:border-blue-600 hover:text-blue-600 transition"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={next}
+            className="p-2 rounded-full border border-slate-300 hover:border-blue-600 hover:text-blue-600 transition"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Indicators */}
+      <div className="flex justify-center gap-2 mt-4">
+        {slides.map((_, i) => (
+          <div
+            key={i}
+            className={`w-2.5 h-2.5 rounded-full transition ${
+              i === index ? "bg-blue-600" : "bg-slate-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+// ---------------------------------------------------------
+// HOME PAGE — C‑Plus
 // ---------------------------------------------------------
 export default function Home() {
   return (
@@ -183,49 +260,13 @@ export default function Home() {
       {/* View Evaluation */}
       <ViewEvaluationSection />
 
-      {/* Features */}
+      {/* Carrossel de Features */}
       <section className="bg-slate-50 py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-slate-900 text-center mb-20">
-            What You Can Do with ProRef
-          </h2>
+        <h2 className="text-4xl font-bold text-slate-900 text-center mb-20">
+          Explore What ProRef Offers
+        </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {[
-              {
-                icon: Building2,
-                title: "Company Verification",
-                desc: "Register your organization with validated business details.",
-              },
-              {
-                icon: UserCheck,
-                title: "Employee Management",
-                desc: "Maintain structured employee profiles and work history.",
-              },
-              {
-                icon: ClipboardCheck,
-                title: "Performance Evaluations",
-                desc: "Create consistent, criteria‑based evaluations with ease.",
-              },
-              {
-                icon: Shield,
-                title: "Secure Sharing",
-                desc: "Share evaluations safely with hiring teams and recruiters.",
-              },
-            ].map((f, i) => (
-              <Card
-                key={i}
-                className="p-8 border border-slate-200 bg-white rounded-2xl shadow-sm hover:shadow-lg transition cursor-pointer text-center"
-              >
-                <f.icon className="w-10 h-10 text-blue-600 mx-auto mb-6" />
-                <h3 className="font-semibold text-slate-900 text-lg mb-2">{f.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  {f.desc}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </div>
+        <FeatureCarousel />
       </section>
 
       {/* CTA */}
@@ -250,3 +291,4 @@ export default function Home() {
     </div>
   );
 }
+
