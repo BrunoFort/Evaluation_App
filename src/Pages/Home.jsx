@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Estilo STRIPE / LINEAR (Premium, Minimalista)
+// Home.jsx — Estilo DEEL / RIPPLING (Corporativo, Enterprise)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -89,17 +89,13 @@ function ViewEvaluationSection() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-24">
-      <Card className="p-8 border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <ExternalLink className="w-5 h-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-slate-900">
-            View Employee Evaluation
-          </h3>
-        </div>
-
-        <p className="text-sm text-slate-600 mb-4">
-          Enter an evaluation link or token to access a candidate’s verified reference.
+    <section className="max-w-5xl mx-auto px-6 mt-24">
+      <Card className="p-10 border border-slate-200 shadow-md">
+        <h3 className="text-xl font-semibold text-slate-900 mb-2">
+          Access an Employee Evaluation
+        </h3>
+        <p className="text-slate-600 mb-6">
+          Enter an evaluation link or token to view a candidate’s verified reference.
         </p>
 
         <form onSubmit={handleSubmit} className="flex gap-3">
@@ -114,21 +110,21 @@ function ViewEvaluationSection() {
           </Button>
         </form>
       </Card>
-    </div>
+    </section>
   );
 }
 
 
 // ---------------------------------------------------------
-// HOME PAGE — Stripe / Linear
+// HOME PAGE — Deel / Rippling
 // ---------------------------------------------------------
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
 
       {/* Header */}
-      <header className="w-full border-b border-slate-200 py-4">
-        <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <header className="w-full border-b border-slate-200 py-4 bg-white">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <span className="text-xl font-semibold text-slate-900 tracking-tight">
             ProRef
           </span>
@@ -145,66 +141,69 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-28 text-center">
-        <h1 className="text-5xl font-bold text-slate-900 tracking-tight mb-6">
-          Verified Employee References,
-          <br />
-          Built for Modern Hiring.
-        </h1>
+      <section className="bg-slate-50 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 py-28">
+          <div className="max-w-3xl">
+            <h1 className="text-5xl font-bold text-slate-900 leading-tight mb-6">
+              A Trusted Platform for Verified Employee References
+            </h1>
 
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-          A streamlined platform for creating, managing, and sharing professional
-          employee evaluations with confidence and clarity.
-        </p>
+            <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+              ProRef enables organizations to create, manage, and securely share
+              structured employee evaluations—supporting better hiring decisions
+              across the industry.
+            </p>
 
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/employer/signup">
-            <Button className="bg-blue-600 text-white px-10 py-3 rounded-lg text-base">
-              Register Company
-            </Button>
-          </Link>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/employer/signup">
+                <Button className="bg-blue-600 text-white px-10 py-3 rounded-lg text-base">
+                  Register Company
+                </Button>
+              </Link>
 
-          <Link to="/employer/login">
-            <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
-              Employer Login
-            </Button>
-          </Link>
+              <Link to="/employer/login">
+                <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
+                  Employer Login
+                </Button>
+              </Link>
 
-          <Link to="/employee/login">
-            <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
-              Employee Login
-            </Button>
-          </Link>
+              <Link to="/employee/login">
+                <Button variant="outline" className="px-10 py-3 border-slate-300 text-base">
+                  Employee Login
+                </Button>
+              </Link>
+            </div>
+
+            <DashboardShortcut />
+          </div>
         </div>
-
-        <DashboardShortcut />
       </section>
 
       {/* View Evaluation */}
       <ViewEvaluationSection />
 
       {/* Features */}
-      <section className="max-w-6xl mx-auto px-6 py-28">
-        <h2 className="text-3xl font-bold text-slate-900 text-center mb-16">
-          What ProRef Enables
+      <section className="max-w-7xl mx-auto px-6 py-28">
+        <h2 className="text-3xl font-bold text-slate-900 mb-16 text-center">
+          Platform Capabilities
         </h2>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           {[
             {
               icon: Building2,
-              title: "Company Verification",
-              desc: "Register your organization with validated business details.",
+              title: "Verified Company Accounts",
+              desc: "Register your organization with validated business information.",
             },
             {
               icon: UserCheck,
-              title: "Employee Management",
-              desc: "Maintain structured employee profiles and work history.",
+              title: "Employee Profiles",
+              desc: "Maintain structured employee records and work history.",
             },
             {
               icon: ClipboardCheck,
-              title: "Performance Evaluations",
-              desc: "Create consistent, criteria‑based evaluations with ease.",
+              title: "Standardized Evaluations",
+              desc: "Create consistent, criteria‑based performance assessments.",
             },
             {
               icon: Shield,
@@ -212,30 +211,28 @@ export default function Home() {
               desc: "Share evaluations safely with hiring teams and recruiters.",
             },
           ].map((f, i) => (
-            <div key={i} className="text-center">
-              <f.icon className="w-8 h-8 text-blue-600 mx-auto mb-4" />
+            <Card key={i} className="p-8 border border-slate-200 shadow-sm">
+              <f.icon className="w-8 h-8 text-blue-600 mb-4" />
               <h3 className="font-semibold text-slate-900 mb-2">{f.title}</h3>
               <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-slate-50 py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
-            Start Building Trusted References
-          </h2>
-          <p className="text-slate-600 mb-8">
-            Register your company and begin creating verified evaluations today.
-          </p>
-          <Link to="/employer/signup">
-            <Button className="bg-blue-600 text-white px-10 py-3 rounded-lg text-base">
-              Register Company
-            </Button>
-          </Link>
-        </div>
+      <section className="bg-blue-600 py-20 text-center text-white">
+        <h2 className="text-3xl font-bold mb-4">
+          Build a Reliable Reference Framework
+        </h2>
+        <p className="text-blue-100 mb-8">
+          Register your company and start creating verified evaluations today.
+        </p>
+        <Link to="/employer/signup">
+          <Button className="bg-white text-blue-600 px-10 py-3 rounded-lg text-base hover:bg-blue-50">
+            Register Company
+          </Button>
+        </Link>
       </section>
 
       {/* Footer */}
