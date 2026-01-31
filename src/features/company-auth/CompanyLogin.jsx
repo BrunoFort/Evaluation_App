@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "/src/components/ui/Button.jsx";
-import { Input } from "../components/ui/input";
-import Card from "/src/components/ui/card.jsx";
-import { createPageUrl } from "../utils";
+
+import Button from "@/components/ui/Button.jsx";
+import Input from "@/components/ui/Input.jsx";
+import Card from "@/components/ui/Card.jsx";
 
 export default function CompanyLogin() {
   const navigate = useNavigate();
@@ -15,25 +15,25 @@ export default function CompanyLogin() {
 
     // MOCK login
     if (email && password) {
-      navigate(createPageUrl("CompanyDashboard"));
+      navigate("/company");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
-      <Card className="w-full max-w-lg shadow-xl border-2 border-blue-100 bg-white/80 backdrop-blur">
-        <CardContent className="p-8">
-          <h2 className="text-3xl font-bold text-center text-slate-900 mb-2">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+      <Card className="w-full max-w-lg shadow-xl border border-neutral-200 bg-white rounded-2xl">
+        <div className="p-8">
+          <h2 className="text-3xl font-bold text-center text-neutral-900 mb-2">
             Company Login
           </h2>
 
-          <p className="text-center text-slate-600 mb-6">
+          <p className="text-center text-neutral-600 mb-6">
             Access your company dashboard to manage employee evaluations.
           </p>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
                 Company Email
               </label>
               <Input
@@ -45,7 +45,7 @@ export default function CompanyLogin() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
                 Password
               </label>
               <Input
@@ -59,22 +59,22 @@ export default function CompanyLogin() {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 text-lg rounded-xl shadow-md transition-all"
             >
               Sign In
             </Button>
           </form>
 
-          <p className="text-center text-sm text-slate-600 mt-6">
+          <p className="text-center text-sm text-neutral-600 mt-6">
             Don’t have an account?{" "}
             <span
-              onClick={() => navigate(createPageUrl("CompanyRegistration"))}
-              className="text-blue-600 font-medium cursor-pointer hover:underline"
+              onClick={() => navigate("/company/register")}
+              className="text-purple-600 font-medium cursor-pointer hover:underline"
             >
               Register here
             </span>
           </p>
-        </CardContent>
+        </div>
       </Card>
     </div>
   );
