@@ -4,11 +4,12 @@ import {
   LayoutDashboard,
   Users,
   ClipboardList,
+  BarChart3,
   Settings,
   LogOut,
 } from "lucide-react";
 
-import ShineLogo from "@/assets/shine-logo.png"; // ajuste o caminho conforme sua estrutura
+import ShineLogo from "@/assets/shine-logo.png";
 
 export default function DashboardLayout({ children }) {
   const location = useLocation();
@@ -17,6 +18,7 @@ export default function DashboardLayout({ children }) {
     { label: "Dashboard", icon: LayoutDashboard, path: "/employer" },
     { label: "Employees", icon: Users, path: "/employer/employees" },
     { label: "Evaluations", icon: ClipboardList, path: "/employer/evaluations" },
+    { label: "Analytics", icon: BarChart3, path: "/employer/analytics" },
     { label: "Settings", icon: Settings, path: "/employer/settings" },
   ];
 
@@ -25,17 +27,14 @@ export default function DashboardLayout({ children }) {
 
       {/* SIDEBAR */}
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
-        
+
         {/* Logo Shine */}
-        <div className="flex items-center gap-3 mb-12">
+        <div className="flex items-center justify-center mb-12">
           <img
             src={ShineLogo}
             alt="Shine Logo"
-            className="w-10 h-10 object-contain"
+            className="w-32 h-32 object-contain"
           />
-          <span className="text-3xl font-extrabold tracking-tight">
-            Shine
-          </span>
         </div>
 
         {/* Navigation */}
@@ -74,11 +73,11 @@ export default function DashboardLayout({ children }) {
         {/* HEADER */}
         <header className="w-full bg-white border-b border-neutral-200 py-5 px-10 flex justify-between items-center shadow-sm">
           <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
-            Dashboard
+            Employer Dashboard
           </h1>
 
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
             <span className="text-neutral-700 font-medium">You</span>
           </div>
         </header>
@@ -91,3 +90,4 @@ export default function DashboardLayout({ children }) {
     </div>
   );
 }
+
