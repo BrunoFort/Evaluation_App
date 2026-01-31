@@ -1,28 +1,24 @@
 import React from "react";
-import ShineLogo from "@/assets/shine-logo.png";
 
 export default function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center py-10 px-4">
 
-      {/* HEADER */}
-      <header className="w-full bg-white border-b border-neutral-200 py-6 px-10 shadow-sm flex items-center gap-4">
-        <img src={ShineLogo} alt="Shine Logo" className="w-12 h-12 object-contain" />
-        <h1 className="text-3xl font-extrabold text-neutral-900 tracking-tight">
-          Shine
-        </h1>
+      {/* Header */}
+      <header className="w-full max-w-3xl mb-8 text-center">
+        <h1 className="text-3xl font-bold text-blue-700">ProRef</h1>
+        <p className="text-slate-500 text-sm">Verified Professional References</p>
       </header>
 
-      {/* CONTENT */}
-      <main className="flex-1 p-10 max-w-4xl mx-auto">
+      {/* Main content */}
+      <main className="w-full max-w-3xl">
         {children}
       </main>
 
-      {/* FOOTER */}
-      <footer className="py-6 text-center text-neutral-500 text-sm border-t border-neutral-200">
-        © {new Date().getFullYear()} Shine — Professional References
+      {/* Footer */}
+      <footer className="mt-10 text-xs text-slate-400">
+        &copy; {new Date().getFullYear()} ProRef — Public Access
       </footer>
-
     </div>
   );
 }

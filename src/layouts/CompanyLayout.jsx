@@ -1,90 +1,87 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  Building2,
-  Users,
-  ClipboardList,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { useEmployerAuth } from "../features/auth/employer/useEmployerAuth";
 
-import ShineLogo from "@/assets/shine-logo.png";
+import Button from "/src/components/ui/Button.jsx";
 
 export default function CompanyLayout({ children }) {
-  const location = useLocation();
-
-  const navItems = [
-    { label: "Overview", icon: Building2, path: "/company" },
-    { label: "Employers", icon: Users, path: "/company/employers" },
-    { label: "Evaluations", icon: ClipboardList, path: "/company/evaluations" },
-    { label: "Settings", icon: Settings, path: "/company/settings" },
-  ];
+  const { logout } = useEmployerAuth();
 
   return (
-    <div className="flex min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-slate-100 flex flex-col">
 
-      {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
-
-        {/* Logo */}
-        <div className="flex items-center justify-center mb-12">
-          <img
-            src={ShineLogo}
-            alt="Shine Logo"
-            className="w-32 h-32 object-contain"
-          />
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex flex-col gap-2">
-          {navItems.map((item, i) => {
-            const active = location.pathname === item.path;
-            const Icon = item.icon;
-
-            return (
-              <Link
-                key={i}
-                to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium transition
-                  ${active ? "bg-white text-purple-700 shadow-md" : "hover:bg-white/20"}
-                `}
-              >
-                <Icon className={`w-5 h-5 ${active ? "text-purple-700" : "text-white"}`} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex-1" />
-
-        {/* Logout */}
-        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white">
-          <LogOut className="w-5 h-5" />
-          Logout
-        </button>
-      </aside>
-
-      {/* MAIN AREA */}
-      <div className="flex-1 flex flex-col">
-
-        {/* HEADER */}
-        <header className="w-full bg-white border-b border-neutral-200 py-5 px-10 flex justify-between items-center shadow-sm">
-          <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
-            Company Dashboard
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-blue-700 tracking-tight">
+            Employer Panel
           </h1>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
-            <span className="text-neutral-700 font-medium">Admin</span>
-          </div>
-        </header>
+          <Button variant="danger" onClick={logout}>
+            Logout
+          </Button>
+        </div>
+      </header>
 
-        {/* CONTENT */}
-        <main className="p-10">
-          {children}
-        </main>
-      </div>
+      {/* Navigation */}
+      <nav className="bg-white border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex gap-6 text-sm font-medium text-slate-600">
+
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
+            }
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/company"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
+            }
+          >
+            Company
+          </NavLink>
+
+          <NavLink
+            to="/employees"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
+            }
+          >
+            Employees
+          </NavLink>
+
+          <NavLink
+            to="/evaluations"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 font-semibold"
+                : "hover:text-blue-600"
+            }
+          >
+            Evaluations
+          </NavLink>
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <main className="flex-1 max-w-6xl mx-auto px-6 py-10">
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} ProRef — Employer Access
+      </footer>
     </div>
   );
 }
