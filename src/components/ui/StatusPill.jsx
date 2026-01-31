@@ -19,7 +19,7 @@ export default function StatusPill({
     pending: "bg-amber-50 text-amber-700",
     active: "bg-blue-50 text-blue-700",
     terminated: "bg-red-50 text-red-700",
-    default: "bg-slate-50 text-slate-600",
+    default: "bg-neutral-50 text-neutral-600",
   };
 
   const icons = {
