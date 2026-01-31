@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import EmployeeLayout from "../../Layouts/EmployeeLayout";
+import EmployeeDashboardLayout from "@/layouts/EmployeeDashboardLayout";
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
