@@ -22,18 +22,18 @@ export default function PageHeader({
   return (
     <div className={`mb-8 flex ${alignment[align]} ${className}`}>
       <div className={align === "between" ? "flex-1" : ""}>
-        <h1 className={`${sizes[size]} font-bold text-slate-900`}>
+        <h1 className={`${sizes[size]} font-semibold text-neutral-900`}>
           {title}
         </h1>
 
         {subtitle && (
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-neutral-700 text-sm mt-1">
             {subtitle}
           </p>
         )}
 
         {description && (
-          <p className="text-slate-600 text-sm mt-2 leading-relaxed">
+          <p className="text-neutral-600 text-sm mt-2 leading-relaxed">
             {description}
           </p>
         )}
