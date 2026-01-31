@@ -1,14 +1,14 @@
 export function Tabs({ tabs, active, onChange }) {
   return (
-    <div className="flex gap-4 border-b border-slate-200">
+    <div className="flex gap-4 border-b border-neutral-300">
       {tabs.map((tab) => (
         <button
           key={tab}
           onClick={() => onChange(tab)}
-          className={`pb-2 text-sm font-medium ${
+          className={`pb-2 text-sm font-medium transition-colors ${
             active === tab
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-slate-500 hover:text-slate-700"
+              ? "text-purple-600 border-b-2 border-purple-600"
+              : "text-neutral-600 hover:text-neutral-800"
           }`}
         >
           {tab}
