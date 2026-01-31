@@ -1,7 +1,3 @@
-// ---------------------------------------------------------
-// Home.jsx — Modelo C (C‑Bold — Vibrante e Chamativo)
-// ---------------------------------------------------------
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -19,10 +15,9 @@ import {
 import { useEmployerAuth } from "@/features/auth/employer/useEmployerAuth";
 import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
 
+import ShineLogo from "@/assets/shine-logo.png"; // ajuste o caminho conforme sua estrutura
 
-// ---------------------------------------------------------
-// Dashboard Shortcut
-// ---------------------------------------------------------
+
 function DashboardShortcut() {
   const employerAuth = useEmployerAuth?.();
   const employeeAuth = useEmployeeAuth?.();
@@ -55,9 +50,6 @@ function DashboardShortcut() {
 }
 
 
-// ---------------------------------------------------------
-// View Evaluation Section
-// ---------------------------------------------------------
 function ViewEvaluationSection() {
   const navigate = useNavigate();
   const [evaluationLink, setEvaluationLink] = useState("");
@@ -113,9 +105,6 @@ function ViewEvaluationSection() {
 }
 
 
-// ---------------------------------------------------------
-// Feature Grid (C‑Bold Vibrante)
-// ---------------------------------------------------------
 function FeatureGrid() {
   const features = [
     {
@@ -164,9 +153,6 @@ function FeatureGrid() {
 }
 
 
-// ---------------------------------------------------------
-// HOME PAGE — Modelo C (C‑Bold)
-// ---------------------------------------------------------
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -174,9 +160,10 @@ export default function Home() {
       {/* Header */}
       <header className="w-full border-b border-neutral-200 py-5 bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            ProRef
-          </span>
+          <div className="flex items-center gap-3">
+            <img src={ShineLogo} alt="Shine Logo" className="w-8 h-8 object-contain" />
+            <span className="text-2xl font-bold text-neutral-900 tracking-tight">Shine</span>
+          </div>
 
           <div className="flex items-center gap-8 text-base font-medium">
             <Link to="/employer/login" className="text-neutral-700 hover:text-purple-600 transition">
@@ -198,15 +185,15 @@ export default function Home() {
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 py-32 text-center">
         <h1 className="text-7xl font-extrabold text-neutral-900 tracking-tight mb-10 leading-tight">
-          Bold, Modern  
+          Shine with  
           <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Employee References
+            Trusted Employee References
           </span>
         </h1>
 
         <p className="text-2xl text-neutral-600 max-w-3xl mx-auto mb-14 leading-relaxed">
-          A vibrant, modern platform for creating structured, trustworthy evaluations  
-          that candidates can proudly share.
+          Shine helps companies create structured, trustworthy evaluations that candidates  
+          can proudly share — and hiring teams can rely on.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-5">
@@ -238,7 +225,7 @@ export default function Home() {
       {/* Features */}
       <section className="py-32 bg-gradient-to-b from-purple-50 to-pink-50">
         <h2 className="text-5xl font-extrabold text-neutral-900 text-center mb-24">
-          What Makes ProRef Stand Out
+          What Makes Shine Stand Out
         </h2>
 
         <FeatureGrid />
@@ -246,24 +233,4 @@ export default function Home() {
 
       {/* CTA */}
       <section className="py-28 text-center bg-white">
-        <h2 className="text-5xl font-extrabold text-neutral-900 mb-6">
-          Start Building Trusted References
-        </h2>
-        <p className="text-neutral-600 mb-12 text-xl">
-          Register your company and begin creating verified evaluations today.
-        </p>
-        <Link to="/employer/signup">
-          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-4 rounded-xl text-xl shadow-xl hover:opacity-90 transition">
-            Register Company
-          </Button>
-        </Link>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-neutral-200 py-12 text-center text-base text-neutral-500">
-        © {new Date().getFullYear()} ProRef — Professional Reference Platform
-      </footer>
-    </div>
-  );
-}
-
+        <h2 className
