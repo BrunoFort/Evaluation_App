@@ -15,7 +15,9 @@ export default function EmployeeDashboardPage() {
         <div className="p-8 bg-white rounded-2xl shadow-xl border border-neutral-200">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-semibold text-neutral-900">Senior Developer</h3>
+              <h3 className="text-xl font-semibold text-neutral-900">
+                Senior Developer
+              </h3>
               <p className="text-neutral-600">Acme Corp — Jan 2026</p>
             </div>
 
