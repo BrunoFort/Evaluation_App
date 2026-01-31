@@ -1,20 +1,25 @@
-import React from 'react';
-import { Star } from 'lucide-react';
+import React from "react";
+import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export default function StarRating({ 
-  value = 0, 
-  onChange, 
-  label, 
-  tooltip, 
+export default function StarRating({
+  value = 0,
+  onChange,
+  label,
+  tooltip,
   readonly = false,
-  size = "md"
+  size = "md",
 }) {
   const sizes = {
     sm: "w-4 h-4",
     md: "w-6 h-6",
-    lg: "w-8 h-8"
+    lg: "w-8 h-8",
   };
 
   const starSize = sizes[size];
@@ -31,21 +36,28 @@ export default function StarRating({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className={cn(
-                "text-sm font-medium text-slate-700 cursor-help border-b border-dotted border-slate-400",
-                !tooltip && "border-none cursor-default"
-              )}>
+              <span
+                className={cn(
+                  "text-sm font-medium text-neutral-700 cursor-help border-b border-dotted border-neutral-400",
+                  !tooltip && "border-none cursor-default"
+                )}
+              >
                 {label}
               </span>
             </TooltipTrigger>
+
             {tooltip && (
-              <TooltipContent side="top" className="max-w-xs bg-slate-900 text-white p-3 rounded-lg shadow-xl">
+              <TooltipContent
+                side="top"
+                className="max-w-xs bg-neutral-900 text-white p-3 rounded-lg shadow-xl"
+              >
                 <p className="text-sm">{tooltip}</p>
               </TooltipContent>
             )}
           </Tooltip>
         </TooltipProvider>
       )}
+
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
@@ -63,10 +75,12 @@ export default function StarRating({
               className={cn(
                 starSize,
                 "transition-colors duration-200",
-                star <= value 
-                  ? "fill-amber-400 text-amber-400" 
-                  : "fill-transparent text-slate-300",
-                !readonly && star <= value && "hover:fill-amber-500 hover:text-amber-500"
+                star <= value
+                  ? "fill-amber-400 text-amber-400"
+                  : "fill-transparent text-neutral-300",
+                !readonly &&
+                  star <= value &&
+                  "hover:fill-amber-500 hover:text-amber-500"
               )}
             />
           </button>
