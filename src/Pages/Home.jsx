@@ -18,6 +18,9 @@ import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
 import ShineLogo from "@/assets/shine-logo.png"; // ajuste o caminho conforme sua estrutura
 
 
+// ---------------------------------------------------------
+// Dashboard Shortcut
+// ---------------------------------------------------------
 function DashboardShortcut() {
   const employerAuth = useEmployerAuth?.();
   const employeeAuth = useEmployeeAuth?.();
@@ -50,6 +53,9 @@ function DashboardShortcut() {
 }
 
 
+// ---------------------------------------------------------
+// View Evaluation Section
+// ---------------------------------------------------------
 function ViewEvaluationSection() {
   const navigate = useNavigate();
   const [evaluationLink, setEvaluationLink] = useState("");
@@ -105,6 +111,9 @@ function ViewEvaluationSection() {
 }
 
 
+// ---------------------------------------------------------
+// Feature Grid
+// ---------------------------------------------------------
 function FeatureGrid() {
   const features = [
     {
@@ -153,6 +162,9 @@ function FeatureGrid() {
 }
 
 
+// ---------------------------------------------------------
+// HOME PAGE — Shine (C‑Bold)
+// ---------------------------------------------------------
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -233,4 +245,23 @@ export default function Home() {
 
       {/* CTA */}
       <section className="py-28 text-center bg-white">
-        <h2 className
+        <h2 className="text-5xl font-extrabold text-neutral-900 mb-6">
+          Start Building Trusted References
+        </h2>
+        <p className="text-neutral-600 mb-12 text-xl">
+          Register your company and begin creating verified evaluations today.
+        </p>
+        <Link to="/employer/signup">
+          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-4 rounded-xl text-xl shadow-xl hover:opacity-90 transition">
+            Register Company
+          </Button>
+        </Link>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-neutral-200 py-12 text-center text-base text-neutral-500">
+        © {new Date().getFullYear()} Shine — Professional Reference Platform
+      </footer>
+    </div>
+  );
+}
