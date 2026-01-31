@@ -22,7 +22,7 @@ export default function SectionCard({
   return (
     <div
       className={`
-        bg-white border border-slate-200 rounded-xl
+        bg-white border border-neutral-300 rounded-xl
         ${paddings[padding]}
         ${shadows[shadow]}
         space-y-4
@@ -32,9 +32,9 @@ export default function SectionCard({
       {(title || right) && (
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            {icon && <span className="text-blue-600">{icon}</span>}
+            {icon && <span className="text-purple-600">{icon}</span>}
             {title && (
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-neutral-900">
                 {title}
               </h2>
             )}
