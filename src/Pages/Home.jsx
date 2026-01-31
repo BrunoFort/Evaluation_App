@@ -172,11 +172,11 @@ export default function Home() {
       {/* Header */}
       <header className="w-full border-b border-neutral-200 py-5 bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center">
+          <div className="flex items-center py-2">
             <img
               src={ShineLogo}
               alt="Shine Logo"
-              className="w-12 h-12 object-contain"
+              className="w-32 h-32 object-contain"
             />
           </div>
 
