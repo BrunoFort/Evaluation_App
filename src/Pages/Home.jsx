@@ -87,8 +87,8 @@ function ViewEvaluationSection() {
         <h3 className="text-3xl font-bold text-purple-700 mb-3">
           View an Evaluation
         </h3>
-        <p className="text-purple-600 mb-8 text-lg">
-          Paste an evaluation link or token to access a candidate’s verified reference.
+        <p className="text-neutral-900 mb-8 text-lg">
+          Paste an evaluation link or token to instantly review a candidate’s verified reference before making a decision.
         </p>
 
         <form onSubmit={handleSubmit} className="flex gap-4">
@@ -172,9 +172,12 @@ export default function Home() {
       {/* Header */}
       <header className="w-full border-b border-neutral-200 py-5 bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <img src={ShineLogo} alt="Shine Logo" className="w-8 h-8 object-contain" />
-            <span className="text-2xl font-bold text-neutral-900 tracking-tight">Shine</span>
+          <div className="flex items-center">
+            <img
+              src={ShineLogo}
+              alt="Shine Logo"
+              className="w-12 h-12 object-contain"
+            />
           </div>
 
           <div className="flex items-center gap-8 text-base font-medium">
@@ -197,15 +200,15 @@ export default function Home() {
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 py-32 text-center">
         <h1 className="text-7xl font-extrabold text-neutral-900 tracking-tight mb-10 leading-tight">
-          Shine with  
+          See how candidates  
           <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Trusted Employee References
+            really shine in their references
           </span>
         </h1>
 
         <p className="text-2xl text-neutral-600 max-w-3xl mx-auto mb-14 leading-relaxed">
-          Shine helps companies create structured, trustworthy evaluations that candidates  
-          can proudly share — and hiring teams can rely on.
+          Shine lets you quickly access structured, verified evaluations for candidates,  
+          so you can make hiring decisions with real, contextual insight—not just a résumé.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-5">
