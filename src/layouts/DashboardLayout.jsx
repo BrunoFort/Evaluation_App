@@ -1,7 +1,3 @@
-// ---------------------------------------------------------
-// DashboardLayout.jsx — Modelo C (C‑Bold — Vibrante)
-// ---------------------------------------------------------
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -11,6 +7,8 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+
+import ShineLogo from "@/assets/shine-logo.png"; // ajuste o caminho conforme sua estrutura
 
 export default function DashboardLayout({ children }) {
   const location = useLocation();
@@ -28,9 +26,16 @@ export default function DashboardLayout({ children }) {
       {/* SIDEBAR */}
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
         
-        {/* Logo */}
-        <div className="text-3xl font-extrabold tracking-tight mb-12">
-          ProRef
+        {/* Logo Shine */}
+        <div className="flex items-center gap-3 mb-12">
+          <img
+            src={ShineLogo}
+            alt="Shine Logo"
+            className="w-10 h-10 object-contain"
+          />
+          <span className="text-3xl font-extrabold tracking-tight">
+            Shine
+          </span>
         </div>
 
         {/* Navigation */}
@@ -54,7 +59,6 @@ export default function DashboardLayout({ children }) {
           })}
         </nav>
 
-        {/* Spacer */}
         <div className="flex-1" />
 
         {/* Logout */}
