@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Modelo D (C‑Ultra Clean — Minimalista Extremo)
+// Home.jsx — Modelo C (C‑Bold — Vibrante e Chamativo)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -31,7 +31,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-12">
         <Link to="/employer">
-          <Button className="bg-black text-white px-8 py-3 rounded-md text-base hover:bg-neutral-800 transition">
+          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg text-base shadow-lg hover:opacity-90 transition">
             Go to Employer Dashboard
           </Button>
         </Link>
@@ -43,7 +43,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-12">
         <Link to="/employee">
-          <Button className="bg-black text-white px-8 py-3 rounded-md text-base hover:bg-neutral-800 transition">
+          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg text-base shadow-lg hover:opacity-90 transition">
             Go to Employee Dashboard
           </Button>
         </Link>
@@ -84,25 +84,25 @@ function ViewEvaluationSection() {
   };
 
   return (
-    <section className="max-w-3xl mx-auto px-6 mt-24">
-      <Card className="p-10 border border-neutral-200 bg-white rounded-xl">
-        <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+    <section className="max-w-4xl mx-auto px-6 mt-24">
+      <Card className="p-12 border border-purple-200 shadow-xl bg-white rounded-2xl">
+        <h3 className="text-3xl font-bold text-purple-700 mb-3">
           View an Evaluation
         </h3>
-        <p className="text-neutral-600 mb-6 text-base">
+        <p className="text-purple-600 mb-8 text-lg">
           Paste an evaluation link or token to access a candidate’s verified reference.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex gap-3">
+        <form onSubmit={handleSubmit} className="flex gap-4">
           <Input
             value={evaluationLink}
             onChange={(e) => setEvaluationLink(e.target.value)}
             placeholder="Paste link or token..."
-            className="flex-1 text-base border-neutral-300 focus:border-black"
+            className="flex-1 text-lg border-purple-300 focus:border-purple-500"
           />
           <Button
             disabled={!evaluationLink}
-            className="bg-black text-white px-6 py-3 text-base rounded-md hover:bg-neutral-800 transition"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 text-lg rounded-lg shadow-lg hover:opacity-90 transition"
           >
             View
           </Button>
@@ -114,7 +114,7 @@ function ViewEvaluationSection() {
 
 
 // ---------------------------------------------------------
-// Feature Grid (Ultra Clean)
+// Feature Grid (C‑Bold Vibrante)
 // ---------------------------------------------------------
 function FeatureGrid() {
   const features = [
@@ -122,33 +122,40 @@ function FeatureGrid() {
       icon: Building2,
       title: "Verified Company Accounts",
       desc: "Register your organization with validated business information.",
+      color: "from-purple-500 to-pink-500",
     },
     {
       icon: UserCheck,
       title: "Employee Profiles",
       desc: "Maintain structured employee records and work history.",
+      color: "from-blue-500 to-cyan-500",
     },
     {
       icon: ClipboardCheck,
       title: "Standardized Evaluations",
       desc: "Create consistent, criteria‑based performance assessments.",
+      color: "from-orange-500 to-yellow-500",
     },
     {
       icon: Shield,
       title: "Secure Reference Sharing",
       desc: "Share evaluations safely with hiring teams and recruiters.",
+      color: "from-green-500 to-emerald-500",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 max-w-5xl mx-auto px-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 max-w-6xl mx-auto px-6">
       {features.map((f, i) => (
         <div
           key={i}
-          className="p-10 border border-neutral-200 rounded-xl bg-white hover:border-neutral-400 transition"
+          className="p-10 rounded-2xl bg-white shadow-xl border border-neutral-200 hover:scale-[1.02] transition-transform"
         >
-          <f.icon className="w-10 h-10 text-neutral-900 mb-6" />
-          <h3 className="text-xl font-semibold text-neutral-900 mb-2">{f.title}</h3>
+          <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${f.color} flex items-center justify-center mb-6 shadow-lg`}>
+            <f.icon className="w-8 h-8 text-white" />
+          </div>
+
+          <h3 className="text-2xl font-bold text-neutral-900 mb-3">{f.title}</h3>
           <p className="text-neutral-600 leading-relaxed">{f.desc}</p>
         </div>
       ))}
@@ -158,7 +165,7 @@ function FeatureGrid() {
 
 
 // ---------------------------------------------------------
-// HOME PAGE — Modelo D (C‑Ultra Clean)
+// HOME PAGE — Modelo C (C‑Bold)
 // ---------------------------------------------------------
 export default function Home() {
   return (
@@ -167,20 +174,20 @@ export default function Home() {
       {/* Header */}
       <header className="w-full border-b border-neutral-200 py-5 bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <span className="text-2xl font-semibold text-neutral-900 tracking-tight">
+          <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             ProRef
           </span>
 
-          <div className="flex items-center gap-8 text-base">
-            <Link to="/employer/login" className="text-neutral-700 hover:text-black transition">
+          <div className="flex items-center gap-8 text-base font-medium">
+            <Link to="/employer/login" className="text-neutral-700 hover:text-purple-600 transition">
               Employer Login
             </Link>
-            <Link to="/employee/login" className="text-neutral-700 hover:text-black transition">
+            <Link to="/employee/login" className="text-neutral-700 hover:text-purple-600 transition">
               Employee Login
             </Link>
 
             <Link to="/employer/signup">
-              <Button className="bg-black text-white px-6 py-2.5 rounded-md text-base hover:bg-neutral-800 transition">
+              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2.5 rounded-md shadow-lg hover:opacity-90 transition">
                 Register Company
               </Button>
             </Link>
@@ -189,32 +196,34 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-32 text-center">
-        <h1 className="text-6xl font-semibold text-neutral-900 tracking-tight mb-8 leading-tight">
-          Simple, Precise  
-          <span className="block">Employee References</span>
+      <section className="max-w-7xl mx-auto px-6 py-32 text-center">
+        <h1 className="text-7xl font-extrabold text-neutral-900 tracking-tight mb-10 leading-tight">
+          Bold, Modern  
+          <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Employee References
+          </span>
         </h1>
 
-        <p className="text-xl text-neutral-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-          A clean, structured way for companies to create trustworthy evaluations —  
-          and for candidates to share them with confidence.
+        <p className="text-2xl text-neutral-600 max-w-3xl mx-auto mb-14 leading-relaxed">
+          A vibrant, modern platform for creating structured, trustworthy evaluations  
+          that candidates can proudly share.
         </p>
 
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center gap-5">
           <Link to="/employer/signup">
-            <Button className="bg-black text-white px-10 py-4 rounded-md text-lg hover:bg-neutral-800 transition">
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-4 rounded-xl text-xl shadow-xl hover:opacity-90 transition">
               Register Company
             </Button>
           </Link>
 
           <Link to="/employer/login">
-            <Button variant="outline" className="px-10 py-4 border-neutral-300 text-lg rounded-md hover:border-black hover:text-black transition">
+            <Button variant="outline" className="px-12 py-4 border-purple-400 text-xl rounded-xl hover:border-purple-600 hover:text-purple-600 transition">
               Employer Login
             </Button>
           </Link>
 
           <Link to="/employee/login">
-            <Button variant="outline" className="px-10 py-4 border-neutral-300 text-lg rounded-md hover:border-black hover:text-black transition">
+            <Button variant="outline" className="px-12 py-4 border-purple-400 text-xl rounded-xl hover:border-purple-600 hover:text-purple-600 transition">
               Employee Login
             </Button>
           </Link>
@@ -227,9 +236,9 @@ export default function Home() {
       <ViewEvaluationSection />
 
       {/* Features */}
-      <section className="py-32 bg-neutral-50">
-        <h2 className="text-4xl font-semibold text-neutral-900 text-center mb-20">
-          What You Can Do with ProRef
+      <section className="py-32 bg-gradient-to-b from-purple-50 to-pink-50">
+        <h2 className="text-5xl font-extrabold text-neutral-900 text-center mb-24">
+          What Makes ProRef Stand Out
         </h2>
 
         <FeatureGrid />
@@ -237,14 +246,14 @@ export default function Home() {
 
       {/* CTA */}
       <section className="py-28 text-center bg-white">
-        <h2 className="text-4xl font-semibold text-neutral-900 mb-4">
+        <h2 className="text-5xl font-extrabold text-neutral-900 mb-6">
           Start Building Trusted References
         </h2>
-        <p className="text-neutral-600 mb-10 text-lg">
+        <p className="text-neutral-600 mb-12 text-xl">
           Register your company and begin creating verified evaluations today.
         </p>
         <Link to="/employer/signup">
-          <Button className="bg-black text-white px-12 py-4 rounded-md text-lg hover:bg-neutral-800 transition">
+          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-4 rounded-xl text-xl shadow-xl hover:opacity-90 transition">
             Register Company
           </Button>
         </Link>
