@@ -1,127 +1,92 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
+import React from "react";
 import EmployeeDashboardLayout from "@/layouts/EmployeeDashboardLayout";
-import Card from "/src/components/ui/card.jsx";
-import PageHeader from "/src/components/ui/PageHeader.jsx";
-import SectionCard from "/src/components/ui/SectionCard.jsx";
-import StatusPill from "/src/components/ui/StatusPill.jsx";
+import { Star, Link as LinkIcon, ClipboardList } from "lucide-react";
 
 export default function EmployeeDashboardPage() {
-  const [employee, setEmployee] = useState(null);
-  const [evaluations, setEvaluations] = useState([]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("employee");
-    if (stored) {
-      const emp = JSON.parse(stored);
-      setEmployee(emp);
-
-      fetch(`http://localhost:4000/evaluations?employeeId=${emp.id}`)
-        .then((res) => res.json())
-        .then(setEvaluations);
-    }
-  }, []);
-
-  if (!employee) {
-    return (
-      <EmployeeLayout>
-        <p className="text-slate-500">Loading...</p>
-      </EmployeeLayout>
-    );
-  }
-
   return (
-    <EmployeeLayout>
-      <div className="max-w-3xl mx-auto space-y-10">
+    <EmployeeDashboardLayout>
 
-        <PageHeader
-          title={`Welcome back, ${employee.name}`}
-          subtitle="Here is an overview of your evaluations"
-        />
+      {/* Latest Evaluation */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-neutral-900 mb-6">
+          Your Latest Evaluation
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <Card className="text-center py-6">
-            <p className="text-sm text-slate-500">Total Evaluations</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
-              {evaluations.length}
-            </p>
-          </Card>
-
-          <Card className="text-center py-6">
-            <p className="text-sm text-slate-500">Completed</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
-              {evaluations.filter((ev) => ev.status === "completed").length}
-            </p>
-          </Card>
-
-          <Card className="text-center py-6">
-            <p className="text-sm text-slate-500">Pending</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
-              {evaluations.filter((ev) => ev.status === "pending").length}
-            </p>
-          </Card>
-        </div>
-
-        <Card className="flex items-center gap-6">
-          {employee.photoUrl ? (
-            <img
-              src={employee.photoUrl}
-              alt="Profile"
-              className="h-20 w-20 rounded-full object-cover border"
-            />
-          ) : (
-            <div className="h-20 w-20 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
-              No Photo
+        <div className="p-8 bg-white rounded-2xl shadow-xl border border-neutral-200">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-semibold text-neutral-900">Senior Developer</h3>
+              <p className="text-neutral-600">Acme Corp — Jan 2026</p>
             </div>
-          )}
 
-          <div className="flex-1">
-            <p className="text-xl font-semibold text-slate-900">
-              {employee.name}
-            </p>
-            <p className="text-slate-600">{employee.email}</p>
-
-            <Link
-              to="/employee/profile"
-              className="text-sm text-blue-600 hover:text-blue-800 mt-2 inline-block"
-            >
-              View Profile →
-            </Link>
+            <div className="flex gap-1">
+              <Star className="w-6 h-6 text-yellow-500" />
+              <Star className="w-6 h-6 text-yellow-500" />
+              <Star className="w-6 h-6 text-yellow-500" />
+              <Star className="w-6 h-6 text-yellow-500" />
+              <Star className="w-6 h-6 text-neutral-300" />
+            </div>
           </div>
-        </Card>
 
-        <SectionCard title="Your Evaluations">
-          {evaluations.length === 0 ? (
-            <p className="text-slate-500">No evaluations yet.</p>
-          ) : (
-            <ul className="space-y-3">
-              {evaluations.map((ev) => (
-                <li
-                  key={ev.id}
-                  className="border border-slate-200 rounded-lg p-4 bg-slate-50 hover:bg-slate-100 transition"
-                >
-                  <Link
-                    to={`/employee/evaluation/${ev.id}`}
-                    className="text-blue-600 hover:underline font-medium"
-                  >
-                    {ev.title}
-                  </Link>
+          <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-90 transition">
+            View Full Evaluation
+          </button>
+        </div>
+      </section>
 
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-sm text-slate-500">
-                      {new Date(ev.createdAt).toLocaleDateString()}
-                    </p>
+      {/* Share Reference */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-neutral-900 mb-6">
+          Share Your Reference
+        </h2>
 
-                    <StatusPill status={ev.status} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </SectionCard>
-      </div>
-    </EmployeeLayout>
+        <div className="p-8 bg-white rounded-2xl shadow-xl border border-neutral-200">
+          <p className="text-neutral-700 mb-4">
+            Use the link below to share your verified Shine reference with recruiters or employers.
+          </p>
+
+          <div className="flex items-center gap-4 mb-6">
+            <code className="px-4 py-2 bg-neutral-100 rounded-lg text-neutral-800 text-sm">
+              https://shine.app/ref/abc123
+            </code>
+
+            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2">
+              <LinkIcon className="w-4 h-4" />
+              Copy
+            </button>
+          </div>
+
+          <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-90 transition">
+            Open Public Page
+          </button>
+        </div>
+      </section>
+
+      {/* History */}
+      <section>
+        <h2 className="text-2xl font-bold text-neutral-900 mb-6">
+          Evaluation History
+        </h2>
+
+        <div className="p-8 bg-white rounded-2xl shadow-xl border border-neutral-200">
+          <div className="flex items-center justify-between py-4 border-b border-neutral-200">
+            <div>
+              <p className="font-medium text-neutral-900">Frontend Developer</p>
+              <p className="text-neutral-600 text-sm">Globex — 2024</p>
+            </div>
+            <ClipboardList className="w-6 h-6 text-purple-600" />
+          </div>
+
+          <div className="flex items-center justify-between py-4">
+            <div>
+              <p className="font-medium text-neutral-900">Junior Developer</p>
+              <p className="text-neutral-600 text-sm">Innotech — 2022</p>
+            </div>
+            <ClipboardList className="w-6 h-6 text-purple-600" />
+          </div>
+        </div>
+      </section>
+
+    </EmployeeDashboardLayout>
   );
 }
-
