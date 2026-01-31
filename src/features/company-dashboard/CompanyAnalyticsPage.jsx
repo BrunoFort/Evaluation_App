@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import CompanyLayout from "../../Layouts/CompanyLayout";
+import CompanyLayout from "@/layouts/CompanyLayout";
 
-import PageHeader from "/src/components/ui/PageHeader.jsx";
-import Card from "/src/components/ui/card.jsx";
-import SectionCard from "/src/components/ui/SectionCard.jsx";
+import PageHeader from "@/components/ui/PageHeader.jsx";
+import Card from "@/components/ui/Card.jsx";
+import SectionCard from "@/components/ui/SectionCard.jsx";
 
-export default function EmployerAnalyticsPage() {
+export default function CompanyAnalyticsPage() {
   const [stats, setStats] = useState({
     employees: 0,
     evaluations: 0,
