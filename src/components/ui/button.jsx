@@ -7,12 +7,12 @@ export default function Button({
   ...props
 }) {
   const base =
-    "inline-flex items-center justify-center font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-semibold rounded-lg transition focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-60 disabled:cursor-not-allowed gap-2";
 
   const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "bg-slate-100 text-slate-700 hover:bg-slate-200",
-    outline: "border border-slate-300 text-slate-700 hover:bg-slate-50",
+    primary: "bg-purple-600 text-white hover:bg-purple-700",
+    secondary: "bg-neutral-100 text-neutral-700 hover:bg-neutral-200",
+    outline: "border border-neutral-300 text-neutral-700 hover:bg-neutral-100",
     danger: "bg-red-600 text-white hover:bg-red-700",
   };
 
