@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PublicLayout from "../../Layouts/PublicLayout";
-import Card from "/src/components/ui/card.jsx";
+import PublicLayout from "@/layouts/PublicLayout";
+import Card from "@/components/ui/Card.jsx";
 import { Star } from "lucide-react";
 
 export default function PublicEvaluation() {
@@ -28,7 +28,8 @@ export default function PublicEvaluation() {
           score: 4.5,
           position: "Software Developer",
           date: "2025-11-12",
-          summary: "Excellent performance, strong communication, reliable team member."
+          summary:
+            "Excellent performance, strong communication, reliable team member.",
         };
 
         setEvaluation(data);
