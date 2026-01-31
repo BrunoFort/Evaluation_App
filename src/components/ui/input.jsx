@@ -6,7 +6,8 @@ export default function Input({
   ...props
 }) {
   const base =
-    "w-full border rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 transition";
+    "w-full border rounded-md px-3 bg-background text-neutral-900 " +
+    "focus:outline-none focus:ring-2 focus:ring-purple-600 transition";
 
   const sizes = {
     sm: "text-sm py-1.5",
@@ -15,8 +16,8 @@ export default function Input({
   };
 
   const borderColor = error
-    ? "border-red-500"
-    : "border-neutral-300 focus:border-purple-500";
+    ? "border-destructive"
+    : "border-neutral-300 focus:border-purple-600";
 
   return (
     <div className="space-y-1">
@@ -32,7 +33,7 @@ export default function Input({
       />
 
       {error && (
-        <p className="text-xs text-red-600 mt-1">
+        <p className="text-xs text-destructive mt-1">
           {error}
         </p>
       )}
