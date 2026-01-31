@@ -7,7 +7,7 @@ export default function Card({
   ...props
 }) {
   const base =
-    "bg-white border border-slate-200 rounded-xl transition";
+    "bg-white border border-neutral-200 rounded-xl transition";
 
   const paddings = {
     none: "",
@@ -23,8 +23,9 @@ export default function Card({
     lg: "shadow-lg",
   };
 
-  const hover =
-    interactive ? "hover:shadow-md hover:border-slate-300 cursor-pointer" : "";
+  const hover = interactive
+    ? "hover:shadow-md hover:border-neutral-300 cursor-pointer"
+    : "";
 
   return (
     <div
