@@ -5,9 +5,9 @@ export default function Avatar({ src, alt, size = 48 }) {
     return (
       <div
         style={{ width: dimension, height: dimension }}
-        className="rounded-full bg-slate-200 flex items-center justify-center text-slate-500"
+        className="rounded-full bg-neutral-200 flex items-center justify-center text-neutral-500 border border-neutral-300"
       >
-        ?
+        <span className="text-sm font-semibold">?</span>
       </div>
     );
   }
@@ -17,7 +17,7 @@ export default function Avatar({ src, alt, size = 48 }) {
       src={src}
       alt={alt}
       style={{ width: dimension, height: dimension }}
-      className="rounded-full object-cover border"
+      className="rounded-full object-cover border border-neutral-300"
     />
   );
 }
