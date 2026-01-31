@@ -11,7 +11,7 @@ import {
 
 import ShineLogo from "@/assets/shine-logo.png";
 
-export default function DashboardLayout({ children }) {
+export default function EmployerDashboardLayout({ children }) {
   const location = useLocation();
 
   const navItems = [
@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }) {
       {/* SIDEBAR */}
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
 
-        {/* Logo Shine */}
+        {/* Logo */}
         <div className="flex items-center justify-center mb-12">
           <img
             src={ShineLogo}
@@ -90,4 +90,3 @@ export default function DashboardLayout({ children }) {
     </div>
   );
 }
-
