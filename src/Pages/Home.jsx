@@ -1,5 +1,5 @@
 // ---------------------------------------------------------
-// Home.jsx — Modelo A (C‑Plus Refinado)
+// Home.jsx — Modelo B (C‑Prime — Premium Minimalista)
 // ---------------------------------------------------------
 
 import React, { useState } from "react";
@@ -14,8 +14,6 @@ import {
   UserCheck,
   ClipboardCheck,
   Shield,
-  ArrowLeft,
-  ArrowRight,
 } from "lucide-react";
 
 import { useEmployerAuth } from "@/features/auth/employer/useEmployerAuth";
@@ -33,7 +31,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-12">
         <Link to="/employer">
-          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base shadow hover:shadow-lg transition">
+          <Button className="bg-black text-white px-8 py-3 rounded-lg text-base hover:bg-neutral-800 transition">
             Go to Employer Dashboard
           </Button>
         </Link>
@@ -45,7 +43,7 @@ function DashboardShortcut() {
     return (
       <div className="flex justify-center mt-12">
         <Link to="/employee">
-          <Button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base shadow hover:shadow-lg transition">
+          <Button className="bg-black text-white px-8 py-3 rounded-lg text-base hover:bg-neutral-800 transition">
             Go to Employee Dashboard
           </Button>
         </Link>
@@ -86,25 +84,25 @@ function ViewEvaluationSection() {
   };
 
   return (
-    <section className="max-w-4xl mx-auto px-6 mt-28">
-      <Card className="p-12 border border-slate-200 shadow-sm bg-white rounded-2xl">
-        <h3 className="text-2xl font-semibold text-slate-900 mb-3">
+    <section className="max-w-3xl mx-auto px-6 mt-24">
+      <Card className="p-10 border border-neutral-200 bg-white rounded-xl">
+        <h3 className="text-xl font-semibold text-neutral-900 mb-2">
           View an Evaluation
         </h3>
-        <p className="text-slate-600 mb-8 text-lg">
+        <p className="text-neutral-600 mb-6 text-base">
           Paste an evaluation link or token to access a candidate’s verified reference.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex gap-4">
+        <form onSubmit={handleSubmit} className="flex gap-3">
           <Input
             value={evaluationLink}
             onChange={(e) => setEvaluationLink(e.target.value)}
             placeholder="Paste link or token..."
-            className="flex-1 text-lg"
+            className="flex-1 text-base"
           />
           <Button
             disabled={!evaluationLink}
-            className="bg-blue-600 text-white px-8 py-3 text-lg hover:bg-blue-700 transition"
+            className="bg-black text-white px-6 py-3 text-base hover:bg-neutral-800 transition"
           >
             View
           </Button>
@@ -116,10 +114,10 @@ function ViewEvaluationSection() {
 
 
 // ---------------------------------------------------------
-// Carrossel de Features (C‑Plus Refinado)
+// Feature Grid (C‑Prime Minimalista)
 // ---------------------------------------------------------
-function FeatureCarousel() {
-  const slides = [
+function FeatureGrid() {
+  const features = [
     {
       icon: Building2,
       title: "Verified Company Accounts",
@@ -142,78 +140,47 @@ function FeatureCarousel() {
     },
   ];
 
-  const [index, setIndex] = useState(0);
-
-  const next = () => setIndex((prev) => (prev + 1) % slides.length);
-  const prev = () => setIndex((prev) => (prev - 1 + slides.length) % slides.length);
-
-  const slide = slides[index];
-
   return (
-    <div className="max-w-xl mx-auto text-center">
-      <div className="relative p-12 bg-white rounded-2xl shadow-sm border border-slate-200 transition">
-        <slide.icon className="w-14 h-14 text-blue-600 mx-auto mb-6" />
-        <h3 className="text-2xl font-semibold text-slate-900 mb-3">{slide.title}</h3>
-        <p className="text-slate-600 text-base leading-relaxed">{slide.desc}</p>
-
-        {/* Controls */}
-        <div className="flex justify-between mt-10">
-          <button
-            onClick={prev}
-            className="p-3 rounded-full border border-slate-300 hover:border-blue-600 hover:text-blue-600 transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-
-          <button
-            onClick={next}
-            className="p-3 rounded-full border border-slate-300 hover:border-blue-600 hover:text-blue-600 transition"
-          >
-            <ArrowRight className="w-5 h-5" />
-          </button>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 max-w-5xl mx-auto px-6">
+      {features.map((f, i) => (
+        <div
+          key={i}
+          className="p-8 border border-neutral-200 rounded-xl bg-white hover:border-neutral-300 transition"
+        >
+          <f.icon className="w-10 h-10 text-neutral-900 mb-6" />
+          <h3 className="text-xl font-semibold text-neutral-900 mb-2">{f.title}</h3>
+          <p className="text-neutral-600 leading-relaxed">{f.desc}</p>
         </div>
-      </div>
-
-      {/* Indicators */}
-      <div className="flex justify-center gap-2 mt-5">
-        {slides.map((_, i) => (
-          <div
-            key={i}
-            className={`w-3 h-3 rounded-full transition ${
-              i === index ? "bg-blue-600" : "bg-slate-300"
-            }`}
-          />
-        ))}
-      </div>
+      ))}
     </div>
   );
 }
 
 
 // ---------------------------------------------------------
-// HOME PAGE — Modelo A (C‑Plus Refinado)
+// HOME PAGE — Modelo B (C‑Prime)
 // ---------------------------------------------------------
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
 
       {/* Header */}
-      <header className="w-full border-b border-slate-200 py-5 bg-white/80 backdrop-blur-md sticky top-0 z-20">
+      <header className="w-full border-b border-neutral-200 py-5 bg-white/70 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <span className="text-2xl font-semibold text-slate-900 tracking-tight">
+          <span className="text-2xl font-semibold text-neutral-900 tracking-tight">
             ProRef
           </span>
 
           <div className="flex items-center gap-8 text-base">
-            <Link to="/employer/login" className="text-slate-700 hover:text-blue-600 transition">
+            <Link to="/employer/login" className="text-neutral-700 hover:text-black transition">
               Employer Login
             </Link>
-            <Link to="/employee/login" className="text-slate-700 hover:text-blue-600 transition">
+            <Link to="/employee/login" className="text-neutral-700 hover:text-black transition">
               Employee Login
             </Link>
 
             <Link to="/employer/signup">
-              <Button className="bg-blue-600 text-white px-6 py-2.5 rounded-md text-base shadow hover:bg-blue-700 transition">
+              <Button className="bg-black text-white px-6 py-2.5 rounded-md text-base hover:bg-neutral-800 transition">
                 Register Company
               </Button>
             </Link>
@@ -222,32 +189,32 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 py-36 text-center">
-        <h1 className="text-6xl font-bold text-slate-900 tracking-tight mb-10 leading-tight">
-          Clear, Modern Employee References  
-          <span className="block text-blue-600">Built for Today’s Hiring</span>
+      <section className="max-w-6xl mx-auto px-6 py-32 text-center">
+        <h1 className="text-6xl font-semibold text-neutral-900 tracking-tight mb-8 leading-tight">
+          Modern, Minimalist  
+          <span className="block">Employee References</span>
         </h1>
 
-        <p className="text-2xl text-slate-600 max-w-3xl mx-auto mb-14 leading-relaxed">
-          ProRef helps companies create structured, trustworthy evaluations that candidates
-          can share with confidence — and hiring teams can rely on.
+        <p className="text-xl text-neutral-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+          A clean, structured way for companies to create trustworthy evaluations —  
+          and for candidates to share them with confidence.
         </p>
 
-        <div className="flex flex-col sm:flex-row justify-center gap-5">
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/employer/signup">
-            <Button className="bg-blue-600 text-white px-12 py-4 rounded-xl text-xl shadow-md hover:shadow-lg hover:bg-blue-700 transition">
+            <Button className="bg-black text-white px-10 py-4 rounded-lg text-lg hover:bg-neutral-800 transition">
               Register Company
             </Button>
           </Link>
 
           <Link to="/employer/login">
-            <Button variant="outline" className="px-12 py-4 border-slate-300 text-xl rounded-xl hover:border-blue-600 hover:text-blue-600 transition">
+            <Button variant="outline" className="px-10 py-4 border-neutral-300 text-lg rounded-lg hover:border-black hover:text-black transition">
               Employer Login
             </Button>
           </Link>
 
           <Link to="/employee/login">
-            <Button variant="outline" className="px-12 py-4 border-slate-300 text-xl rounded-xl hover:border-blue-600 hover:text-blue-600 transition">
+            <Button variant="outline" className="px-10 py-4 border-neutral-300 text-lg rounded-lg hover:border-black hover:text-black transition">
               Employee Login
             </Button>
           </Link>
@@ -259,32 +226,32 @@ export default function Home() {
       {/* View Evaluation */}
       <ViewEvaluationSection />
 
-      {/* Carrossel de Features */}
-      <section className="bg-slate-50 py-36">
-        <h2 className="text-5xl font-bold text-slate-900 text-center mb-24">
-          Explore What ProRef Offers
+      {/* Features */}
+      <section className="py-32 bg-neutral-50">
+        <h2 className="text-4xl font-semibold text-neutral-900 text-center mb-20">
+          What You Can Do with ProRef
         </h2>
 
-        <FeatureCarousel />
+        <FeatureGrid />
       </section>
 
       {/* CTA */}
       <section className="py-28 text-center bg-white">
-        <h2 className="text-5xl font-bold text-slate-900 mb-6">
+        <h2 className="text-4xl font-semibold text-neutral-900 mb-4">
           Start Building Trusted References
         </h2>
-        <p className="text-slate-600 mb-12 text-xl">
+        <p className="text-neutral-600 mb-10 text-lg">
           Register your company and begin creating verified evaluations today.
         </p>
         <Link to="/employer/signup">
-          <Button className="bg-blue-600 text-white px-12 py-4 rounded-xl text-xl shadow-md hover:shadow-lg hover:bg-blue-700 transition">
+          <Button className="bg-black text-white px-12 py-4 rounded-lg text-lg hover:bg-neutral-800 transition">
             Register Company
           </Button>
         </Link>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-12 text-center text-base text-slate-500">
+      <footer className="border-t border-neutral-200 py-12 text-center text-base text-neutral-500">
         © {new Date().getFullYear()} ProRef — Professional Reference Platform
       </footer>
     </div>
