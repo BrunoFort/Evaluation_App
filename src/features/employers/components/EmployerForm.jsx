@@ -1,7 +1,9 @@
+// src/features/employers/components/EmployerForm.jsx
+
 import { useForm } from "react-hook-form";
-import Button from "/src/components/ui/Button.jsx";;
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Button from "/src/components/ui/Button.jsx";
+import { Input } from "/src/components/ui/Input.jsx";
+import { Label } from "/src/components/ui/Label.jsx";
 
 export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
   const {
@@ -12,6 +14,8 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
+
+      {/* Company Name */}
       <div className="flex flex-col gap-2">
         <Label>Company Name</Label>
         <Input
@@ -19,10 +23,11 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="ABC Consulting Inc."
         />
         {errors.companyName && (
-          <p className="text-red-500 text-sm">{errors.companyName.message}</p>
+          <p className="text-red-600 text-sm">{errors.companyName.message}</p>
         )}
       </div>
 
+      {/* Business Number */}
       <div className="flex flex-col gap-2">
         <Label>Business Number</Label>
         <Input
@@ -32,12 +37,11 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="123456789"
         />
         {errors.businessNumber && (
-          <p className="text-red-500 text-sm">
-            {errors.businessNumber.message}
-          </p>
+          <p className="text-red-600 text-sm">{errors.businessNumber.message}</p>
         )}
       </div>
 
+      {/* Evaluator Name */}
       <div className="flex flex-col gap-2">
         <Label>Evaluator Name</Label>
         <Input
@@ -47,12 +51,11 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="John Doe"
         />
         {errors.evaluatorName && (
-          <p className="text-red-500 text-sm">
-            {errors.evaluatorName.message}
-          </p>
+          <p className="text-red-600 text-sm">{errors.evaluatorName.message}</p>
         )}
       </div>
 
+      {/* Evaluator Position */}
       <div className="flex flex-col gap-2">
         <Label>Evaluator Position</Label>
         <Input
@@ -62,12 +65,11 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="HR Manager"
         />
         {errors.evaluatorPosition && (
-          <p className="text-red-500 text-sm">
-            {errors.evaluatorPosition.message}
-          </p>
+          <p className="text-red-600 text-sm">{errors.evaluatorPosition.message}</p>
         )}
       </div>
 
+      {/* Email */}
       <div className="flex flex-col gap-2">
         <Label>Email</Label>
         <Input
@@ -76,10 +78,11 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="hr@company.ca"
         />
         {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
+          <p className="text-red-600 text-sm">{errors.email.message}</p>
         )}
       </div>
 
+      {/* Phone */}
       <div className="flex flex-col gap-2">
         <Label>Phone</Label>
         <Input
@@ -87,13 +90,20 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="+1 (555) 123-4567"
         />
         {errors.phone && (
-          <p className="text-red-500 text-sm">{errors.phone.message}</p>
+          <p className="text-red-600 text-sm">{errors.phone.message}</p>
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
+      {/* Submit */}
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-purple-600 hover:bg-purple-700 text-white"
+      >
         {isSubmitting ? "Saving..." : "Save"}
       </Button>
+
     </form>
   );
 }
+
