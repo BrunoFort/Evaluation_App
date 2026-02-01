@@ -6,29 +6,29 @@ import Home from "@/Pages/Home";
 // PUBLIC
 import PublicEvaluation from "@/Pages/PublicEvaluation/PublicEvaluation";
 
-// EMPLOYER AUTH
+// EMPLOYER AUTH PROVIDERS & GUARDS
 import { EmployerAuthProvider } from "@/features/auth/employer/providers/EmployerAuthProvider";
 import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmployerAuth";
 
-// EMPLOYEE AUTH
+// EMPLOYEE AUTH PROVIDERS & GUARDS
 import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
-// EMPLOYER AUTH PAGES
-import EmployerLoginPage from "@/features/auth/EmployerLoginPage";
-import EmployerRegisterPage from "@/features/auth/EmployerRegisterPage";
-import EmployerForgotPasswordPage from "@/features/auth/EmployerForgotPasswordPage";
-import EmployerResetPasswordPage from "@/features/auth/EmployerResetPasswordPage";
+// EMPLOYER AUTH PAGES (NOVOS CAMINHOS)
+import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
+import EmployerRegisterPage from "@/app/(public)/employer/signup/page.jsx";
+import EmployerForgotPasswordPage from "@/app/(public)/employer/forgot-password/page.jsx";
+import EmployerResetPasswordPage from "@/app/(public)/employer/reset-password/page.jsx";
 
 // EMPLOYER DASHBOARD
 import EmployerDashboardPage from "@/features/employer-dashboard/EmployerDashboardPage";
 import EmployerAnalyticsPage from "@/features/employer-dashboard/EmployerAnalyticsPage";
 
-// EMPLOYEE AUTH PAGES
-import EmployeeLoginPage from "@/features/auth/EmployeeLoginPage";
-import EmployeeRegisterPage from "@/features/auth/EmployeeRegisterPage";
-import EmployeeForgotPasswordPage from "@/features/auth/EmployeeForgotPasswordPage";
-import EmployeeResetPasswordPage from "@/features/auth/EmployeeResetPasswordPage";
+// EMPLOYEE AUTH PAGES (NOVOS CAMINHOS)
+import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
+import EmployeeRegisterPage from "@/app/(public)/employee/signup/page.jsx";
+import EmployeeForgotPasswordPage from "@/app/(public)/employee/forgot-password/page.jsx";
+import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/page.jsx";
 import EmployeeCompleteRegistrationPage from "@/features/employee-auth/EmployeeCompleteRegistrationPage";
 
 // EMPLOYEE DASHBOARD
