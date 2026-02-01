@@ -1,16 +1,18 @@
 import { useMemo } from "react";
-import { useEvaluations } from "@/features/evaluations/hooks/useEvaluations";
-import { useEmployeeAuth } from "@/features/auth/employee/useEmployeeAuth";
+import { useEvaluations } from "/src/features/evaluations/hooks/useEvaluations";
+import { useEmployeeAuth } from "/src/features/auth/employee/useEmployeeAuth";
 
 export default function EmployeeProfilePage() {
-  const { employee } = useEmployeeAuth(); // employee logado
+  const { employee } = useEmployeeAuth();
   const { evaluations, loading } = useEvaluations();
 
   if (!employee || employee.role !== "employee") {
-    return <p>Unauthorized.</p>;
+    return <p className="p-6 text-neutral-600">Unauthorized.</p>;
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return <p className="p-6 text-neutral-600">Loading...</p>;
+  }
 
   const employeeEvaluations = evaluations.filter(
     (ev) => ev.employeeId === employee.employeeId
@@ -37,20 +39,25 @@ export default function EmployeeProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
+
+      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">{employee.fullName}</h1>
-        <p className="text-gray-600">{employee.email}</p>
+        <h1 className="text-3xl font-bold text-neutral-900">
+          {employee.fullName}
+        </h1>
+        <p className="text-neutral-600">{employee.email}</p>
       </div>
 
+      {/* Stats */}
       <div className="flex gap-6">
         <div>
-          <p className="text-sm text-gray-500">Average Score</p>
-          <p className="text-xl font-semibold">{avgScore}</p>
+          <p className="text-sm text-neutral-500">Average Score</p>
+          <p className="text-xl font-semibold text-neutral-900">{avgScore}</p>
         </div>
 
         <div>
-          <p className="text-sm text-gray-500">Average Rating</p>
-          <p className="text-xl font-semibold">
+          <p className="text-sm text-neutral-500">Average Rating</p>
+          <p className="text-xl font-semibold text-neutral-900">
             {avgStars === "N/A"
               ? "N/A"
               : "★".repeat(Math.round(Number(avgStars)))}
@@ -58,7 +65,8 @@ export default function EmployeeProfilePage() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500">
+      {/* Description */}
+      <p className="text-sm text-neutral-600">
         This is a consolidated view of your professional evaluations. Detailed
         reports are only available to registered employers.
       </p>
