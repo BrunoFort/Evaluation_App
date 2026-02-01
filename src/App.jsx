@@ -8,10 +8,10 @@ import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "./features/auth/employer/providers/EmployerAuthProvider";
-import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAuth";
+import { RequireEmployerAuth } from "./features/auth/employer/guards/RequireEmployerAuth";
 
 // EMPLOYEE AUTH
-import { EmployeeAuthProvider } from "./features/auth/employee/EmployeeAuthProvider";
+import { EmployeeAuthProvider } from "./features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "./features/auth/employee/guards/RequireEmployeeAuth";
 
 // EMPLOYER AUTH PAGES
