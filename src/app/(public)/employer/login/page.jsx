@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
-import { supabase } from "/src/supabaseClient";
+import { useEmployerAuth } from "@/features/auth/employer/hooks/useEmployerAuth";
+import { supabase } from "@/supabaseClient";
 
-import Card from "/src/components/ui/card.jsx";
-import Input from "/src/components/ui/input.jsx";
-import Button from "/src/components/ui/Button.jsx";
-import PageHeader from "/src/components/ui/PageHeader.jsx";
+import Card from "@/components/ui/card.jsx";
+import Input from "@/components/ui/input.jsx";
+import Button from "@/components/ui/Button.jsx";
+import PageHeader from "@/components/ui/PageHeader.jsx";
 
 export default function EmployerLoginPage() {
   const { login } = useEmployerAuth();
