@@ -1,19 +1,28 @@
+// src/features/evaluations/hooks/useUpdateEvaluation.js
+
 import { useState } from "react";
-import { updateEvaluation } from "../evaluationsStore";
+import { updateEvaluation } from "/src/features/evaluations/api/evaluationsApi.js";
 
 export function useUpdateEvaluation() {
   const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState(null);
 
   async function update(id, data) {
-    setUpdating(true);
+    try {
+      setUpdating(true);
+      setError(null);
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
+      const result = await updateEvaluation(id, data);
+      return result;
 
-    updateEvaluation(id, data);
+    } catch (err) {
+      setError(err.message || "Failed to update evaluation");
+      throw err;
 
-    setUpdating(false);
-    return { success: true };
+    } finally {
+      setUpdating(false);
+    }
   }
 
-  return { update, updating };
+  return { update, updating, error };
 }
