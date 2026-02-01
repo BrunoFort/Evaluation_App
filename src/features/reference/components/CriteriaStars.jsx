@@ -1,4 +1,3 @@
-// src/features/reference/CriteriaStars.jsx
 import React from "react";
 
 const CRITERIA = [
@@ -21,13 +20,13 @@ const CRITERIA = [
   {
     key: "teamworkCollaboration",
     label: "Teamwork and Collaboration",
-    description: "Ability to interact and cooperate with colleagues and leaders.",
+    description:
+      "Ability to interact and cooperate with colleagues and leaders.",
   },
   {
     key: "initiativeProactivity",
     label: "Initiative and Proactivity",
-    description:
-      "Presenting ideas, solving problems, and seeking improvements.",
+    description: "Presenting ideas, solving problems, and seeking improvements.",
   },
   {
     key: "selfManagement",
@@ -44,19 +43,23 @@ const CRITERIA = [
 
 export function CriteriaStars({ evaluation }) {
   return (
-    <div className="mt-4 space-y-2">
+    <div className="mt-4 space-y-3">
       {CRITERIA.map((c) => {
         const value = evaluation[c.key];
-
         if (value == null) return null;
 
         return (
-          <div key={c.key} className="flex items-center justify-between gap-4">
+          <div
+            key={c.key}
+            className="flex items-center justify-between gap-4"
+          >
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">{c.label}</span>
+                <span className="font-medium text-sm text-neutral-800">
+                  {c.label}
+                </span>
                 <span
-                  className="text-xs text-gray-500 cursor-help"
+                  className="text-xs text-neutral-500 cursor-help"
                   title={c.description}
                 >
                   (?)
