@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+// src/app/(dashboard)/employer/employees/[id]/edit/page.jsx
+
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout";
-import Card from "@/components/ui/Card.jsx";
-import Input from "@/components/ui/Input.jsx";
-import Button from "@/components/ui/Button.jsx";
-import Textarea from "@/components/ui/Textarea.jsx";
+import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import Input from "/src/components/ui/Input.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import Textarea from "/src/components/ui/Textarea.jsx";
 
-export default function EmployeeEdit() {
+export default function EmployerEmployeeEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -54,12 +56,13 @@ export default function EmployeeEdit() {
 
   return (
     <EmployerDashboardLayout>
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-neutral-900 mb-10">
+      <div className="max-w-3xl mx-auto space-y-10">
+
+        <h1 className="text-4xl font-bold text-neutral-900">
           Edit Employee
         </h1>
 
-        <Card className="p-8 shadow-xl border border-neutral-200 bg-white rounded-2xl">
+        <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
 
           {loading ? (
             <p className="text-neutral-600 text-center">Loading employee...</p>
