@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+// src/app/(dashboard)/employer/employees/page.jsx
+
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout";
-import Card from "@/components/ui/Card.jsx";
-import Button from "@/components/ui/Button.jsx";
-import Input from "@/components/ui/Input.jsx";
+import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import Input from "/src/components/ui/Input.jsx";
 
-export default function EmployeeList() {
+export default function EmployerEmployeeListPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -19,24 +21,9 @@ export default function EmployeeList() {
 
       // MOCK — integração real virá depois
       const data = [
-        {
-          id: 1,
-          name: "John Doe",
-          position: "Frontend Developer",
-          email: "john@example.com",
-        },
-        {
-          id: 2,
-          name: "Sarah Smith",
-          position: "Backend Developer",
-          email: "sarah@example.com",
-        },
-        {
-          id: 3,
-          name: "Michael Brown",
-          position: "Product Manager",
-          email: "michael@example.com",
-        },
+        { id: 1, name: "John Doe", position: "Frontend Developer", email: "john@example.com" },
+        { id: 2, name: "Sarah Smith", position: "Backend Developer", email: "sarah@example.com" },
+        { id: 3, name: "Michael Brown", position: "Product Manager", email: "michael@example.com" },
       ];
 
       setEmployees(data);
@@ -52,9 +39,10 @@ export default function EmployeeList() {
 
   return (
     <EmployerDashboardLayout>
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto space-y-10">
 
-        <div className="flex justify-between items-center mb-10">
+        {/* Header */}
+        <div className="flex justify-between items-center">
           <h1 className="text-4xl font-bold text-neutral-900">
             Employees
           </h1>
@@ -67,7 +55,8 @@ export default function EmployeeList() {
           </Button>
         </div>
 
-        <Card className="p-6 shadow-xl border border-neutral-200 bg-white rounded-2xl">
+        {/* Card */}
+        <Card className="p-6 border border-neutral-200 shadow-sm bg-white rounded-2xl">
 
           {/* Search */}
           <div className="mb-6">
@@ -140,3 +129,4 @@ export default function EmployeeList() {
     </EmployerDashboardLayout>
   );
 }
+
