@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "@/components/ui/Button.jsx";
-import Input from "@/components/ui/Input.jsx";
-import Card from "@/components/ui/Card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import Input from "/src/components/ui/Input.jsx";
+import Card from "/src/components/ui/Card.jsx";
 
-export default function CompanyLogin() {
+export default function CompanyLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  function handleLogin(e) {
     e.preventDefault();
 
     // MOCK login
     if (email && password) {
       navigate("/company");
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
@@ -79,3 +79,4 @@ export default function CompanyLogin() {
     </div>
   );
 }
+
