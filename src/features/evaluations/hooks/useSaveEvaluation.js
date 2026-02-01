@@ -1,20 +1,28 @@
 // src/features/evaluations/hooks/useSaveEvaluation.js
+
 import { useState } from "react";
-import { addEvaluation } from "../evaluationsStore";
+import { createEvaluation } from "/src/features/evaluations/api/evaluationsApi.js";
 
 export function useSaveEvaluation() {
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   async function saveEvaluation(data) {
-    setSaving(true);
+    try {
+      setSaving(true);
+      setError(null);
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
+      const result = await createEvaluation(data);
+      return result;
 
-    addEvaluation(data);
+    } catch (err) {
+      setError(err.message || "Failed to save evaluation");
+      throw err;
 
-    setSaving(false);
-    return { success: true };
+    } finally {
+      setSaving(false);
+    }
   }
 
-  return { saveEvaluation, saving };
+  return { saveEvaluation, saving, error };
 }
