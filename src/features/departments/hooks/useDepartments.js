@@ -6,9 +6,27 @@ export function useDepartments() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getDepartments()
-      .then(setDepartments)
-      .finally(() => setLoading(false));
+    let active = true;
+
+    async function load() {
+      setLoading(true);
+
+      try {
+        const data = await getDepartments();
+        if (active) setDepartments(data);
+      } catch (err) {
+        console.error("Failed to load departments:", err);
+        if (active) setDepartments([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return { departments, loading };
