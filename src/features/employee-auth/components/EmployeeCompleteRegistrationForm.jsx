@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import { Input } from "/src/components/ui/input.jsx";
-import { Label } from "/src/components/ui/label.jsx";
-import Button from "/src/components/ui/Button.jsx";
+import Input from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import Button from "@/components/ui/Button.jsx";
 
 export function EmployeeCompleteRegistrationForm({ onSubmit }) {
   const {
@@ -114,4 +114,3 @@ export function EmployeeCompleteRegistrationForm({ onSubmit }) {
     </form>
   );
 }
-
