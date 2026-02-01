@@ -1,5 +1,4 @@
-import React from "react";
-import EmployeeDashboardLayout from "@/layouts/EmployeeDashboardLayout";
+import EmployeeDashboardLayout from "/src/layouts/EmployeeDashboardLayout.jsx";
 import { Star, Link as LinkIcon, ClipboardList } from "lucide-react";
 
 export default function EmployeeDashboardPage() {
