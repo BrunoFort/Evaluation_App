@@ -7,7 +7,7 @@ import Home from "./Pages/Home";
 import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
 
 // EMPLOYER AUTH
-import { EmployerAuthProvider } from "./features/auth/employer/EmployerAuthProvider";
+import { EmployerAuthProvider } from "./features/auth/employer/providers/EmployerAuthProvider";
 import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAuth";
 
 // EMPLOYEE AUTH
