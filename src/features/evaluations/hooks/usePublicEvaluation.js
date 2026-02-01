@@ -1,29 +1,40 @@
 // src/features/evaluations/hooks/usePublicEvaluation.js
+
 import { useEffect, useState } from "react";
+import { getEvaluations } from "/src/features/evaluations/api/evaluationsApi.js";
 
 export function usePublicEvaluation(token) {
   const [evaluation, setEvaluation] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  async function fetchEvaluation() {
-    try {
-      const res = await fetch("http://localhost:4000/evaluations");
-      const data = await res.json();
-
-      const found = data.find((ev) => ev.publicToken === token);
-
-      setEvaluation(found || null);
-    } catch (error) {
-      console.error("Error fetching public evaluation:", error);
-      setEvaluation(null);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchEvaluation();
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        if (!token) {
+          setEvaluation(null);
+          return;
+        }
+
+        const all = await getEvaluations();
+        const found = all.find((ev) => ev.publicToken === token);
+
+        setEvaluation(found || null);
+
+      } catch (err) {
+        setError(err.message || "Failed to load evaluation");
+        setEvaluation(null);
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
   }, [token]);
 
-  return { evaluation, loading };
+  return { evaluation, loading, error };
 }
