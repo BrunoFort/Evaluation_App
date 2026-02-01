@@ -30,7 +30,6 @@ export default function EmployeeRegisterPage() {
 
     const { name, email, password, confirm } = form;
 
-    // Validações básicas
     if (!name || !email || !password || !confirm) {
       setError("Please fill in all fields.");
       setLoading(false);
@@ -49,7 +48,6 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    // MOCK — substituir por backend real
     setTimeout(() => {
       localStorage.setItem(
         "employee",
@@ -65,7 +63,7 @@ export default function EmployeeRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-xl space-y-8">
 
         <PageHeader
@@ -74,7 +72,7 @@ export default function EmployeeRegisterPage() {
           align="center"
         />
 
-        <Card padding="lg" shadow="md" className="bg-white/80 backdrop-blur space-y-6">
+        <Card padding="lg" shadow="md" className="space-y-6">
 
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">
@@ -89,7 +87,6 @@ export default function EmployeeRegisterPage() {
               placeholder="Enter your full name"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              className="bg-white"
             />
 
             <Input
@@ -97,7 +94,6 @@ export default function EmployeeRegisterPage() {
               placeholder="Enter your email"
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
-              className="bg-white"
             />
 
             <Input
@@ -106,7 +102,6 @@ export default function EmployeeRegisterPage() {
               placeholder="Create a password"
               value={form.password}
               onChange={(e) => updateField("password", e.target.value)}
-              className="bg-white"
             />
 
             <Input
@@ -115,34 +110,28 @@ export default function EmployeeRegisterPage() {
               placeholder="Re-enter your password"
               value={form.confirm}
               onChange={(e) => updateField("confirm", e.target.value)}
-              className="bg-white"
             />
 
-            <Button
-              type="submit"
-              fullWidth
-              size="lg"
-              disabled={loading}
-            >
+            <Button type="submit" fullWidth size="lg" disabled={loading}>
               {loading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 
-          <div className="flex items-center justify-between text-sm text-slate-600 pt-2">
-            <Link to="/employee/login" className="hover:text-blue-600">
+          <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
+            <Link to="/employee/login" className="hover:text-purple-600">
               Already have an account?
             </Link>
 
-            <Link to="/employee/forgot-password" className="hover:text-blue-600">
+            <Link to="/employee/forgot-password" className="hover:text-purple-600">
               Forgot password?
             </Link>
           </div>
 
-          <p className="text-center text-sm text-slate-600 mt-4">
+          <p className="text-center text-sm text-neutral-600 mt-4">
             Employer login instead{" "}
             <Link
               to="/employer/login"
-              className="text-blue-600 font-medium hover:underline"
+              className="text-purple-600 font-medium hover:underline"
             >
               Click here
             </Link>
