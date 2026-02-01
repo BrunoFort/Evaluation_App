@@ -14,21 +14,24 @@ import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmpl
 import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
-// EMPLOYER AUTH PAGES (APENAS O QUE EXISTE)
+// EMPLOYER AUTH PAGES (apenas o que você confirmou)
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
 
-// EMPLOYER DASHBOARD
-import EmployerDashboardPage from "@/features/employer-dashboard/EmployerDashboardPage";
-import EmployerAnalyticsPage from "@/features/employer-dashboard/EmployerAnalyticsPage";
+// EMPLOYER DASHBOARD (caminho que você confirmou)
+import EmployerDashboardPage from "@/app/(dashboard)/employer/page.jsx";
 
-// EMPLOYEE AUTH PAGES
+// EMPLOYER ANALYTICS — AQUI NÃO VOU INVENTAR
+// (só vou importar quando você disser onde está)
+
+// EMPLOYEE AUTH PAGES — NÃO VOU MEXER NEM INVENTAR CAMINHO
+// mantendo como estavam até você dizer onde realmente estão
 import EmployeeLoginPage from "@/features/auth/EmployeeLoginPage";
 import EmployeeRegisterPage from "@/features/auth/EmployeeRegisterPage";
 import EmployeeForgotPasswordPage from "@/features/auth/EmployeeForgotPasswordPage";
 import EmployeeResetPasswordPage from "@/features/auth/EmployeeResetPasswordPage";
 import EmployeeCompleteRegistrationPage from "@/features/employee-auth/EmployeeCompleteRegistrationPage";
 
-// EMPLOYEE DASHBOARD
+// EMPLOYEE DASHBOARD — idem, só ajusto quando você disser o caminho real
 import EmployeeDashboardPage from "@/features/employee-dashboard/EmployeeDashboardPage";
 
 export default function App() {
@@ -51,6 +54,7 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
+        {/* signup / forgot / reset só voltam quando existirem de fato */}
 
         {/* PROTECTED */}
         <Route
@@ -58,15 +62,6 @@ export default function App() {
           element={
             <RequireEmployerAuth>
               <EmployerDashboardPage />
-            </RequireEmployerAuth>
-          }
-        />
-
-        <Route
-          path="/employer/analytics"
-          element={
-            <RequireEmployerAuth>
-              <EmployerAnalyticsPage />
             </RequireEmployerAuth>
           }
         />
