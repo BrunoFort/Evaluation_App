@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import CompanyLayout from "@/layouts/CompanyLayout";
+import { useEffect, useState } from "react";
+import CompanyLayout from "/src/layouts/CompanyLayout.jsx";
 
-import PageHeader from "@/components/ui/PageHeader.jsx";
-import Card from "@/components/ui/Card.jsx";
-import SectionCard from "@/components/ui/SectionCard.jsx";
+import PageHeader from "/src/components/ui/PageHeader.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import SectionCard from "/src/components/ui/SectionCard.jsx";
 
 export default function CompanyAnalyticsPage() {
   const [stats, setStats] = useState({
@@ -50,7 +50,7 @@ export default function CompanyAnalyticsPage() {
         </div>
 
         <SectionCard title="Activity">
-          <p className="text-slate-600 text-sm">
+          <p className="text-neutral-600 text-sm">
             Here you’ll soon see recent evaluations, trends and key metrics.
           </p>
         </SectionCard>
@@ -62,8 +62,8 @@ export default function CompanyAnalyticsPage() {
 function StatCard({ label, value }) {
   return (
     <Card className="text-center py-6">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
+      <p className="text-sm text-neutral-500">{label}</p>
+      <p className="mt-2 text-3xl font-bold text-neutral-900">{value}</p>
     </Card>
   );
 }
