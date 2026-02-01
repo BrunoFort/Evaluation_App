@@ -17,7 +17,6 @@ export default function EmployeeForgotPasswordPage() {
     setError("");
     setLoading(true);
 
-    // MOCK — substituir por backend real
     setTimeout(() => {
       if (!email) {
         setError("Please enter your email.");
@@ -31,7 +30,7 @@ export default function EmployeeForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-md space-y-8">
 
         <PageHeader
@@ -40,7 +39,7 @@ export default function EmployeeForgotPasswordPage() {
           align="center"
         />
 
-        <Card padding="lg" shadow="md" className="bg-white/80 backdrop-blur space-y-6">
+        <Card padding="lg" shadow="md" className="space-y-6">
 
           {sent ? (
             <div className="space-y-4 text-center">
@@ -50,7 +49,7 @@ export default function EmployeeForgotPasswordPage() {
 
               <Link
                 to="/employee/login"
-                className="text-blue-600 hover:text-blue-800 text-sm"
+                className="text-purple-600 hover:text-purple-700 text-sm"
               >
                 Back to login
               </Link>
@@ -69,24 +68,18 @@ export default function EmployeeForgotPasswordPage() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-white"
               />
 
-              <Button
-                type="submit"
-                fullWidth
-                size="lg"
-                disabled={loading}
-              >
+              <Button type="submit" fullWidth size="lg" disabled={loading}>
                 {loading ? "Sending..." : "Send Reset Link"}
               </Button>
 
-              <div className="flex justify-between text-sm text-slate-600 pt-2">
-                <Link to="/employee/login" className="hover:text-blue-600">
+              <div className="flex justify-between text-sm text-neutral-600 pt-2">
+                <Link to="/employee/login" className="hover:text-purple-600">
                   Back to login
                 </Link>
 
-                <Link to="/employee/signup" className="hover:text-blue-600">
+                <Link to="/employee/signup" className="hover:text-purple-600">
                   Create account
                 </Link>
               </div>
@@ -97,3 +90,4 @@ export default function EmployeeForgotPasswordPage() {
     </div>
   );
 }
+
