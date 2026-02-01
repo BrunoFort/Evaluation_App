@@ -12,7 +12,7 @@ import { RequireEmployerAuth } from "./features/auth/employer/RequireEmployerAut
 
 // EMPLOYEE AUTH
 import { EmployeeAuthProvider } from "./features/auth/employee/EmployeeAuthProvider";
-import { RequireEmployeeAuth } from "./features/auth/employee/RequireEmployeeAuth";
+import { RequireEmployeeAuth } from "./features/auth/employee/guards/RequireEmployeeAuth";
 
 // EMPLOYER AUTH PAGES
 import EmployerLoginPage from "./features/auth/EmployerLoginPage";
