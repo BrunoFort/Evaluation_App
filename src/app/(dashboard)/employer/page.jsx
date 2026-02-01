@@ -1,10 +1,16 @@
-import React from "react";
-import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout";
-import Card from "@/components/ui/Card.jsx";
-import Button from "@/components/ui/Button.jsx";
+// src/app/(dashboard)/employer/page.jsx
+
+import { useNavigate } from "react-router-dom";
+
+import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+
 import { Users, FileText, UserPlus, LogOut } from "lucide-react";
 
 export default function EmployerDashboardPage() {
+  const navigate = useNavigate();
+
   return (
     <EmployerDashboardLayout>
 
@@ -14,7 +20,8 @@ export default function EmployerDashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <Card className="shadow-lg border border-neutral-200 bg-white rounded-2xl">
+        {/* Manage Employees */}
+        <Card className="shadow-sm border border-neutral-200 bg-white rounded-2xl">
           <div className="p-6 flex flex-col items-center text-center">
             <Users className="h-12 w-12 text-purple-600 mb-4" />
             <h2 className="text-xl font-semibold text-neutral-900 mb-2">
@@ -25,14 +32,15 @@ export default function EmployerDashboardPage() {
             </p>
             <Button
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-              onClick={() => (window.location.href = "/employer/employees")}
+              onClick={() => navigate("/employer/employees")}
             >
               Open
             </Button>
           </div>
         </Card>
 
-        <Card className="shadow-lg border border-neutral-200 bg-white rounded-2xl">
+        {/* Create Evaluation */}
+        <Card className="shadow-sm border border-neutral-200 bg-white rounded-2xl">
           <div className="p-6 flex flex-col items-center text-center">
             <FileText className="h-12 w-12 text-purple-600 mb-4" />
             <h2 className="text-xl font-semibold text-neutral-900 mb-2">
@@ -43,14 +51,15 @@ export default function EmployerDashboardPage() {
             </p>
             <Button
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-              onClick={() => (window.location.href = "/employer/evaluations/create")}
+              onClick={() => navigate("/employer/evaluations/create")}
             >
               Start
             </Button>
           </div>
         </Card>
 
-        <Card className="shadow-lg border border-neutral-200 bg-white rounded-2xl">
+        {/* Add Employee */}
+        <Card className="shadow-sm border border-neutral-200 bg-white rounded-2xl">
           <div className="p-6 flex flex-col items-center text-center">
             <UserPlus className="h-12 w-12 text-purple-600 mb-4" />
             <h2 className="text-xl font-semibold text-neutral-900 mb-2">
@@ -61,14 +70,15 @@ export default function EmployerDashboardPage() {
             </p>
             <Button
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-              onClick={() => (window.location.href = "/employer/employees/add")}
+              onClick={() => navigate("/employer/employees/add")}
             >
               Add
             </Button>
           </div>
         </Card>
 
-        <Card className="shadow-lg border border-neutral-200 bg-white rounded-2xl">
+        {/* Logout */}
+        <Card className="shadow-sm border border-neutral-200 bg-white rounded-2xl">
           <div className="p-6 flex flex-col items-center text-center">
             <LogOut className="h-12 w-12 text-red-500 mb-4" />
             <h2 className="text-xl font-semibold text-neutral-900 mb-2">
@@ -80,7 +90,7 @@ export default function EmployerDashboardPage() {
             <Button
               variant="outline"
               className="w-full border-red-300 text-red-600 hover:bg-red-50"
-              onClick={() => (window.location.href = "/employer/login")}
+              onClick={() => navigate("/employer/login")}
             >
               Logout
             </Button>
