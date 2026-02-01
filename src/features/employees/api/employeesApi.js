@@ -1,15 +1,18 @@
 const API_URL = "http://localhost:4000/employees";
 
+async function handleResponse(res, errorMessage) {
+  if (!res.ok) throw new Error(errorMessage);
+  return res.json();
+}
+
 export async function getEmployees() {
   const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Failed to fetch employees");
-  return res.json();
+  return handleResponse(res, "Failed to fetch employees");
 }
 
 export async function getEmployeeById(id) {
   const res = await fetch(`${API_URL}/${id}`);
-  if (!res.ok) throw new Error("Employee not found");
-  return res.json();
+  return handleResponse(res, "Employee not found");
 }
 
 export async function createEmployee(data) {
@@ -18,8 +21,7 @@ export async function createEmployee(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create employee");
-  return res.json();
+  return handleResponse(res, "Failed to create employee");
 }
 
 export async function updateEmployee(id, data) {
@@ -28,8 +30,7 @@ export async function updateEmployee(id, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to update employee");
-  return res.json();
+  return handleResponse(res, "Failed to update employee");
 }
 
 export async function deleteEmployee(id) {
@@ -39,3 +40,4 @@ export async function deleteEmployee(id) {
   if (!res.ok) throw new Error("Failed to delete employee");
   return true;
 }
+
