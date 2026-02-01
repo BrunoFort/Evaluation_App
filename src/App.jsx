@@ -6,29 +6,26 @@ import Home from "@/Pages/Home";
 // PUBLIC
 import PublicEvaluation from "@/Pages/PublicEvaluation/PublicEvaluation";
 
-// EMPLOYER AUTH PROVIDERS & GUARDS
+// EMPLOYER AUTH
 import { EmployerAuthProvider } from "@/features/auth/employer/providers/EmployerAuthProvider";
 import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmployerAuth";
 
-// EMPLOYEE AUTH PROVIDERS & GUARDS
+// EMPLOYEE AUTH
 import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
-// EMPLOYER AUTH PAGES (NOVOS CAMINHOS)
+// EMPLOYER AUTH PAGES (APENAS O QUE EXISTE)
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
-import EmployerRegisterPage from "@/app/(public)/employer/signup/page.jsx";
-import EmployerForgotPasswordPage from "@/app/(public)/employer/forgot-password/page.jsx";
-import EmployerResetPasswordPage from "@/app/(public)/employer/reset-password/page.jsx";
 
 // EMPLOYER DASHBOARD
 import EmployerDashboardPage from "@/features/employer-dashboard/EmployerDashboardPage";
 import EmployerAnalyticsPage from "@/features/employer-dashboard/EmployerAnalyticsPage";
 
-// EMPLOYEE AUTH PAGES (NOVOS CAMINHOS)
-import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
-import EmployeeRegisterPage from "@/app/(public)/employee/signup/page.jsx";
-import EmployeeForgotPasswordPage from "@/app/(public)/employee/forgot-password/page.jsx";
-import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/page.jsx";
+// EMPLOYEE AUTH PAGES
+import EmployeeLoginPage from "@/features/auth/EmployeeLoginPage";
+import EmployeeRegisterPage from "@/features/auth/EmployeeRegisterPage";
+import EmployeeForgotPasswordPage from "@/features/auth/EmployeeForgotPasswordPage";
+import EmployeeResetPasswordPage from "@/features/auth/EmployeeResetPasswordPage";
 import EmployeeCompleteRegistrationPage from "@/features/employee-auth/EmployeeCompleteRegistrationPage";
 
 // EMPLOYEE DASHBOARD
@@ -54,9 +51,6 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
-        <Route path="/employer/signup" element={<EmployerRegisterPage />} />
-        <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
-        <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
         {/* PROTECTED */}
         <Route
