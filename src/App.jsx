@@ -23,8 +23,8 @@ import EmployerDashboardPage from "@/app/(dashboard)/employer/page.jsx";
 // EMPLOYEE AUTH PAGES (confirmado)
 import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 
-// EMPLOYEE COMPLETE REGISTRATION (você já confirmou antes que existe)
-import EmployeeCompleteRegistrationPage from "@/features/employee-auth/EmployeeCompleteRegistrationPage";
+// EMPLOYEE COMPLETE REGISTRATION (confirmado)
+import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
 
 // EMPLOYEE DASHBOARD (AINDA NÃO CONFIRMADO — mantendo como estava)
 import EmployeeDashboardPage from "@/features/employee-dashboard/EmployeeDashboardPage";
