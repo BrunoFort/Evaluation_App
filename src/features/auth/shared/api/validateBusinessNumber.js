@@ -5,7 +5,7 @@ export async function validateBusinessNumber(bn) {
     throw new Error("Business Number must have 9 digits");
   }
 
-  // Simulação de retorno da API
+  // Simulated API response
   return {
     companyName: "Demo Company Ltd.",
   };
