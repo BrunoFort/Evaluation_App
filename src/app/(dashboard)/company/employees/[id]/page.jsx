@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+// src/app/(dashboard)/company/employees/[id]/page.jsx
+
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import CompanyLayout from "../../../Layouts/CompanyLayout";
+import CompanyLayout from "/src/layouts/CompanyLayout.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
-import Card from "/src/components/ui/card.jsx";
+import Card from "/src/components/ui/Card.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
 
-import { useEmployee } from "../hooks/useEmployee";
-import { useEmployeeEvaluations } from "../../evaluations/hooks/useEmployeeEvaluations";
-import EmployeeEvaluationsTab from "../components/EmployeeEvaluationsTab";
+import { useEmployee } from "/src/features/employees/hooks/useEmployee.js";
+import { useEmployeeEvaluations } from "/src/features/evaluations/hooks/useEmployeeEvaluations.js";
+import EmployeeEvaluationsTab from "/src/features/employees/components/EmployeeEvaluationsTab.jsx";
 
-import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
+import { useEmployerAuth } from "/src/features/auth/employer/useEmployerAuth.js";
 
 import {
   User,
@@ -22,11 +24,10 @@ import {
   Pencil,
 } from "lucide-react";
 
-export default function EmployeeProfileAdmin() {
+export default function EmployeeProfileAdminPage() {
   const { id } = useParams();
   const { employee, loading } = useEmployee(id);
 
-  // 🔥 Hook correto: employer logado
   const { employer } = useEmployerAuth();
   const employerId = employer?.employerId;
 
@@ -45,7 +46,7 @@ export default function EmployeeProfileAdmin() {
   if (loading) {
     return (
       <CompanyLayout>
-        <p className="text-slate-500">Loading employee...</p>
+        <p className="text-neutral-500 p-6">Loading employee...</p>
       </CompanyLayout>
     );
   }
@@ -53,7 +54,7 @@ export default function EmployeeProfileAdmin() {
   if (!employee) {
     return (
       <CompanyLayout>
-        <p className="text-red-600">Employee not found.</p>
+        <p className="text-red-600 p-6">Employee not found.</p>
       </CompanyLayout>
     );
   }
@@ -68,7 +69,7 @@ export default function EmployeeProfileAdmin() {
           right={
             <Link
               to={`/employees/${employee.id}/edit`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 transition"
             >
               <Pencil className="w-4 h-4" />
               Edit Employee
@@ -77,7 +78,7 @@ export default function EmployeeProfileAdmin() {
         />
 
         {/* Tabs */}
-        <div className="flex gap-6 border-b border-slate-200">
+        <div className="flex gap-6 border-b border-neutral-200">
           {[
             { key: "overview", label: "Overview" },
             { key: "evaluations", label: "Evaluations" },
@@ -90,8 +91,8 @@ export default function EmployeeProfileAdmin() {
               onClick={() => setActiveTab(tab.key)}
               className={`pb-3 text-sm font-medium border-b-2 transition ${
                 activeTab === tab.key
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-slate-600 hover:text-slate-800"
+                  ? "border-purple-600 text-purple-600"
+                  : "border-transparent text-neutral-600 hover:text-neutral-800"
               }`}
             >
               {tab.label}
@@ -108,7 +109,7 @@ export default function EmployeeProfileAdmin() {
               open={openAccordion === "basic"}
               onToggle={() => toggleAccordion("basic")}
             >
-              <div className="space-y-2 text-slate-700">
+              <div className="space-y-2 text-neutral-700">
                 <p><strong>Name:</strong> {employee.name}</p>
                 <p><strong>Email:</strong> {employee.email}</p>
                 <p><strong>Role:</strong> {employee.role || "Not assigned"}</p>
@@ -122,7 +123,7 @@ export default function EmployeeProfileAdmin() {
         {activeTab === "evaluations" && (
           <SectionCard title="Evaluations">
             {loadingEvaluations ? (
-              <p className="text-slate-500">Loading evaluations...</p>
+              <p className="text-neutral-500">Loading evaluations...</p>
             ) : (
               <EmployeeEvaluationsTab
                 evaluations={evaluations}
@@ -134,19 +135,19 @@ export default function EmployeeProfileAdmin() {
 
         {activeTab === "documents" && (
           <SectionCard title="Documents">
-            <p className="text-slate-600">Document upload and list will go here.</p>
+            <p className="text-neutral-600">Document upload and list will go here.</p>
           </SectionCard>
         )}
 
         {activeTab === "history" && (
           <SectionCard title="History">
-            <p className="text-slate-600">Employee history will be displayed here.</p>
+            <p className="text-neutral-600">Employee history will be displayed here.</p>
           </SectionCard>
         )}
 
         {activeTab === "kpis" && (
           <SectionCard title="KPIs">
-            <p className="text-slate-600">Performance charts and KPIs will go here.</p>
+            <p className="text-neutral-600">Performance charts and KPIs will go here.</p>
           </SectionCard>
         )}
       </div>
@@ -157,20 +158,20 @@ export default function EmployeeProfileAdmin() {
 /* Reusable Accordion Component */
 function AccordionSection({ title, icon, open, onToggle, children }) {
   return (
-    <Card className="p-0">
+    <Card className="p-0 border border-neutral-200 rounded-xl shadow-sm">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 text-left"
       >
-        <div className="flex items-center gap-2 text-slate-800 font-medium">
+        <div className="flex items-center gap-2 text-neutral-800 font-medium">
           {icon}
           {title}
         </div>
 
         {open ? (
-          <ChevronUp className="w-5 h-5 text-slate-500" />
+          <ChevronUp className="w-5 h-5 text-neutral-500" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-slate-500" />
+          <ChevronDown className="w-5 h-5 text-neutral-500" />
         )}
       </button>
 
@@ -178,3 +179,4 @@ function AccordionSection({ title, icon, open, onToggle, children }) {
     </Card>
   );
 }
+
