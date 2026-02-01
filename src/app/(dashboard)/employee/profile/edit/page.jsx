@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import EmployeeDashboardLayout from "@/layouts/EmployeeDashboardLayout";
-import Card from "@/components/ui/Card.jsx";
-import Input from "@/components/ui/Input.jsx";
-import Textarea from "@/components/ui/Textarea.jsx";
-import Button from "@/components/ui/Button.jsx";
+import EmployeeDashboardLayout from "/src/layouts/EmployeeDashboardLayout.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import Input from "/src/components/ui/Input.jsx";
+import Textarea from "/src/components/ui/Textarea.jsx";
+import Button from "/src/components/ui/Button.jsx";
 
-export default function EmployeeProfileEdit() {
+export default function EmployeeProfileEditPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -37,16 +37,16 @@ export default function EmployeeProfileEdit() {
     loadProfile();
   }, []);
 
-  const handleChange = (field, value) => {
+  function handleChange(field, value) {
     setProfile((prev) => ({ ...prev, [field]: value }));
-  };
+  }
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     // MOCK — integração real virá depois
     navigate("/employee/profile");
-  };
+  }
 
   return (
     <EmployeeDashboardLayout>
