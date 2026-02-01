@@ -1,21 +1,21 @@
-import Button from "/src/components/ui/Button.jsx";;
+import Button from "/src/components/ui/Button.jsx";
 import { Link } from "react-router-dom";
 import { DeleteDepartmentDialog } from "./DeleteDepartmentDialog";
 
 export function DepartmentTable({ departments, onDelete }) {
   return (
-    <table className="w-full border-collapse">
+    <table className="w-full border-collapse text-neutral-800">
       <thead>
         <tr className="border-b">
-          <th className="p-3 text-left">ID</th>
-          <th className="p-3 text-left">Name</th>
-          <th className="p-3 text-left">Actions</th>
+          <th className="p-3 text-left font-medium">ID</th>
+          <th className="p-3 text-left font-medium">Name</th>
+          <th className="p-3 text-left font-medium">Actions</th>
         </tr>
       </thead>
 
       <tbody>
         {departments.map((dep) => (
-          <tr key={dep.id} className="border-b">
+          <tr key={dep.id} className="border-b hover:bg-neutral-50">
             <td className="p-3">{dep.id}</td>
             <td className="p-3">{dep.name}</td>
 
@@ -34,3 +34,4 @@ export function DepartmentTable({ departments, onDelete }) {
     </table>
   );
 }
+
