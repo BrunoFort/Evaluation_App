@@ -1,4 +1,7 @@
 import { useForm } from "react-hook-form";
+import { Input } from "/src/components/ui/input.jsx";
+import { Label } from "/src/components/ui/label.jsx";
+import Button from "/src/components/ui/Button.jsx";
 
 export function EmployeeCompleteRegistrationForm({ onSubmit }) {
   const {
@@ -8,87 +11,107 @@ export function EmployeeCompleteRegistrationForm({ onSubmit }) {
   } = useForm();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
+      
       {/* WORK PERMIT */}
-      <div>
-        <label>Work Permit (1 letter + 9 digits)</label>
-        <input
-          className="border p-2 w-full"
-          {...register("workPermit", {
-            required: true,
-            pattern: /^[A-Za-z]\d{9}$/,
-          })}
+      <div className="flex flex-col gap-1">
+        <Label>Work Permit (1 letter + 9 digits)</Label>
+        <Input
           placeholder="U123456789"
+          {...register("workPermit", {
+            required: "Work Permit is required",
+            pattern: {
+              value: /^[A-Za-z]\d{9}$/,
+              message: "Invalid Work Permit format",
+            },
+          })}
         />
         {errors.workPermit && (
-          <p className="text-red-500 text-sm">Invalid Work Permit</p>
+          <p className="text-red-600 text-sm">{errors.workPermit.message}</p>
         )}
       </div>
 
       {/* EXPIRATION DATE */}
-      <div>
-        <label>Work Permit Expiration</label>
-        <input
+      <div className="flex flex-col gap-1">
+        <Label>Work Permit Expiration</Label>
+        <Input
           type="date"
-          className="border p-2 w-full"
-          {...register("workPermitExpiration", { required: true })}
+          {...register("workPermitExpiration", {
+            required: "Expiration date is required",
+          })}
         />
+        {errors.workPermitExpiration && (
+          <p className="text-red-600 text-sm">
+            {errors.workPermitExpiration.message}
+          </p>
+        )}
       </div>
 
       {/* ADDRESS */}
-      <div>
-        <label>Street / Avenue</label>
-        <input
-          className="border p-2 w-full"
-          {...register("street", { required: true })}
-        />
+      <div className="flex flex-col gap-1">
+        <Label>Street / Avenue</Label>
+        <Input {...register("street", { required: "Street is required" })} />
+        {errors.street && (
+          <p className="text-red-600 text-sm">{errors.street.message}</p>
+        )}
       </div>
 
-      <div>
-        <label>Number</label>
-        <input
-          className="border p-2 w-full"
-          {...register("number", { required: true })}
-        />
+      <div className="flex flex-col gap-1">
+        <Label>Number</Label>
+        <Input {...register("number", { required: "Number is required" })} />
+        {errors.number && (
+          <p className="text-red-600 text-sm">{errors.number.message}</p>
+        )}
       </div>
 
-      <div>
-        <label>Postal Code</label>
-        <input
-          className="border p-2 w-full"
-          {...register("postalCode", { required: true })}
+      <div className="flex flex-col gap-1">
+        <Label>Postal Code</Label>
+        <Input
+          {...register("postalCode", { required: "Postal Code is required" })}
         />
+        {errors.postalCode && (
+          <p className="text-red-600 text-sm">{errors.postalCode.message}</p>
+        )}
       </div>
 
-      <div>
-        <label>City</label>
-        <input
-          className="border p-2 w-full"
-          {...register("city", { required: true })}
-        />
+      <div className="flex flex-col gap-1">
+        <Label>City</Label>
+        <Input {...register("city", { required: "City is required" })} />
+        {errors.city && (
+          <p className="text-red-600 text-sm">{errors.city.message}</p>
+        )}
       </div>
 
-      <div>
-        <label>Province</label>
-        <input
-          className="border p-2 w-full"
-          {...register("province", { required: true })}
-        />
+      <div className="flex flex-col gap-1">
+        <Label>Province</Label>
+        <Input {...register("province", { required: "Province is required" })} />
+        {errors.province && (
+          <p className="text-red-600 text-sm">{errors.province.message}</p>
+        )}
       </div>
 
       {/* PASSWORD */}
-      <div>
-        <label>Create Password</label>
-        <input
+      <div className="flex flex-col gap-1">
+        <Label>Create Password</Label>
+        <Input
           type="password"
-          className="border p-2 w-full"
-          {...register("password", { required: true, minLength: 6 })}
+          {...register("password", {
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Password must have at least 6 characters",
+            },
+          })}
         />
+        {errors.password && (
+          <p className="text-red-600 text-sm">{errors.password.message}</p>
+        )}
       </div>
 
-      <button className="bg-blue-600 text-white px-4 py-2 rounded">
+      <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg">
         Save and Continue
-      </button>
+      </Button>
     </form>
   );
 }
+
