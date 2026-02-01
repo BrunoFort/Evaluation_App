@@ -1,41 +1,45 @@
-const API_URL = "http://localhost:4000/departments";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = `${BASE_URL}/departments`;
 
-export async function getDepartments() {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Failed to fetch departments");
+async function request(url, options = {}) {
+  const res = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+
+  if (!res.ok) {
+    const message = `Request failed: ${res.status} ${res.statusText}`;
+    throw new Error(message);
+  }
+
   return res.json();
 }
 
-export async function getDepartmentById(id) {
-  const res = await fetch(`${API_URL}/${id}`);
-  if (!res.ok) throw new Error("Department not found");
-  return res.json();
+export function getDepartments() {
+  return request(API_URL);
 }
 
-export async function createDepartment(data) {
-  const res = await fetch(API_URL, {
+export function getDepartmentById(id) {
+  return request(`${API_URL}/${id}`);
+}
+
+export function createDepartment(data) {
+  return request(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create department");
-  return res.json();
 }
 
-export async function updateDepartment(id, data) {
-  const res = await fetch(`${API_URL}/${id}`, {
+export function updateDepartment(id, data) {
+  return request(`${API_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to update department");
-  return res.json();
 }
 
-export async function deleteDepartment(id) {
-  const res = await fetch(`${API_URL}/${id}`, {
+export function deleteDepartment(id) {
+  return request(`${API_URL}/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Failed to delete department");
-  return true;
 }
+
