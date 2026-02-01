@@ -1,3 +1,5 @@
+// src/features/employers/components/DeleteEmployerDialog.jsx
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -8,28 +10,32 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from "/src/components/ui/alert-dialog";
 
 export function DeleteEmployerDialog({ onConfirm, children }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-2xl border border-neutral-200 shadow-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Employer</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete this employer? This action cannot be
-            undone.
+          <AlertDialogTitle className="text-neutral-900">
+            Delete Employer
+          </AlertDialogTitle>
+
+          <AlertDialogDescription className="text-neutral-600">
+            Are you sure you want to delete this employer? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="border-neutral-300 text-neutral-700 hover:bg-neutral-100">
+            Cancel
+          </AlertDialogCancel>
 
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700"
+            className="bg-red-600 hover:bg-red-700 text-white"
           >
             Delete
           </AlertDialogAction>
