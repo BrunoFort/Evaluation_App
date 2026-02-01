@@ -1,17 +1,19 @@
-// src/features/employees/hooks/useEmployees.js
 import { useEffect, useState } from "react";
+import { getEmployees } from "/src/features/employees/api/employeesApi";
 
 export function useEmployees() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
   async function fetchEmployees() {
+    setLoading(true);
+
     try {
-      const res = await fetch("http://localhost:4000/employees");
-      const data = await res.json();
+      const data = await getEmployees();
       setEmployees(data);
-    } catch (error) {
-      console.error("Error fetching employees:", error);
+    } catch (err) {
+      console.error("Failed to fetch employees:", err);
+      setEmployees([]);
     } finally {
       setLoading(false);
     }
