@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from "/src/components/ui/alert-dialog";
 
 export function DeleteEmployeeDialog({ onConfirm, children }) {
   return (
@@ -19,18 +19,23 @@ export function DeleteEmployeeDialog({ onConfirm, children }) {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Employee</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="text-neutral-900">
+            Delete Employee
+          </AlertDialogTitle>
+
+          <AlertDialogDescription className="text-neutral-600">
             Are you sure you want to delete this employee? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="text-neutral-700 border-neutral-300 hover:bg-neutral-100">
+            Cancel
+          </AlertDialogCancel>
 
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700"
+            className="bg-red-600 hover:bg-red-700 text-white"
           >
             Delete
           </AlertDialogAction>
