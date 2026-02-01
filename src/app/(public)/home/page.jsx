@@ -1,119 +1,114 @@
 import { Link } from "react-router-dom";
-import ShineLogo from "@/assets/shine-logo.png";
-import { Building2, Users, LogIn } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, ShieldCheck, Sparkles, Clock, Users } from "lucide-react";
 
 export default function HomePage() {
+  const [token, setToken] = useState("");
+
+  const handleAccessLink = () => {
+    if (!token.trim()) return;
+    window.location.href = `/reference/${token}`;
+  };
+
   return (
-    <div className="flex min-h-screen bg-neutral-50">
+    <main className="min-h-screen bg-neutral-50 flex flex-col items-center px-6 py-16">
 
-      {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
+      {/* HERO */}
+      <section className="max-w-4xl text-center space-y-6 mb-16">
+        <h1 className="text-5xl font-bold tracking-tight text-neutral-900">
+          Fast, Secure Access to Employee Evaluations —  
+          <span className="text-purple-600"> While They Shine</span>
+        </h1>
 
-        {/* Logo */}
-        <div className="flex items-center justify-center mb-12">
-          <img
-            src={ShineLogo}
-            alt="Shine Logo"
-            className="w-32 h-32 object-contain"
+        <p className="text-lg text-neutral-700 leading-relaxed max-w-2xl mx-auto">
+          Shine gives employers instant, secure access to verified employee evaluations, 
+          while empowering employees to control their professional narrative with confidence.
+        </p>
+      </section>
+
+      {/* DIRECT LINK ACCESS */}
+      <section className="w-full max-w-xl mb-20">
+        <label className="block text-sm font-medium text-neutral-700 mb-2">
+          Received a Shine evaluation link by email?
+        </label>
+
+        <div className="flex gap-3">
+          <input
+            type="text"
+            placeholder="Paste the access link or token here"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            className="flex-1 border border-neutral-300 rounded-lg px-4 py-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
+
+          <button
+            onClick={handleAccessLink}
+            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition flex items-center gap-2"
+          >
+            Access
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
+      </section>
 
-        {/* Navigation */}
-        <nav className="flex flex-col gap-2">
-          <Link
-            to="/employer/login"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition"
-          >
-            <Building2 className="w-5 h-5 text-white" />
-            Employer Portal
-          </Link>
+      {/* CTA BUTTONS */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-24 w-full max-w-xl">
 
-          <Link
-            to="/employee/login"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition"
-          >
-            <Users className="w-5 h-5 text-white" />
-            Candidate Portal
-          </Link>
-        </nav>
-
-        <div className="flex-1" />
-
-        {/* Login */}
         <Link
-          to="/login"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
+          to="/employer/login"
+          className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-medium text-center"
         >
-          <LogIn className="w-5 h-5" />
-          Sign In
+          Employer Portal
         </Link>
-      </aside>
 
-      {/* MAIN AREA */}
-      <div className="flex-1 flex flex-col">
+        <Link
+          to="/employee/login"
+          className="w-full py-4 rounded-lg bg-purple-600 hover:bg-purple-700 transition text-white font-medium text-center"
+        >
+          Employee Portal
+        </Link>
 
-        {/* HEADER */}
-        <header className="w-full bg-white border-b border-neutral-200 py-5 px-10 flex justify-between items-center shadow-sm">
-          <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
-            Welcome to ProRef
-          </h1>
-        </header>
+      </section>
 
-        {/* CONTENT */}
-        <main className="p-10 max-w-4xl">
+      {/* CAROUSEL / ADVANTAGES */}
+      <section className="w-full max-w-5xl">
+        <h2 className="text-3xl font-bold text-neutral-900 text-center mb-10">
+          Why Shine?
+        </h2>
 
-          <h2 className="text-4xl font-bold text-neutral-900 mb-6">
-            Modern, Ethical, and Secure Professional References
-          </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
-          <p className="text-lg text-neutral-700 leading-relaxed mb-10">
-            ProRef empowers employers and candidates with a transparent, secure, and
-            real‑world‑ready reference management experience.  
-            Clear workflows, strong privacy controls, and a trusted environment built
-            for modern hiring.
-          </p>
-
-          {/* CTA GRID */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-            <Link
-              to="/employer/login"
-              className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-medium text-center"
-            >
-              Employer Portal
-            </Link>
-
-            <Link
-              to="/employee/login"
-              className="w-full py-4 rounded-lg bg-purple-600 hover:bg-purple-700 transition text-white font-medium text-center"
-            >
-              Candidate Portal
-            </Link>
+          {/* CARD 1 */}
+          <div className="bg-white shadow-md rounded-xl p-8 text-center space-y-4 border border-neutral-200">
+            <ShieldCheck className="w-10 h-10 text-purple-600 mx-auto" />
+            <h3 className="text-xl font-semibold text-neutral-900">Secure & Trusted</h3>
+            <p className="text-neutral-600 text-sm">
+              Evaluations are encrypted and accessible only to authorized employers.
+            </p>
           </div>
 
-          {/* SECONDARY ACTIONS */}
-          <div className="mt-10 space-y-2">
-            <p className="text-sm text-neutral-500">New to ProRef?</p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/employer/signup"
-                className="text-sm text-purple-600 hover:underline"
-              >
-                Create Employer Account
-              </Link>
-
-              <Link
-                to="/employee/signup"
-                className="text-sm text-purple-600 hover:underline"
-              >
-                Create Candidate Account
-              </Link>
-            </div>
+          {/* CARD 2 */}
+          <div className="bg-white shadow-md rounded-xl p-8 text-center space-y-4 border border-neutral-200">
+            <Clock className="w-10 h-10 text-purple-600 mx-auto" />
+            <h3 className="text-xl font-semibold text-neutral-900">Fast Access</h3>
+            <p className="text-neutral-600 text-sm">
+              Employers receive instant access to employee evaluations with no delays.
+            </p>
           </div>
 
-        </main>
-      </div>
-    </div>
+          {/* CARD 3 */}
+          <div className="bg-white shadow-md rounded-xl p-8 text-center space-y-4 border border-neutral-200">
+            <Sparkles className="w-10 h-10 text-purple-600 mx-auto" />
+            <h3 className="text-xl font-semibold text-neutral-900">Employees Shine</h3>
+            <p className="text-neutral-600 text-sm">
+              Employees control their data and showcase their strengths with confidence.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
   );
 }
+
