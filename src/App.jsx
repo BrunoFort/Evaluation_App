@@ -26,8 +26,8 @@ import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 // EMPLOYEE COMPLETE REGISTRATION (confirmado)
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
 
-// EMPLOYEE DASHBOARD (AINDA NÃO CONFIRMADO — mantendo como estava)
-import EmployeeDashboardPage from "@/features/employee-dashboard/EmployeeDashboardPage";
+// EMPLOYEE DASHBOARD (confirmado)
+import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
   return (
