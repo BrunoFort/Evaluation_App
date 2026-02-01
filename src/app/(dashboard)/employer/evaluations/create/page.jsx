@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+// src/app/(dashboard)/employer/evaluations/create/page.jsx
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout";
-import Card from "@/components/ui/Card.jsx";
-import Input from "@/components/ui/Input.jsx";
-import Button from "@/components/ui/Button.jsx";
-import Textarea from "@/components/ui/Textarea.jsx";
+import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
+import Card from "/src/components/ui/Card.jsx";
+import Input from "/src/components/ui/Input.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import Textarea from "/src/components/ui/Textarea.jsx";
 
-export default function CreateEvaluation() {
+export default function EmployerCreateEvaluationPage() {
   const navigate = useNavigate();
 
   const [employeeName, setEmployeeName] = useState("");
@@ -26,12 +28,13 @@ export default function CreateEvaluation() {
 
   return (
     <EmployerDashboardLayout>
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-neutral-900 mb-10">
+      <div className="max-w-3xl mx-auto space-y-10">
+
+        <h1 className="text-4xl font-bold text-neutral-900">
           Create Evaluation
         </h1>
 
-        <Card className="p-8 shadow-xl border border-neutral-200 bg-white rounded-2xl">
+        <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Employee Name */}
@@ -112,3 +115,4 @@ export default function CreateEvaluation() {
     </EmployerDashboardLayout>
   );
 }
+
