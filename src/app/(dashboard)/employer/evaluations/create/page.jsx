@@ -1,118 +1,135 @@
 // src/app/(dashboard)/employer/evaluations/create/page.jsx
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ClipboardCheck } from "lucide-react";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
-import Card from "/src/components/ui/Card.jsx";
-import Input from "/src/components/ui/Input.jsx";
-import Button from "/src/components/ui/Button.jsx";
-import Textarea from "/src/components/ui/Textarea.jsx";
+import { useEmployerAuth } from "/src/features/auth/employer/useEmployerAuth.js";
+import { generatePublicToken } from "/src/utils/generatePublicToken.js";
+import CriteriaEditor from "/src/features/evaluations/components/CriteriaEditor.jsx";
 
 export default function EmployerCreateEvaluationPage() {
   const navigate = useNavigate();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
-  const [employeeName, setEmployeeName] = useState("");
-  const [position, setPosition] = useState("");
-  const [score, setScore] = useState("");
-  const [summary, setSummary] = useState("");
+  const [searchParams] = useSearchParams();
+  const employeeIdFromURL = searchParams.get("employeeId");
 
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    employeeId: employeeIdFromURL || "",
+    title: "",
+  });
+
+  const [criteria, setCriteria] = useState([]);
+  const [saving, setSaving] = useState(false);
+
+  function handleChange(e) {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
+  function calculateOverallScore() {
+    if (criteria.length === 0) return 0;
+    const total = criteria.reduce(
+      (sum, c) => sum + (Number(c.score) || 0),
+      0
+    );
+    return total / criteria.length;
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
+    setSaving(true);
 
-    // MOCK — integração real virá depois
-    if (employeeName && position && score && summary) {
+    const newEvaluation = {
+      ...formData,
+      employeeId: Number(formData.employeeId),
+      employerId,
+      employerName: employer.companyName,
+      createdAt: new Date().toISOString(),
+      status: "completed",
+      publicToken: generatePublicToken(),
+      criteria,
+      overallScore: calculateOverallScore(),
+    };
+
+    try {
+      await fetch("http://localhost:4000/evaluations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEvaluation),
+      });
+
       navigate("/employer/evaluations");
+    } catch (error) {
+      console.error("Error creating evaluation:", error);
+    } finally {
+      setSaving(false);
     }
-  };
+  }
 
   return (
     <EmployerDashboardLayout>
       <div className="max-w-3xl mx-auto space-y-10">
 
-        <h1 className="text-4xl font-bold text-neutral-900">
-          Create Evaluation
-        </h1>
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <ClipboardCheck className="w-8 h-8 text-purple-600" />
+          <h1 className="text-4xl font-bold text-neutral-900">
+            Create Evaluation
+          </h1>
+        </div>
 
-        <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* Employee Name */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Employee Name
-              </label>
-              <Input
-                placeholder="Enter employee name"
-                value={employeeName}
-                onChange={(e) => setEmployeeName(e.target.value)}
-              />
-            </div>
+          {/* Employee ID */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Employee ID
+            </label>
+            <input
+              type="number"
+              name="employeeId"
+              value={formData.employeeId}
+              onChange={handleChange}
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              required
+            />
+          </div>
 
-            {/* Position */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Position
-              </label>
-              <Input
-                placeholder="Enter employee position"
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-              />
-            </div>
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              required
+            />
+          </div>
 
-            {/* Score */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Score (0–5)
-              </label>
-              <Input
-                type="number"
-                min="0"
-                max="5"
-                step="0.1"
-                placeholder="4.5"
-                value={score}
-                onChange={(e) => setScore(e.target.value)}
-              />
-            </div>
+          {/* Criteria Editor */}
+          <CriteriaEditor criteria={criteria} setCriteria={setCriteria} />
 
-            {/* Summary */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Summary
-              </label>
-              <Textarea
-                placeholder="Write a brief evaluation summary..."
-                rows={5}
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="border-neutral-300 text-neutral-700 hover:bg-neutral-100"
-                onClick={() => navigate("/employer/evaluations")}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                className="bg-purple-600 hover:bg-purple-700 text-white"
-              >
-                Save Evaluation
-              </Button>
-            </div>
-
-          </form>
-        </Card>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+          >
+            {saving ? "Saving..." : "Create Evaluation"}
+          </button>
+        </form>
       </div>
     </EmployerDashboardLayout>
   );
 }
-
