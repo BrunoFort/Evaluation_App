@@ -1,19 +1,32 @@
 // src/features/evaluations/hooks/useEvaluations.js
+
 import { useState, useEffect } from "react";
-import { getEvaluations } from "../evaluationsStore";
+import { getEvaluations } from "/src/features/evaluations/api/evaluationsApi.js";
 
 export function useEvaluations() {
   const [evaluations, setEvaluations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simula fetch
-    setTimeout(() => {
-      setEvaluations(getEvaluations());
-      setLoading(false);
-    }, 200);
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getEvaluations();
+        setEvaluations(data);
+
+      } catch (err) {
+        setError(err.message || "Failed to load evaluations");
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
   }, []);
 
-  return { evaluations, loading };
+  return { evaluations, loading, error };
 }
-
