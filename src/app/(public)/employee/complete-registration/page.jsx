@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEmployeeAuth } from "../auth/employee/useEmployeeAuth";
-import { EmployeeCompleteRegistrationForm } from "./components/EmployeeCompleteRegistrationForm";
+import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAuth";
+import { EmployeeCompleteRegistrationForm } from "/src/features/employee-auth/components/EmployeeCompleteRegistrationForm";
 
 export default function EmployeeCompleteRegistrationPage() {
   const { token } = useParams();
@@ -8,9 +8,7 @@ export default function EmployeeCompleteRegistrationPage() {
   const { login } = useEmployeeAuth();
 
   function handleComplete(data) {
-    // Aqui você faria a validação do token e salvaria no backend
-    // Por enquanto, simulamos login automático
-
+    // Validação real do token aconteceria aqui
     login({
       id: data.id,
       name: data.name,
@@ -22,13 +20,13 @@ export default function EmployeeCompleteRegistrationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-lg space-y-8">
-        <h1 className="text-3xl font-bold text-center text-slate-900">
+        <h1 className="text-3xl font-bold text-center text-neutral-900">
           Complete Your Registration
         </h1>
 
-        <p className="text-center text-slate-600">
+        <p className="text-center text-neutral-600">
           Set your password and finish creating your employee account.
         </p>
 
@@ -37,3 +35,4 @@ export default function EmployeeCompleteRegistrationPage() {
     </div>
   );
 }
+
