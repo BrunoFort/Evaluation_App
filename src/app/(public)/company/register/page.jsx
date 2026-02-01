@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "@/components/ui/Button.jsx";
-import Input from "@/components/ui/Input.jsx";
-import Card from "@/components/ui/Card.jsx";
+import Button from "/src/components/ui/Button.jsx";
+import Input from "/src/components/ui/Input.jsx";
+import Card from "/src/components/ui/Card.jsx";
 
-export default function CompanyRegistration() {
+export default function CompanyRegistrationPage() {
   const navigate = useNavigate();
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleRegister = (e) => {
+  function handleRegister(e) {
     e.preventDefault();
 
     // MOCK registration
     if (companyName && email) {
       navigate("/company/login");
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
