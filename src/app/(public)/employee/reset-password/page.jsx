@@ -39,7 +39,6 @@ export default function EmployeeResetPasswordPage() {
       return;
     }
 
-    // MOCK — substituir por backend real
     setTimeout(() => {
       setSuccess(true);
       setLoading(false);
@@ -47,7 +46,7 @@ export default function EmployeeResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-md space-y-8">
 
         <PageHeader
@@ -56,7 +55,7 @@ export default function EmployeeResetPasswordPage() {
           align="center"
         />
 
-        <Card padding="lg" shadow="md" className="bg-white/80 backdrop-blur space-y-6">
+        <Card padding="lg" shadow="md" className="space-y-6">
 
           {success ? (
             <div className="space-y-4 text-center">
@@ -87,7 +86,6 @@ export default function EmployeeResetPasswordPage() {
                 placeholder="Enter a new password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white"
               />
 
               <Input
@@ -96,20 +94,14 @@ export default function EmployeeResetPasswordPage() {
                 placeholder="Re-enter your new password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                className="bg-white"
               />
 
-              <Button
-                type="submit"
-                fullWidth
-                size="lg"
-                disabled={loading}
-              >
+              <Button type="submit" fullWidth size="lg" disabled={loading}>
                 {loading ? "Saving..." : "Reset Password"}
               </Button>
 
-              <div className="text-center text-sm text-slate-600 pt-2">
-                <Link to="/employee/login" className="hover:text-blue-600">
+              <div className="text-center text-sm text-neutral-600 pt-2">
+                <Link to="/employee/login" className="hover:text-purple-600">
                   Back to login
                 </Link>
               </div>
@@ -120,3 +112,4 @@ export default function EmployeeResetPasswordPage() {
     </div>
   );
 }
+
