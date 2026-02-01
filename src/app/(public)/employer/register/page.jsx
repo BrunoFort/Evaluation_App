@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useEmployerAuth } from "../auth/employer/useEmployerAuth";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 
-import { EmployerRegisterForm } from "./components/EmployerRegisterForm";
+import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
 
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
-import Button from "/src/components/ui/Button.jsx";
 
 export default function EmployerRegisterPage() {
   const { login } = useEmployerAuth();
@@ -20,8 +19,6 @@ export default function EmployerRegisterPage() {
     setLoading(true);
 
     try {
-      // Aqui você salvaria no backend real
-      // Por enquanto, simulamos login automático
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       login({
@@ -39,7 +36,7 @@ export default function EmployerRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-xl space-y-8">
 
         <PageHeader
@@ -48,7 +45,7 @@ export default function EmployerRegisterPage() {
           align="center"
         />
 
-        <Card padding="lg" shadow="md" className="bg-white/80 backdrop-blur space-y-6">
+        <Card padding="lg" shadow="md" className="space-y-6">
 
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">
@@ -61,12 +58,12 @@ export default function EmployerRegisterPage() {
             loading={loading}
           />
 
-          <div className="flex items-center justify-between text-sm text-slate-600 pt-2">
-            <Link to="/employer/login" className="hover:text-blue-600">
+          <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
+            <Link to="/employer/login" className="hover:text-purple-600">
               Already have an account?
             </Link>
 
-            <Link to="/employer/forgot-password" className="hover:text-blue-600">
+            <Link to="/employer/forgot-password" className="hover:text-purple-600">
               Forgot password?
             </Link>
           </div>
@@ -75,4 +72,3 @@ export default function EmployerRegisterPage() {
     </div>
   );
 }
-
