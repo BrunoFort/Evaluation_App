@@ -15,42 +15,41 @@ export default function HomePage() {
     <main className="min-h-screen bg-neutral-50 flex flex-col items-center px-6 py-16">
 
       {/* LOGO */}
-      <div className="w-full max-w-6xl flex items-center mb-16">
+      <div className="w-full max-w-6xl flex items-center mb-20">
         <img
           src={ShineLogo}
           alt="Shine Logo"
-          className="w-32 h-32 object-contain"
+          className="w-64 h-64 object-contain"  // 3x maior
         />
       </div>
 
       {/* HERO */}
       <section className="max-w-4xl text-center space-y-6 mb-16">
-        <h1 className="text-5xl font-bold tracking-tight text-neutral-900">
-          Seamless, Secure Access to Employee Evaluations  
+        <h1 className="text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
+          Fast, Secure Access to Employee Evaluations  
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-            Empowering Employees to Shine
+            Helping Employees Shine
           </span>
         </h1>
 
         <p className="text-lg text-neutral-700 leading-relaxed max-w-2xl mx-auto">
-          Shine enables employers to review verified employee evaluations quickly and safely,
-          while giving employees full control over how their professional story is shared.
+          Shine streamlines how employers access verified evaluations while empowering employees to present their strengths with confidence.
         </p>
       </section>
 
       {/* CTA BUTTONS */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 w-full max-w-xl">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 w-full max-w-xl">
 
         <Link
           to="/employer/login"
-          className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-medium text-center"
+          className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-semibold text-center shadow-sm"
         >
           Employer Portal
         </Link>
 
         <Link
           to="/employee/login"
-          className="w-full py-4 rounded-lg text-white font-medium text-center transition
+          className="w-full py-4 rounded-lg text-white font-semibold text-center transition shadow-md
                      bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90"
         >
           Employee Portal
@@ -58,34 +57,33 @@ export default function HomePage() {
 
       </section>
 
-      {/* DIRECT LINK ACCESS */}
-      <section className="w-full max-w-xl mb-20">
-        <label className="block text-sm font-medium text-neutral-700 mb-2">
-          Received a Shine evaluation link by email?
+      {/* DIRECT LINK ACCESS (DISCREET) */}
+      <section className="w-full max-w-xl mb-20 opacity-80">
+        <label className="block text-sm font-medium text-neutral-600 mb-2">
+          Received a Shine evaluation link?
         </label>
 
         <div className="flex gap-3">
           <input
             type="text"
-            placeholder="Paste the access link or token here"
+            placeholder="Paste link or token"
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            className="flex-1 border border-neutral-300 rounded-lg px-4 py-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-purple-600"
+            className="flex-1 border border-neutral-300 rounded-lg px-4 py-2 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm"
           />
 
           <button
             onClick={handleAccessLink}
-            className="px-6 py-3 rounded-lg font-medium text-white transition flex items-center gap-2
+            className="px-5 py-2 rounded-lg font-medium text-white transition text-sm
                        bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90"
           >
             Access
-            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </section>
 
       {/* ADVANTAGES */}
-      <section className="w-full max-w-5xl">
+      <section className="w-full max-w-5xl mb-24">
         <h2 className="text-3xl font-bold text-neutral-900 text-center mb-10">
           Why Shine?
         </h2>
@@ -121,6 +119,11 @@ export default function HomePage() {
 
         </div>
       </section>
+
+      {/* FOOTER */}
+      <footer className="w-full max-w-6xl border-t border-neutral-200 pt-6 mt-10 text-center text-neutral-500 text-sm">
+        © {new Date().getFullYear()} Shine — Empowering professional growth with clarity and trust.
+      </footer>
 
     </main>
   );
