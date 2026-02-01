@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { ArrowRight, ShieldCheck, Sparkles, Clock, Users } from "lucide-react";
+import { ArrowRight, ShieldCheck, Sparkles, Clock } from "lucide-react";
+import ShineLogo from "@/assets/shine-logo.png";
 
 export default function HomePage() {
   const [token, setToken] = useState("");
@@ -13,17 +14,48 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-neutral-50 flex flex-col items-center px-6 py-16">
 
+      {/* LOGO */}
+      <div className="w-full max-w-6xl flex items-center mb-16">
+        <img
+          src={ShineLogo}
+          alt="Shine Logo"
+          className="w-32 h-32 object-contain"
+        />
+      </div>
+
       {/* HERO */}
       <section className="max-w-4xl text-center space-y-6 mb-16">
         <h1 className="text-5xl font-bold tracking-tight text-neutral-900">
-          Fast, Secure Access to Employee Evaluations —  
-          <span className="text-purple-600"> While They Shine</span>
+          Seamless, Secure Access to Employee Evaluations  
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+            Empowering Employees to Shine
+          </span>
         </h1>
 
         <p className="text-lg text-neutral-700 leading-relaxed max-w-2xl mx-auto">
-          Shine gives employers instant, secure access to verified employee evaluations, 
-          while empowering employees to control their professional narrative with confidence.
+          Shine enables employers to review verified employee evaluations quickly and safely,
+          while giving employees full control over how their professional story is shared.
         </p>
+      </section>
+
+      {/* CTA BUTTONS */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 w-full max-w-xl">
+
+        <Link
+          to="/employer/login"
+          className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-medium text-center"
+        >
+          Employer Portal
+        </Link>
+
+        <Link
+          to="/employee/login"
+          className="w-full py-4 rounded-lg text-white font-medium text-center transition
+                     bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90"
+        >
+          Employee Portal
+        </Link>
+
       </section>
 
       {/* DIRECT LINK ACCESS */}
@@ -43,7 +75,8 @@ export default function HomePage() {
 
           <button
             onClick={handleAccessLink}
-            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition flex items-center gap-2"
+            className="px-6 py-3 rounded-lg font-medium text-white transition flex items-center gap-2
+                       bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90"
           >
             Access
             <ArrowRight className="w-4 h-4" />
@@ -51,26 +84,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA BUTTONS */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-24 w-full max-w-xl">
-
-        <Link
-          to="/employer/login"
-          className="w-full py-4 rounded-lg border border-neutral-300 hover:border-purple-600 hover:bg-purple-50 transition text-neutral-900 font-medium text-center"
-        >
-          Employer Portal
-        </Link>
-
-        <Link
-          to="/employee/login"
-          className="w-full py-4 rounded-lg bg-purple-600 hover:bg-purple-700 transition text-white font-medium text-center"
-        >
-          Employee Portal
-        </Link>
-
-      </section>
-
-      {/* CAROUSEL / ADVANTAGES */}
+      {/* ADVANTAGES */}
       <section className="w-full max-w-5xl">
         <h2 className="text-3xl font-bold text-neutral-900 text-center mb-10">
           Why Shine?
