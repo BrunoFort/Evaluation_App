@@ -1,3 +1,5 @@
+// src/features/employers/api/employersApi.js
+
 const API_URL = "http://localhost:4000/employers";
 
 export async function getEmployers() {
@@ -18,6 +20,7 @@ export async function createEmployer(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
   if (!res.ok) throw new Error("Failed to create employer");
   return res.json();
 }
@@ -28,6 +31,7 @@ export async function updateEmployer(id, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
   if (!res.ok) throw new Error("Failed to update employer");
   return res.json();
 }
@@ -36,6 +40,7 @@ export async function deleteEmployer(id) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
   });
+
   if (!res.ok) throw new Error("Failed to delete employer");
   return true;
 }
