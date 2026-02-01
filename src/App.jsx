@@ -1,38 +1,38 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 
 // HOME
-import Home from "./Pages/Home";
+import Home from "@/Pages/Home";
 
 // PUBLIC
-import PublicEvaluation from "./Pages/PublicEvaluation/PublicEvaluation";
+import PublicEvaluation from "@/Pages/PublicEvaluation/PublicEvaluation";
 
 // EMPLOYER AUTH
-import { EmployerAuthProvider } from "./features/auth/employer/providers/EmployerAuthProvider";
-import { RequireEmployerAuth } from "./features/auth/employer/guards/RequireEmployerAuth";
+import { EmployerAuthProvider } from "@/features/auth/employer/providers/EmployerAuthProvider";
+import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmployerAuth";
 
 // EMPLOYEE AUTH
-import { EmployeeAuthProvider } from "./features/auth/employee/providers/EmployeeAuthProvider";
-import { RequireEmployeeAuth } from "./features/auth/employee/guards/RequireEmployeeAuth";
+import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
+import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
 // EMPLOYER AUTH PAGES
-import EmployerLoginPage from "./features/auth/EmployerLoginPage";
-import EmployerRegisterPage from "./features/auth/EmployerRegisterPage";
-import EmployerForgotPasswordPage from "./features/auth/EmployerForgotPasswordPage";
-import EmployerResetPasswordPage from "./features/auth/EmployerResetPasswordPage";
+import EmployerLoginPage from "@/features/auth/EmployerLoginPage";
+import EmployerRegisterPage from "@/features/auth/EmployerRegisterPage";
+import EmployerForgotPasswordPage from "@/features/auth/EmployerForgotPasswordPage";
+import EmployerResetPasswordPage from "@/features/auth/EmployerResetPasswordPage";
 
 // EMPLOYER DASHBOARD
-import EmployerDashboardPage from "./features/employer-dashboard/EmployerDashboardPage";
-import EmployerAnalyticsPage from "./features/employer-dashboard/EmployerAnalyticsPage";
+import EmployerDashboardPage from "@/features/employer-dashboard/EmployerDashboardPage";
+import EmployerAnalyticsPage from "@/features/employer-dashboard/EmployerAnalyticsPage";
 
 // EMPLOYEE AUTH PAGES
-import EmployeeLoginPage from "./features/auth/EmployeeLoginPage";
-import EmployeeRegisterPage from "./features/auth/EmployeeRegisterPage";
-import EmployeeForgotPasswordPage from "./features/auth/EmployeeForgotPasswordPage";
-import EmployeeResetPasswordPage from "./features/auth/EmployeeResetPasswordPage";
-import EmployeeCompleteRegistrationPage from "./features/employee-auth/EmployeeCompleteRegistrationPage";
+import EmployeeLoginPage from "@/features/auth/EmployeeLoginPage";
+import EmployeeRegisterPage from "@/features/auth/EmployeeRegisterPage";
+import EmployeeForgotPasswordPage from "@/features/auth/EmployeeForgotPasswordPage";
+import EmployeeResetPasswordPage from "@/features/auth/EmployeeResetPasswordPage";
+import EmployeeCompleteRegistrationPage from "@/features/employee-auth/EmployeeCompleteRegistrationPage";
 
 // EMPLOYEE DASHBOARD
-import EmployeeDashboardPage from "./features/employee-dashboard/EmployeeDashboardPage";
+import EmployeeDashboardPage from "@/features/employee-dashboard/EmployeeDashboardPage";
 
 export default function App() {
   return (
@@ -107,4 +107,3 @@ export default function App() {
     </Routes>
   );
 }
-
