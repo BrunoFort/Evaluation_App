@@ -1,21 +1,28 @@
 // src/features/evaluations/hooks/useDeleteEvaluation.js
+
 import { useState } from "react";
-import { deleteEvaluation } from "../evaluationsStore";
+import { deleteEvaluation } from "/src/features/evaluations/api/evaluationsApi.js";
 
 export function useDeleteEvaluation() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   async function remove(id) {
-    setLoading(true);
+    try {
+      setLoading(true);
+      setError(null);
 
-    // Simula um pequeno delay para UX consistente
-    await new Promise((resolve) => setTimeout(resolve, 300));
+      const result = await deleteEvaluation(id);
+      return result;
 
-    deleteEvaluation(id);
+    } catch (err) {
+      setError(err.message || "Failed to delete evaluation");
+      throw err;
 
-    setLoading(false);
-    return { success: true };
+    } finally {
+      setLoading(false);
+    }
   }
 
-  return { remove, loading };
+  return { remove, loading, error };
 }
