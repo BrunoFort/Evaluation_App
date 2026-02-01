@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from "/src/components/ui/alert-dialog";
 
 export function DeleteDepartmentDialog({ onConfirm, children }) {
   return (
@@ -30,7 +30,7 @@ export function DeleteDepartmentDialog({ onConfirm, children }) {
 
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700"
+            className="bg-red-600 hover:bg-red-500"
           >
             Delete
           </AlertDialogAction>
