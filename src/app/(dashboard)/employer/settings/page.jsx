@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import EmployerLayout from "@/Layouts/EmployerLayout";
-import { useEmployerAuth } from "../../auth/employer/useEmployerAuth";
+import { useEffect, useState } from "react";
+import EmployerLayout from "/src/layouts/EmployerLayout.jsx";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { Building2, Save } from "lucide-react";
+import { toast } from "sonner";
 
-export default function EmployerSettings() {
-  const { employer, login } = useEmployerAuth(); // login usado para atualizar employer no contexto
+export default function EmployerSettingsPage() {
+  const { employer, login } = useEmployerAuth();
 
   const [form, setForm] = useState({
     companyName: "",
     website: "",
     contactEmail: "",
     logoUrl: "",
-    description: ""
+    description: "",
   });
 
   const [saving, setSaving] = useState(false);
@@ -23,7 +24,7 @@ export default function EmployerSettings() {
         website: employer.website || "",
         contactEmail: employer.contactEmail || "",
         logoUrl: employer.logoUrl || "",
-        description: employer.description || ""
+        description: employer.description || "",
       });
     }
   }, [employer]);
@@ -36,25 +37,26 @@ export default function EmployerSettings() {
     setSaving(true);
 
     try {
-      // ⚠️ Ainda usando seu backend antigo (json-server)
-      const res = await fetch(`http://localhost:4000/employers/${employer.employerId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
-      });
+      const res = await fetch(
+        `http://localhost:4000/employers/${employer.employerId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
       const updated = await res.json();
 
-      // Atualiza o contexto (temporário até migrar para Supabase)
       login({
         ...employer,
-        ...updated
+        ...updated,
       });
 
-      alert("Settings saved successfully.");
+      toast.success("Settings saved successfully.");
     } catch (err) {
       console.error(err);
-      alert("Error saving settings.");
+      toast.error("Error saving settings.");
     } finally {
       setSaving(false);
     }
@@ -62,16 +64,18 @@ export default function EmployerSettings() {
 
   return (
     <EmployerLayout>
-      <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-xl shadow-sm p-8 space-y-8">
+      <div className="max-w-2xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-8">
         <div className="flex items-center gap-3">
-          <Building2 className="w-8 h-8 text-blue-600" />
-          <h1 className="text-2xl font-bold text-slate-900">Company Settings</h1>
+          <Building2 className="w-8 h-8 text-purple-600" />
+          <h1 className="text-2xl font-bold text-neutral-900">
+            Company Settings
+          </h1>
         </div>
 
         <div className="space-y-6">
           {/* Company Name */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Company Name
             </label>
             <input
@@ -79,13 +83,13 @@ export default function EmployerSettings() {
               name="companyName"
               value={form.companyName}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             />
           </div>
 
           {/* Website */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Website
             </label>
             <input
@@ -93,13 +97,13 @@ export default function EmployerSettings() {
               name="website"
               value={form.website}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             />
           </div>
 
           {/* Contact Email */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Contact Email
             </label>
             <input
@@ -107,13 +111,13 @@ export default function EmployerSettings() {
               name="contactEmail"
               value={form.contactEmail}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             />
           </div>
 
           {/* Logo URL */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Logo URL
             </label>
             <input
@@ -121,7 +125,7 @@ export default function EmployerSettings() {
               name="logoUrl"
               value={form.logoUrl}
               onChange={handleChange}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             />
 
             {form.logoUrl && (
@@ -135,7 +139,7 @@ export default function EmployerSettings() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
               Description
             </label>
             <textarea
@@ -143,7 +147,7 @@ export default function EmployerSettings() {
               value={form.description}
               onChange={handleChange}
               rows={3}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2"
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             />
           </div>
 
@@ -151,7 +155,7 @@ export default function EmployerSettings() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2"
           >
             <Save className="w-5 h-5" />
             {saving ? "Saving..." : "Save Settings"}
