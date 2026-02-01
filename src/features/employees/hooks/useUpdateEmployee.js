@@ -1,8 +1,14 @@
-import { updateEmployee } from "../api/employeesApi";
+import { updateEmployee } from "/src/features/employees/api/employeesApi";
 
 export function useUpdateEmployee() {
   async function update(id, data) {
-    return updateEmployee(id, data);
+    try {
+      return await updateEmployee(id, data);
+    } catch (err) {
+      console.error("Failed to update employee:", err);
+      throw err;
+    }
   }
+
   return { update };
 }
