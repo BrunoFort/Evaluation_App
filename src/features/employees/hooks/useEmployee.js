@@ -1,19 +1,18 @@
-// src/features/employees/hooks/useEmployee.js
 import { useEffect, useState } from "react";
+import { getEmployeeById } from "/src/features/employees/api/employeesApi";
 
 export function useEmployee(id) {
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
 
   async function fetchEmployee() {
-    try {
-      const res = await fetch(`http://localhost:4000/employees/${id}`);
-      if (!res.ok) throw new Error("Employee not found");
+    setLoading(true);
 
-      const data = await res.json();
+    try {
+      const data = await getEmployeeById(id);
       setEmployee(data);
-    } catch (error) {
-      console.error("Error fetching employee:", error);
+    } catch (err) {
+      console.error("Failed to fetch employee:", err);
       setEmployee(null);
     } finally {
       setLoading(false);
@@ -21,8 +20,10 @@ export function useEmployee(id) {
   }
 
   useEffect(() => {
+    if (!id) return;
     fetchEmployee();
   }, [id]);
 
   return { employee, loading };
 }
+
