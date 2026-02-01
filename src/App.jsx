@@ -1,7 +1,7 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 
-// HOME
-import Home from "@/Pages/Home";
+// HOME (updated)
+import HomePage from "@/app/(public)/home/page.jsx";
 
 // PUBLIC
 import PublicEvaluation from "@/Pages/PublicEvaluation/PublicEvaluation";
@@ -14,19 +14,19 @@ import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmpl
 import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
-// EMPLOYER AUTH PAGES (confirmado)
+// EMPLOYER AUTH PAGES (confirmed)
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
 
-// EMPLOYER DASHBOARD (confirmado)
+// EMPLOYER DASHBOARD (confirmed)
 import EmployerDashboardPage from "@/app/(dashboard)/employer/page.jsx";
 
-// EMPLOYEE AUTH PAGES (confirmado)
+// EMPLOYEE AUTH PAGES (confirmed)
 import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 
-// EMPLOYEE COMPLETE REGISTRATION (confirmado)
+// EMPLOYEE COMPLETE REGISTRATION (confirmed)
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
 
-// EMPLOYEE DASHBOARD (confirmado)
+// EMPLOYEE DASHBOARD (confirmed)
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
@@ -34,7 +34,7 @@ export default function App() {
     <Routes>
 
       {/* PUBLIC HOME */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<HomePage />} />
 
       {/* PUBLIC EVALUATION PAGE */}
       <Route path="/reference/:token" element={<PublicEvaluation />} />
