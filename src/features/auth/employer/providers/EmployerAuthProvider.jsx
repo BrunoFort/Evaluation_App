@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../../../supabaseClient";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { supabase } from "@/supabaseClient";
 
 const EmployerAuthContext = createContext(null);
 
@@ -7,8 +7,9 @@ export function EmployerAuthProvider({ children }) {
   const [employer, setEmployer] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Carrega sessão persistida do Supabase ao iniciar o app
   useEffect(() => {
+    let unsubscribe = null;
+
     async function loadSession() {
       const { data } = await supabase.auth.getSession();
       const session = data?.session;
@@ -26,7 +27,6 @@ export function EmployerAuthProvider({ children }) {
 
     loadSession();
 
-    // 🔁 Listener para login/logout automático
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (session?.user) {
@@ -41,30 +41,35 @@ export function EmployerAuthProvider({ children }) {
       }
     );
 
-    return () => listener.subscription.unsubscribe();
+    unsubscribe = listener.subscription.unsubscribe;
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
-  // 🔐 Login manual (usado após signInWithPassword)
   function login(data) {
     setEmployer(data);
   }
 
-  // 🚪 Logout real
   async function logout() {
     await supabase.auth.signOut();
     setEmployer(null);
   }
 
+  const value = useMemo(
+    () => ({
+      employer,
+      isAuthenticated: !!employer,
+      loading,
+      login,
+      logout,
+    }),
+    [employer, loading]
+  );
+
   return (
-    <EmployerAuthContext.Provider
-      value={{
-        employer,
-        isAuthenticated: !!employer,
-        loading,
-        login,
-        logout,
-      }}
-    >
+    <EmployerAuthContext.Provider value={value}>
       {children}
     </EmployerAuthContext.Provider>
   );
@@ -73,3 +78,4 @@ export function EmployerAuthProvider({ children }) {
 export function useEmployerAuth() {
   return useContext(EmployerAuthContext);
 }
+
