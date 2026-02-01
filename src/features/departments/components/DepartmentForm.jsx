@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import Button from "/src/components/ui/Button.jsx";;
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Button from "/src/components/ui/Button.jsx";
+import { Input } from "/src/components/ui/input.jsx";
+import { Label } from "/src/components/ui/label.jsx";
 
 export function DepartmentForm({ defaultValues, onSubmit, isSubmitting }) {
   const {
@@ -20,7 +20,7 @@ export function DepartmentForm({ defaultValues, onSubmit, isSubmitting }) {
           placeholder="Department name"
         />
         {errors.name && (
-          <p className="text-red-500 text-sm">{errors.name.message}</p>
+          <p className="text-red-600 text-sm">{errors.name.message}</p>
         )}
       </div>
 
