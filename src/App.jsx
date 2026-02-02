@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
+import { supabase } from "/src/lib/supabaseClient";
 
 // HOME
 import HomePage from "@/app/(public)/home/page.jsx";
@@ -37,6 +39,20 @@ import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-r
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
+
+  // 🔥 Listener global para capturar o token de recuperação
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        console.log("🔑 Token de recuperação recebido pelo Supabase.");
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <Routes>
 
