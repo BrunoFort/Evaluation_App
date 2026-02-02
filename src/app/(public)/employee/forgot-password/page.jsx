@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -12,21 +13,29 @@ export default function EmployeeForgotPasswordPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    setTimeout(() => {
-      if (!email) {
-        setError("Please enter your email.");
-        setLoading(false);
-        return;
-      }
-
-      setSent(true);
+    if (!email) {
+      setError("Please enter your email.");
       setLoading(false);
-    }, 600);
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "http://localhost:5173/employee/reset-password",
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    setSent(true);
+    setLoading(false);
   }
 
   return (
