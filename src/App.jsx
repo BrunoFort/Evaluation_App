@@ -19,6 +19,7 @@ import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmpl
 // EMPLOYER AUTH PAGES
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
 import EmployerForgotPasswordPage from "@/app/(public)/employer/forgot-password/page.jsx";
+import EmployerResetPasswordPage from "@/app/(public)/employer/reset-password/page.jsx";
 
 // EMPLOYER DASHBOARD
 import EmployerDashboardPage from "@/app/(dashboard)/employer/page.jsx";
@@ -34,23 +35,24 @@ import EmployerEvaluationCreatePage from "@/app/(dashboard)/employer/evaluations
 // EMPLOYEE AUTH PAGES
 import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
+import EmployeeForgotPasswordPage from "@/app/(public)/employee/forgot-password/page.jsx";
+import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/page.jsx";
 
 // EMPLOYEE DASHBOARD
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
 
-  // 🔥 Listener global para capturar o token de recuperação
+  // Listener global para capturar o token de recuperação
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth event:", event);
       if (event === "PASSWORD_RECOVERY") {
         console.log("🔑 Token de recuperação recebido pelo Supabase.");
       }
     });
 
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   return (
@@ -73,6 +75,7 @@ export default function App() {
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
         <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
+        <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
         {/* PROTECTED */}
         <Route
@@ -133,6 +136,8 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employee/login" element={<EmployeeLoginPage />} />
+        <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
+        <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
 
         {/* COMPLETE REGISTRATION */}
         <Route
