@@ -1,6 +1,6 @@
 import { Routes, Route, Outlet } from "react-router-dom";
 
-// HOME (updated)
+// HOME
 import HomePage from "@/app/(public)/home/page.jsx";
 
 // PUBLIC
@@ -14,19 +14,26 @@ import { RequireEmployerAuth } from "@/features/auth/employer/guards/RequireEmpl
 import { EmployeeAuthProvider } from "@/features/auth/employee/providers/EmployeeAuthProvider";
 import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmployeeAuth";
 
-// EMPLOYER AUTH PAGES (confirmed)
+// EMPLOYER AUTH PAGES
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
+import EmployerForgotPasswordPage from "@/app/(public)/employer/forgot-password/page.jsx";
 
-// EMPLOYER DASHBOARD (confirmed)
+// EMPLOYER DASHBOARD
 import EmployerDashboardPage from "@/app/(dashboard)/employer/page.jsx";
 
-// EMPLOYEE AUTH PAGES (confirmed)
-import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
+// EMPLOYER EMPLOYEES
+import EmployerEmployeesPage from "@/app/(dashboard)/employer/employees/page.jsx";
+import EmployerEmployeeAddPage from "@/app/(dashboard)/employer/employees/add/page.jsx";
+import EmployerEmployeeEditPage from "@/app/(dashboard)/employer/employees/[id]/edit/page.jsx";
 
-// EMPLOYEE COMPLETE REGISTRATION (confirmed)
+// EMPLOYER EVALUATIONS
+import EmployerEvaluationCreatePage from "@/app/(dashboard)/employer/evaluations/create/page.jsx";
+
+// EMPLOYEE AUTH PAGES
+import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
 
-// EMPLOYEE DASHBOARD (confirmed)
+// EMPLOYEE DASHBOARD
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
@@ -49,6 +56,7 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
+        <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
 
         {/* PROTECTED */}
         <Route
@@ -56,6 +64,44 @@ export default function App() {
           element={
             <RequireEmployerAuth>
               <EmployerDashboardPage />
+            </RequireEmployerAuth>
+          }
+        />
+
+        {/* EMPLOYER EMPLOYEES */}
+        <Route
+          path="/employer/employees"
+          element={
+            <RequireEmployerAuth>
+              <EmployerEmployeesPage />
+            </RequireEmployerAuth>
+          }
+        />
+
+        <Route
+          path="/employer/employees/add"
+          element={
+            <RequireEmployerAuth>
+              <EmployerEmployeeAddPage />
+            </RequireEmployerAuth>
+          }
+        />
+
+        <Route
+          path="/employer/employees/:id/edit"
+          element={
+            <RequireEmployerAuth>
+              <EmployerEmployeeEditPage />
+            </RequireEmployerAuth>
+          }
+        />
+
+        {/* EMPLOYER EVALUATIONS */}
+        <Route
+          path="/employer/evaluations/create"
+          element={
+            <RequireEmployerAuth>
+              <EmployerEvaluationCreatePage />
             </RequireEmployerAuth>
           }
         />
