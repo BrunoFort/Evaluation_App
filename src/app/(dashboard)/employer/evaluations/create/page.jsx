@@ -6,8 +6,9 @@ import { ClipboardCheck } from "lucide-react";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
+
 import { generatePublicToken } from "/src/utils/generatePublicToken.js";
-import { CriteriaEditor} from "/src/features/reference/components/CriteriaEditor.jsx";
+import { CriteriaEditor } from "/src/features/reference/components/CriteriaEditor.jsx";
 
 export default function EmployerCreateEvaluationPage() {
   const navigate = useNavigate();
@@ -22,15 +23,17 @@ export default function EmployerCreateEvaluationPage() {
     title: "",
   });
 
+  // Agora criteria é um OBJETO, não array
   const [criteria, setCriteria] = useState({
-  qualityProductivity: 0,
-  knowledgeSkills: 0,
-  goalAchievement: 0,
-  teamworkCollaboration: 0,
-  initiativeProactivity: 0,
-  selfManagement: 0,
-  communicationRelationships: 0,
-});
+    qualityProductivity: 0,
+    knowledgeSkills: 0,
+    goalAchievement: 0,
+    teamworkCollaboration: 0,
+    initiativeProactivity: 0,
+    selfManagement: 0,
+    communicationRelationships: 0,
+  });
+
   const [saving, setSaving] = useState(false);
 
   function handleChange(e) {
@@ -41,17 +44,20 @@ export default function EmployerCreateEvaluationPage() {
   }
 
   function calculateOverallScore() {
-    if (criteria.length === 0) return 0;
-    const total = criteria.reduce(
-      (sum, c) => sum + (Number(c.score) || 0),
-      0
-    );
-    return total / criteria.length;
+    const values = Object.values(criteria);
+    const total = values.reduce((sum, v) => sum + Number(v || 0), 0);
+    return values.length > 0 ? total / values.length : 0;
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
+
+    const formattedCriteria = Object.entries(criteria).map(([key, score]) => ({
+      key,
+      label: key,
+      score,
+    }));
 
     const newEvaluation = {
       ...formData,
@@ -61,7 +67,7 @@ export default function EmployerCreateEvaluationPage() {
       createdAt: new Date().toISOString(),
       status: "completed",
       publicToken: generatePublicToken(),
-      criteria,
+      criteria: formattedCriteria,
       overallScore: calculateOverallScore(),
     };
 
