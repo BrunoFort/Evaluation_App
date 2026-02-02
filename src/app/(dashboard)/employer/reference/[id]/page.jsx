@@ -9,7 +9,7 @@ import { useEmployee } from "/src/features/employees/hooks/useEmployee.js";
 import { useEvaluations } from "/src/features/evaluations/hooks/useEvaluations.js";
 import { useEmployers } from "/src/features/employers/hooks/useEmployers.js";
 
-import CriteriaStars from "/src/features/reference/components/CriteriaStars.jsx";
+import { CriteriaStars } from "/src/features/reference/components/CriteriaStars.jsx";
 import { validateReferenceToken } from "/src/features/reference/referenceTokensStore.js";
 
 export default function EmployerReferenceReportPage() {
