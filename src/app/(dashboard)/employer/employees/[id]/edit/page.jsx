@@ -7,7 +7,7 @@ import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import Input from "/src/components/ui/Input.jsx";
 import Button from "/src/components/ui/Button.jsx";
-import Textarea from "/src/components/ui/Textarea.jsx";
+import { Textarea } from "/src/components/ui/textarea.jsx";
 
 export default function EmployerEmployeeEditPage() {
   const navigate = useNavigate();

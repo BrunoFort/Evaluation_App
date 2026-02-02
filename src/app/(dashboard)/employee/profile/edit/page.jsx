@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import EmployeeDashboardLayout from "/src/layouts/EmployeeDashboardLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import Input from "/src/components/ui/Input.jsx";
-import Textarea from "/src/components/ui/Textarea.jsx";
+import { Textarea } from "/src/components/ui/textarea.jsx";
 import Button from "/src/components/ui/Button.jsx";
 
 export default function EmployeeProfileEditPage() {

@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import Input from "/src/components/ui/Input.jsx";
-import Textarea from "/src/components/ui/Textarea.jsx";
+import { Textarea } from "/src/components/ui/textarea.jsx";
 import Button from "/src/components/ui/Button.jsx";
 
 export function EvaluationForm({ employees, onSubmit, loading, defaultValues }) {
