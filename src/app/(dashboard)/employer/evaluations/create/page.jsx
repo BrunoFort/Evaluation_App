@@ -118,7 +118,7 @@ export default function EmployerCreateEvaluationPage() {
           </div>
 
           {/* Criteria Editor */}
-          <CriteriaEditor criteria={criteria} setCriteria={setCriteria} />
+          <CriteriaEditor values={criteria} onChange={setCriteria} />
 
           {/* Submit */}
           <button
