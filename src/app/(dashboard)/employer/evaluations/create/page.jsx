@@ -6,7 +6,7 @@ import { ClipboardCheck } from "lucide-react";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
-import { generatePublicToken } from "/src/app/public/evaluation/[token]/page.jsx";
+import { generatePublicToken } from "/src/utils/generatePublicToken.js";
 import { CriteriaEditor} from "/src/features/reference/components/CriteriaEditor.jsx";
 
 export default function EmployerCreateEvaluationPage() {
