@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClipboardCheck } from "lucide-react";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
-import { useEmployerAuth } from "/src/features/auth/employer/useEmployerAuth.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 import { generatePublicToken } from "/src/utils/generatePublicToken.js";
 import CriteriaEditor from "/src/features/evaluations/components/CriteriaEditor.jsx";
 
