@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -16,7 +17,16 @@ export default function EmployerResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
+  // Supabase injeta o token automaticamente quando o usuário clica no link
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        console.log("Token de recuperação recebido.");
+      }
+    });
+  }, []);
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -39,10 +49,16 @@ export default function EmployerResetPasswordPage() {
       return;
     }
 
-    setTimeout(() => {
-      setSuccess(true);
+    const { error } = await supabase.auth.updateUser({ password });
+
+    if (error) {
+      setError(error.message);
       setLoading(false);
-    }, 600);
+      return;
+    }
+
+    setSuccess(true);
+    setLoading(false);
   }
 
   return (
