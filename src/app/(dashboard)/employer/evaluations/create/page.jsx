@@ -22,7 +22,15 @@ export default function EmployerCreateEvaluationPage() {
     title: "",
   });
 
-  const [criteria, setCriteria] = useState([]);
+  const [criteria, setCriteria] = useState({
+  qualityProductivity: 0,
+  knowledgeSkills: 0,
+  goalAchievement: 0,
+  teamworkCollaboration: 0,
+  initiativeProactivity: 0,
+  selfManagement: 0,
+  communicationRelationships: 0,
+});
   const [saving, setSaving] = useState(false);
 
   function handleChange(e) {
