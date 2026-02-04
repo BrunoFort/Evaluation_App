@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import EmployerLayout from "/src/layouts/EmployerLayout.jsx";
+import CompanyLayout from "/src/layouts/CompanyLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { Building2, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -63,7 +63,7 @@ export default function EmployerSettingsPage() {
   }
 
   return (
-    <EmployerLayout>
+    <CompanyLayout>
       <div className="max-w-2xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-8">
         <div className="flex items-center gap-3">
           <Building2 className="w-8 h-8 text-purple-600" />
@@ -162,6 +162,6 @@ export default function EmployerSettingsPage() {
           </button>
         </div>
       </div>
-    </EmployerLayout>
+    </CompanyLayout>
   );
 }
