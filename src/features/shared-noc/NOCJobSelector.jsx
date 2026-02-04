@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { noc2021 } from "./noc2021";
+
 import {
   Select,
   SelectContent,
@@ -6,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -18,6 +21,46 @@ export default function NOCJobSelector({
   label = "Job Title",
 }) {
   const [useCustom, setUseCustom] = useState(false);
+  const [search, setSearch] = useState("");
+
+  // Lista de grupos (títulos principais)
+  const groups = useMemo(() => Object.keys(noc2021).sort(), []);
+
+  // Lista de todos os títulos (para busca)
+  const flattened = useMemo(() => {
+    const list = [];
+    for (const group of groups) {
+      for (const title of noc2021[group]) {
+        list.push({ group, title });
+      }
+    }
+    return list;
+  }, [groups]);
+
+  // Resultados filtrados pela busca
+  const filteredGroups = useMemo(() => {
+    if (!search.trim()) return groups;
+
+    const lower = search.toLowerCase();
+
+    const matchedGroups = new Set();
+
+    // Match por sinônimos
+    for (const item of flattened) {
+      if (item.title.toLowerCase().includes(lower)) {
+        matchedGroups.add(item.group);
+      }
+    }
+
+    // Match por título principal
+    for (const group of groups) {
+      if (group.toLowerCase().includes(lower)) {
+        matchedGroups.add(group);
+      }
+    }
+
+    return [...matchedGroups].sort();
+  }, [search, groups, flattened]);
 
   return (
     <div className="space-y-3">
@@ -37,22 +80,36 @@ export default function NOCJobSelector({
       </div>
 
       {!useCustom ? (
-        <Select value={value} onValueChange={onChange}>
-          <SelectTrigger className="w-full bg-white border-neutral-300">
-            <SelectValue placeholder="Select from NOC 2021 Version 1.0" />
-          </SelectTrigger>
+        <div className="space-y-2">
+          {/* Campo de busca */}
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search job titles or synonyms..."
+            className="bg-white"
+          />
 
-          <SelectContent className="max-h-[300px]">
-            {nocOccupations.map((occ) => (
-              <SelectItem key={occ.code} value={occ.code}>
-                <span className="flex items-center gap-2">
-                  <span className="text-neutral-400 text-xs">{occ.code}</span>
-                  <span>{occ.title}</span>
-                </span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {/* Dropdown */}
+          <Select value={value} onValueChange={onChange}>
+            <SelectTrigger className="w-full bg-white border-neutral-300">
+              <SelectValue placeholder="Select from NOC 2021" />
+            </SelectTrigger>
+
+            <SelectContent className="max-h-[300px] overflow-y-auto">
+              {filteredGroups.map((group) => (
+                <SelectItem key={group} value={group}>
+                  {group}
+                </SelectItem>
+              ))}
+
+              {filteredGroups.length === 0 && (
+                <div className="px-3 py-2 text-sm text-neutral-500">
+                  No results found
+                </div>
+              )}
+            </SelectContent>
+          </Select>
+        </div>
       ) : (
         <Input
           value={customValue}
