@@ -68,7 +68,7 @@ export default function EmployerSettingsPage() {
         <div className="flex items-center gap-3">
           <Building2 className="w-8 h-8 text-purple-600" />
           <h1 className="text-2xl font-bold text-neutral-900">
-            Company Settings
+            Settings
           </h1>
         </div>
 
