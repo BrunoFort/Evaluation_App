@@ -1,3 +1,4 @@
+ export const noc2021 = {
   "Accounting technicians and bookkeepers": [
     "Bookkeeper",
     "Accounting technician",
@@ -94,6 +95,7 @@
     "Customer care agent",
     "Help desk agent"
   ],
+
   "Delivery and courier service drivers": [
     "Delivery driver",
     "Courier driver",
@@ -185,6 +187,7 @@
     "Reach truck operator",
     "Counterbalance forklift operator"
   ],
+
   "General office support workers": [
     "Office clerk",
     "Office support worker",
@@ -280,6 +283,7 @@
     "Commercial cleaner",
     "Office cleaner"
   ],
+
   "Machine operators and assemblers": [
     "Machine operator",
     "Production machine operator",
@@ -379,6 +383,7 @@
     "Customer sales representative",
     "Retail floor staff"
   ],
+
   "Sales and account representatives": [
     "Sales representative",
     "Account representative",
@@ -476,3 +481,4 @@
     "Wood cutting machine operator",
     "Wood processing operator"
   ]
+};
