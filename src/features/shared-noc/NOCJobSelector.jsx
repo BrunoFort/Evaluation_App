@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { noc2021 } from "./noc2021";
 
 import {
@@ -13,6 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
+// Hooks compartilhados
+import { useNOCGroups } from "./hooks/useNOCGroups";
+import { useNOCSearch } from "./hooks/useNOCSearch";
+
 export default function NOCJobSelector({
   value,
   onChange,
@@ -23,44 +27,11 @@ export default function NOCJobSelector({
   const [useCustom, setUseCustom] = useState(false);
   const [search, setSearch] = useState("");
 
-  // Lista de grupos (títulos principais)
-  const groups = useMemo(() => Object.keys(noc2021).sort(), []);
+  // Lista de grupos ordenados
+  const groups = useNOCGroups();
 
-  // Lista de todos os títulos (para busca)
-  const flattened = useMemo(() => {
-    const list = [];
-    for (const group of groups) {
-      for (const title of noc2021[group]) {
-        list.push({ group, title });
-      }
-    }
-    return list;
-  }, [groups]);
-
-  // Resultados filtrados pela busca
-  const filteredGroups = useMemo(() => {
-    if (!search.trim()) return groups;
-
-    const lower = search.toLowerCase();
-
-    const matchedGroups = new Set();
-
-    // Match por sinônimos
-    for (const item of flattened) {
-      if (item.title.toLowerCase().includes(lower)) {
-        matchedGroups.add(item.group);
-      }
-    }
-
-    // Match por título principal
-    for (const group of groups) {
-      if (group.toLowerCase().includes(lower)) {
-        matchedGroups.add(group);
-      }
-    }
-
-    return [...matchedGroups].sort();
-  }, [search, groups, flattened]);
+  // Lista filtrada pela busca (sinônimos + títulos principais)
+  const filteredGroups = useNOCSearch(search);
 
   return (
     <div className="space-y-3">
