@@ -4,13 +4,31 @@ import { useForm } from "react-hook-form";
 import Button from "/src/components/ui/Button.jsx";
 import { Input } from "/src/components/ui/Input.jsx";
 import { Label } from "/src/components/ui/Label.jsx";
+import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 
 export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues });
+
+  const jobTitle = watch("jobTitle");
+  const jobTitleCustom = watch("jobTitleCustom");
+
+  // Register fields for validation
+  register("jobTitle", {
+    validate: (value, formValues) => {
+      if (!formValues.jobTitleCustom && !value) {
+        return "Job title is required";
+      }
+      return true;
+    },
+  });
+
+  register("jobTitleCustom");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg">
@@ -91,6 +109,21 @@ export function EmployerForm({ defaultValues, onSubmit, isSubmitting }) {
         />
         {errors.phone && (
           <p className="text-red-600 text-sm">{errors.phone.message}</p>
+        )}
+      </div>
+
+      {/* Employer Job Title */}
+      <div className="flex flex-col gap-2">
+        <NOCJobSelector
+          label="Employer Job Title"
+          value={jobTitle}
+          onChange={(v) => setValue("jobTitle", v)}
+          customValue={jobTitleCustom}
+          onCustomChange={(v) => setValue("jobTitleCustom", v)}
+        />
+
+        {errors.jobTitle && (
+          <p className="text-red-600 text-sm">{errors.jobTitle.message}</p>
         )}
       </div>
 
