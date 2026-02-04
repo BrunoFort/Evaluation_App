@@ -32,6 +32,9 @@ import EmployerEmployeeEditPage from "@/app/(dashboard)/employer/employees/[id]/
 // EMPLOYER EVALUATIONS
 import EmployerEvaluationCreatePage from "@/app/(dashboard)/employer/evaluations/create/page.jsx";
 
+// EMPLOYER SETTINGS (A ROTA QUE FALTAVA)
+import EmployerSettingsPage from "@/app/(dashboard)/employer/settings/page.jsx";
+
 // EMPLOYEE AUTH PAGES
 import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
@@ -121,6 +124,16 @@ export default function App() {
           element={
             <RequireEmployerAuth>
               <EmployerEvaluationCreatePage />
+            </RequireEmployerAuth>
+          }
+        />
+
+        {/* ⭐ EMPLOYER SETTINGS — AGORA FUNCIONA */}
+        <Route
+          path="/employer/settings"
+          element={
+            <RequireEmployerAuth>
+              <EmployerSettingsPage />
             </RequireEmployerAuth>
           }
         />
