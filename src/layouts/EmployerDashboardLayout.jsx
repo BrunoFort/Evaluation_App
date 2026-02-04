@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -13,6 +13,7 @@ import ShineLogo from "@/assets/shine-logo.png";
 
 export default function EmployerDashboardLayout({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/employer" },
@@ -26,19 +27,19 @@ export default function EmployerDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
+      <aside className="w-64 bg-white border-r border-neutral-200 flex flex-col py-8 px-6">
 
         {/* Logo */}
-        <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center justify-center mb-10">
           <img
             src={ShineLogo}
             alt="Shine Logo"
-            className="w-32 h-32 object-contain"
+            className="w-28 h-28 object-contain"
           />
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-1">
           {navItems.map((item, i) => {
             const active = location.pathname === item.path;
             const Icon = item.icon;
@@ -47,11 +48,19 @@ export default function EmployerDashboardLayout({ children }) {
               <Link
                 key={i}
                 to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium transition
-                  ${active ? "bg-white text-purple-700 shadow-md" : "hover:bg-white/20"}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition
+                  ${
+                    active
+                      ? "bg-purple-100 text-purple-700 border border-purple-300"
+                      : "text-neutral-700 hover:bg-neutral-100"
+                  }
                 `}
               >
-                <Icon className={`w-5 h-5 ${active ? "text-purple-700" : "text-white"}`} />
+                <Icon
+                  className={`w-5 h-5 ${
+                    active ? "text-purple-700" : "text-neutral-500"
+                  }`}
+                />
                 {item.label}
               </Link>
             );
@@ -61,8 +70,8 @@ export default function EmployerDashboardLayout({ children }) {
         <div className="flex-1" />
 
         {/* Logout */}
-        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white">
-          <LogOut className="w-5 h-5" />
+        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-neutral-700 hover:bg-neutral-100 transition">
+          <LogOut className="w-5 h-5 text-neutral-500" />
           Logout
         </button>
       </aside>
@@ -71,21 +80,27 @@ export default function EmployerDashboardLayout({ children }) {
       <div className="flex-1 flex flex-col">
 
         {/* HEADER */}
-        <header className="w-full bg-white border-b border-neutral-200 py-5 px-10 flex justify-between items-center shadow-sm">
-          <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">
+        <header className="w-full bg-white border-b border-neutral-200 py-4 px-10 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
             Employer Dashboard
           </h1>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" />
-            <span className="text-neutral-700 font-medium">You</span>
+          {/* PROFILE AREA */}
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => navigate("/employer/settings")}
+          >
+            {/* Avatar (placeholder for now) */}
+            <div className="w-12 h-12 rounded-full bg-neutral-300 overflow-hidden">
+              {/* Quando você implementar upload, basta trocar por <img src={profileUrl} /> */}
+            </div>
+
+            <span className="text-neutral-700 font-medium">Profile</span>
           </div>
         </header>
 
         {/* CONTENT */}
-        <main className="p-10">
-          {children}
-        </main>
+        <main className="p-10">{children}</main>
       </div>
     </div>
   );
