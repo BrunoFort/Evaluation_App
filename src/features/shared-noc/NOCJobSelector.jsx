@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from "react";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import React, { useState, useEffect, useMemo } from "react";
 
 import Input from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import { useNOCGroups } from "./hooks/useNOCGroups";
-import { useNOCSearch } from "./hooks/useNOCSearch";
 
 export default function NOCJobSelector({
   label = "Job Title",
@@ -25,11 +16,11 @@ export default function NOCJobSelector({
   customValue,
   onCustomChange,
 
-  // Controle externo
+  // Controle externo (Settings)
   useCustom,
   onToggleCustom,
 
-  // Controle externo da busca
+  // Controle externo da busca (Settings)
   search,
   onSearchChange,
 }) {
@@ -46,7 +37,14 @@ export default function NOCJobSelector({
   }, [useCustom]);
 
   const groups = useNOCGroups();
-  const filteredGroups = useNOCSearch(effectiveSearch);
+
+  const filteredGroups = useMemo(() => {
+    if (!effectiveSearch) return groups;
+
+    const term = effectiveSearch.toLowerCase();
+
+    return groups.filter((g) => g.toLowerCase().includes(term));
+  }, [groups, effectiveSearch]);
 
   function handleToggle(checked) {
     if (onToggleCustom) {
@@ -70,8 +68,12 @@ export default function NOCJobSelector({
     }
   }
 
+  function handleSelectChange(e) {
+    onChange(e.target.value);
+  }
+
   return (
-    <div className="space-y-3 relative">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Label className="text-neutral-700 font-semibold">{label}</Label>
 
@@ -90,25 +92,27 @@ export default function NOCJobSelector({
             className="bg-white"
           />
 
-          <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full bg-white border-neutral-300">
-              <SelectValue placeholder="Select from NOC 2021" />
-            </SelectTrigger>
+          <div className="relative">
+            <select
+              value={value}
+              onChange={handleSelectChange}
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-white text-sm"
+            >
+              <option value="">Select from NOC 2021</option>
 
-            <SelectContent className="max-h-[300px] overflow-y-auto z-[9999]">
               {filteredGroups.map((group) => (
-                <SelectItem key={group} value={group}>
+                <option key={group} value={group}>
                   {group}
-                </SelectItem>
+                </option>
               ))}
 
               {filteredGroups.length === 0 && (
-                <div className="px-3 py-2 text-sm text-neutral-500">
+                <option disabled value="">
                   No results found
-                </div>
+                </option>
               )}
-            </SelectContent>
-          </Select>
+            </select>
+          </div>
         </div>
       ) : (
         <Input
@@ -126,3 +130,4 @@ export default function NOCJobSelector({
     </div>
   );
 }
+
