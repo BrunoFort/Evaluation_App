@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { noc2021 } from "./noc2021";
+import React, { useState, useEffect } from "react";
 
 import {
   Select,
@@ -9,29 +8,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Input } from "@/components/ui/input";
+import Input from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-// Hooks compartilhados
 import { useNOCGroups } from "./hooks/useNOCGroups";
 import { useNOCSearch } from "./hooks/useNOCSearch";
 
 export default function NOCJobSelector({
+  label = "Job Title",
+
+  // Valores controlados
   value,
   onChange,
+
   customValue,
   onCustomChange,
-  label = "Job Title",
+
+  // Controle externo (Settings)
+  useCustom,
+  onToggleCustom,
 }) {
-  const [useCustom, setUseCustom] = useState(false);
+  const [internalUseCustom, setInternalUseCustom] = useState(false);
   const [search, setSearch] = useState("");
 
-  // Lista de grupos ordenados
-  const groups = useNOCGroups();
+  // Se o componente recebe controle externo, sincroniza
+  const effectiveUseCustom = useCustom ?? internalUseCustom;
 
-  // Lista filtrada pela busca (sinônimos + títulos principais)
+  useEffect(() => {
+    if (useCustom !== undefined) {
+      setInternalUseCustom(useCustom);
+    }
+  }, [useCustom]);
+
+  const groups = useNOCGroups();
   const filteredGroups = useNOCSearch(search);
+
+  function handleToggle(checked) {
+    if (onToggleCustom) {
+      onToggleCustom(checked);
+    } else {
+      setInternalUseCustom(checked);
+    }
+
+    if (!checked) {
+      onCustomChange("");
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -40,19 +63,12 @@ export default function NOCJobSelector({
 
         <div className="flex items-center gap-2">
           <span className="text-xs text-neutral-500">Custom entry</span>
-          <Switch
-            checked={useCustom}
-            onCheckedChange={(checked) => {
-              setUseCustom(checked);
-              if (!checked) onCustomChange("");
-            }}
-          />
+          <Switch checked={effectiveUseCustom} onCheckedChange={handleToggle} />
         </div>
       </div>
 
-      {!useCustom ? (
+      {!effectiveUseCustom ? (
         <div className="space-y-2">
-          {/* Campo de busca */}
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -60,7 +76,6 @@ export default function NOCJobSelector({
             className="bg-white"
           />
 
-          {/* Dropdown */}
           <Select value={value} onValueChange={onChange}>
             <SelectTrigger className="w-full bg-white border-neutral-300">
               <SelectValue placeholder="Select from NOC 2021" />
