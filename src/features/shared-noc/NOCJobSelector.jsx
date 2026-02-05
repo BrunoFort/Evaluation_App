@@ -28,9 +28,10 @@ export default function NOCJobSelector({
   const effectiveUseCustom = useCustom ?? internalUseCustom;
   const effectiveSearch = search ?? internalSearch;
 
-  // Flatten all synonyms into a single list
+  // Extract ONLY synonyms (no group names)
   const allSynonyms = useMemo(() => {
-    return Object.values(noc2021).flat();
+    const list = Object.values(noc2021).flat();
+    return Array.from(new Set(list)); // remove duplicates
   }, []);
 
   // Filter synonyms by search term
