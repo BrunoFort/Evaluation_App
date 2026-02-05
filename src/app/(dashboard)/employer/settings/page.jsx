@@ -56,6 +56,9 @@ export default function EmployerSettingsPage() {
 
   const [saving, setSaving] = useState(false);
 
+  // 🔍 Estado externo para busca NOC
+  const [nocSearch, setNocSearch] = useState("");
+
   // Load employer data
   useEffect(() => {
     if (employer) {
@@ -328,8 +331,8 @@ export default function EmployerSettingsPage() {
             />
           </div>
 
-          {/* JOB TITLE — NOW USING NOCJobSelector */}
-          <div className="space-y-2">
+          {/* JOB TITLE — NOCJobSelector */}
+          <div className="space-y-2 relative">
             <label className="block text-sm font-medium text-neutral-700">
               Job Title (NOC 2021 v1.0)
             </label>
@@ -346,6 +349,9 @@ export default function EmployerSettingsPage() {
               onToggleCustom={(checked) =>
                 setForm({ ...form, allowCustomJobTitle: checked })
               }
+
+              search={nocSearch}
+              onSearchChange={setNocSearch}
             />
           </div>
 
@@ -540,3 +546,4 @@ export default function EmployerSettingsPage() {
     </EmployerDashboardLayout>
   );
 }
+
