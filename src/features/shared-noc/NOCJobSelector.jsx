@@ -1,50 +1,55 @@
-import React, { useState, useEffect, useMemo } from "react";
-
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Input from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-
-import { useNOCGroups } from "./hooks/useNOCGroups";
+import { noc2021 } from "./noc2021";
 
 export default function NOCJobSelector({
   label = "Job Title",
 
-  // Valores controlados
   value,
   onChange,
 
   customValue,
   onCustomChange,
 
-  // Controle externo (Settings)
   useCustom,
   onToggleCustom,
 
-  // Controle externo da busca (Settings)
   search,
   onSearchChange,
 }) {
   const [internalUseCustom, setInternalUseCustom] = useState(false);
   const [internalSearch, setInternalSearch] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const containerRef = useRef(null);
 
   const effectiveUseCustom = useCustom ?? internalUseCustom;
   const effectiveSearch = search ?? internalSearch;
 
-  useEffect(() => {
-    if (useCustom !== undefined) {
-      setInternalUseCustom(useCustom);
-    }
-  }, [useCustom]);
+  // Flatten all synonyms into a single list
+  const allSynonyms = useMemo(() => {
+    return Object.values(noc2021).flat();
+  }, []);
 
-  const groups = useNOCGroups();
-
-  const filteredGroups = useMemo(() => {
-    if (!effectiveSearch) return groups;
-
+  // Filter synonyms by search term
+  const filtered = useMemo(() => {
+    if (!effectiveSearch) return allSynonyms;
     const term = effectiveSearch.toLowerCase();
+    return allSynonyms.filter((s) => s.toLowerCase().includes(term));
+  }, [effectiveSearch, allSynonyms]);
 
-    return groups.filter((g) => g.toLowerCase().includes(term));
-  }, [groups, effectiveSearch]);
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   function handleToggle(checked) {
     if (onToggleCustom) {
@@ -66,14 +71,24 @@ export default function NOCJobSelector({
     } else {
       setInternalSearch(val);
     }
+
+    setOpen(true);
   }
 
-  function handleSelectChange(e) {
-    onChange(e.target.value);
+  function handleSelect(synonym) {
+    onChange(synonym);
+
+    if (onSearchChange) {
+      onSearchChange(synonym);
+    } else {
+      setInternalSearch(synonym);
+    }
+
+    setOpen(false);
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 relative" ref={containerRef}>
       <div className="flex items-center justify-between">
         <Label className="text-neutral-700 font-semibold">{label}</Label>
 
@@ -84,35 +99,34 @@ export default function NOCJobSelector({
       </div>
 
       {!effectiveUseCustom ? (
-        <div className="space-y-2">
+        <div className="relative">
           <Input
             value={effectiveSearch}
             onChange={handleSearchChange}
-            placeholder="Search job titles or synonyms..."
+            placeholder="Search job titles..."
             className="bg-white"
+            onFocus={() => setOpen(true)}
           />
 
-          <div className="relative">
-            <select
-              value={value}
-              onChange={handleSelectChange}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-white text-sm"
-            >
-              <option value="">Select from NOC 2021</option>
-
-              {filteredGroups.map((group) => (
-                <option key={group} value={group}>
-                  {group}
-                </option>
-              ))}
-
-              {filteredGroups.length === 0 && (
-                <option disabled value="">
+          {open && (
+            <div className="absolute z-50 mt-1 w-full bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {filtered.length === 0 && (
+                <div className="px-3 py-2 text-sm text-neutral-500">
                   No results found
-                </option>
+                </div>
               )}
-            </select>
-          </div>
+
+              {filtered.map((synonym) => (
+                <div
+                  key={synonym}
+                  onClick={() => handleSelect(synonym)}
+                  className="px-3 py-2 text-sm hover:bg-neutral-100 cursor-pointer"
+                >
+                  {synonym}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <Input
@@ -124,10 +138,8 @@ export default function NOCJobSelector({
       )}
 
       <p className="text-xs text-neutral-500">
-        Based on NOC 2021 Version 1.0 — National Occupational Classification
-        (Canada)
+        Based on NOC 2021 — Synonym-level autocomplete
       </p>
     </div>
   );
 }
-
