@@ -25,15 +25,19 @@ export default function NOCJobSelector({
   customValue,
   onCustomChange,
 
-  // Controle externo (Settings)
+  // Controle externo
   useCustom,
   onToggleCustom,
+
+  // Controle externo da busca
+  search,
+  onSearchChange,
 }) {
   const [internalUseCustom, setInternalUseCustom] = useState(false);
-  const [search, setSearch] = useState("");
+  const [internalSearch, setInternalSearch] = useState("");
 
-  // Se o componente recebe controle externo, sincroniza
   const effectiveUseCustom = useCustom ?? internalUseCustom;
+  const effectiveSearch = search ?? internalSearch;
 
   useEffect(() => {
     if (useCustom !== undefined) {
@@ -42,7 +46,7 @@ export default function NOCJobSelector({
   }, [useCustom]);
 
   const groups = useNOCGroups();
-  const filteredGroups = useNOCSearch(search);
+  const filteredGroups = useNOCSearch(effectiveSearch);
 
   function handleToggle(checked) {
     if (onToggleCustom) {
@@ -56,8 +60,18 @@ export default function NOCJobSelector({
     }
   }
 
+  function handleSearchChange(e) {
+    const val = e.target.value;
+
+    if (onSearchChange) {
+      onSearchChange(val);
+    } else {
+      setInternalSearch(val);
+    }
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 relative">
       <div className="flex items-center justify-between">
         <Label className="text-neutral-700 font-semibold">{label}</Label>
 
@@ -70,8 +84,8 @@ export default function NOCJobSelector({
       {!effectiveUseCustom ? (
         <div className="space-y-2">
           <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={effectiveSearch}
+            onChange={handleSearchChange}
             placeholder="Search job titles or synonyms..."
             className="bg-white"
           />
@@ -81,7 +95,7 @@ export default function NOCJobSelector({
               <SelectValue placeholder="Select from NOC 2021" />
             </SelectTrigger>
 
-            <SelectContent className="max-h-[300px] overflow-y-auto">
+            <SelectContent className="max-h-[300px] overflow-y-auto z-[9999]">
               {filteredGroups.map((group) => (
                 <SelectItem key={group} value={group}>
                   {group}
