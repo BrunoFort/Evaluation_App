@@ -3,6 +3,7 @@ import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { Building2, Save } from "lucide-react";
 import { toast } from "sonner";
+import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 
 // FSA → City/Province mapping (expandable)
 const fsaMap = {
@@ -327,47 +328,25 @@ export default function EmployerSettingsPage() {
             />
           </div>
 
-          {/* JOB TITLE */}
+          {/* JOB TITLE — NOW USING NOCJobSelector */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-neutral-700">
               Job Title (NOC 2021 v1.0)
             </label>
 
-            <select
-              name="jobTitle"
+            <NOCJobSelector
+              label="Job Title"
               value={form.jobTitle}
-              onChange={handleChange}
-              disabled={form.allowCustomJobTitle}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            >
-              <option value="">Select a job title</option>
-              <option value="Manager">Manager</option>
-              <option value="Supervisor">Supervisor</option>
-              <option value="HR Specialist">HR Specialist</option>
-            </select>
+              onChange={(v) => setForm({ ...form, jobTitle: v })}
 
-            <label className="flex items-center gap-2 mt-2">
-              <input
-                type="checkbox"
-                name="allowCustomJobTitle"
-                checked={form.allowCustomJobTitle}
-                onChange={(e) =>
-                  setForm({ ...form, allowCustomJobTitle: e.target.checked })
-                }
-              />
-              I didn’t find my job title
-            </label>
+              customValue={form.customJobTitle}
+              onCustomChange={(v) => setForm({ ...form, customJobTitle: v })}
 
-            {form.allowCustomJobTitle && (
-              <input
-                type="text"
-                name="customJobTitle"
-                value={form.customJobTitle}
-                onChange={handleChange}
-                placeholder="Enter custom job title"
-                className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              />
-            )}
+              useCustom={form.allowCustomJobTitle}
+              onToggleCustom={(checked) =>
+                setForm({ ...form, allowCustomJobTitle: checked })
+              }
+            />
           </div>
 
           {/* ADDRESS */}
