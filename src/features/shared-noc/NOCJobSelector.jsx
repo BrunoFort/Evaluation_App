@@ -12,21 +12,12 @@ export default function NOCJobSelector({
 
   customValue,
   onCustomChange,
-
-  useCustom,
-  onToggleCustom,
-
-  search,
-  onSearchChange,
 }) {
-  const [internalUseCustom, setInternalUseCustom] = useState(false);
-  const [internalSearch, setInternalSearch] = useState("");
+  const [useCustom, setUseCustom] = useState(false);
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
 
   const containerRef = useRef(null);
-
-  const effectiveUseCustom = useCustom ?? internalUseCustom;
-  const effectiveSearch = search ?? internalSearch;
 
   // Extract ONLY synonyms (no group names)
   const allSynonyms = useMemo(() => {
@@ -36,10 +27,10 @@ export default function NOCJobSelector({
 
   // Filter synonyms by search term
   const filtered = useMemo(() => {
-    if (!effectiveSearch) return allSynonyms;
-    const term = effectiveSearch.toLowerCase();
+    if (!search) return allSynonyms;
+    const term = search.toLowerCase();
     return allSynonyms.filter((s) => s.toLowerCase().includes(term));
-  }, [effectiveSearch, allSynonyms]);
+  }, [search, allSynonyms]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -53,38 +44,26 @@ export default function NOCJobSelector({
   }, []);
 
   function handleToggle(checked) {
-    if (onToggleCustom) {
-      onToggleCustom(checked);
-    } else {
-      setInternalUseCustom(checked);
-    }
+    setUseCustom(checked);
 
     if (!checked) {
+      // Reset everything when turning OFF custom mode
       onCustomChange("");
+      onChange("");
+      setSearch("");
+      setOpen(false);
     }
   }
 
   function handleSearchChange(e) {
     const val = e.target.value;
-
-    if (onSearchChange) {
-      onSearchChange(val);
-    } else {
-      setInternalSearch(val);
-    }
-
+    setSearch(val);
     setOpen(true);
   }
 
   function handleSelect(synonym) {
     onChange(synonym);
-
-    if (onSearchChange) {
-      onSearchChange(synonym);
-    } else {
-      setInternalSearch(synonym);
-    }
-
+    setSearch(synonym);
     setOpen(false);
   }
 
@@ -95,14 +74,14 @@ export default function NOCJobSelector({
 
         <div className="flex items-center gap-2">
           <span className="text-xs text-neutral-500">Custom entry</span>
-          <Switch checked={effectiveUseCustom} onCheckedChange={handleToggle} />
+          <Switch checked={useCustom} onCheckedChange={handleToggle} />
         </div>
       </div>
 
-      {!effectiveUseCustom ? (
+      {!useCustom ? (
         <div className="relative">
           <Input
-            value={effectiveSearch}
+            value={search}
             onChange={handleSearchChange}
             placeholder="Search job titles..."
             className="bg-white"
