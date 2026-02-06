@@ -82,15 +82,22 @@ export function EmployerRegisterForm({ onSubmit }) {
 
       {/* JOB TITLE */}
       <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Job Title
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("jobTitle", { required: true })}
-          placeholder="HR Manager, Recruiter, etc."
-        />
-      </div>
+  <label className="block text-sm font-medium text-neutral-700 mb-1">
+    Job Title
+      </label>
+    
+      <NOCJobSelector
+        label="" // evita label duplicado
+        value={watch("jobTitle")}
+        onChange={(v) => setValue("jobTitle", v)}
+        customValue={watch("customJobTitle")}
+        onCustomChange={(v) => setValue("customJobTitle", v)}
+        useCustom={watch("allowCustomJobTitle")}
+        onToggleCustom={(checked) => setValue("allowCustomJobTitle", checked)}
+        className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+      />
+    </div>
+
 
       {/* EMAIL */}
       <div>
