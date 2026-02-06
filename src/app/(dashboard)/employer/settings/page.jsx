@@ -22,21 +22,16 @@ export default function EmployerSettingsPage() {
   const { employer, login } = useEmployerAuth();
 
   const [form, setForm] = useState({
-    // Employer
     firstName: "",
     lastName: "",
     personalIdType: "",
     personalIdNumber: "",
-
-    // Company
     employeeRegistration: "",
     businessNumber: "",
     companyName: "",
     jobTitle: "",
     customJobTitle: "",
     allowCustomJobTitle: false,
-
-    // Address
     unit: "",
     street: "",
     number: "",
@@ -44,8 +39,6 @@ export default function EmployerSettingsPage() {
     province: "",
     country: "Canada",
     postalCode: "",
-
-    // Contact
     phoneCountry: "+1",
     phoneNumber: "",
     contactEmail: "",
@@ -57,11 +50,8 @@ export default function EmployerSettingsPage() {
 
   const [saving, setSaving] = useState(false);
   const [loadingBN, setLoadingBN] = useState(false);
-
-  // 🔍 Estado externo para busca NOC
   const [nocSearch, setNocSearch] = useState("");
 
-  // Load employer data
   useEffect(() => {
     if (employer) {
       setForm((prev) => ({
@@ -91,13 +81,11 @@ export default function EmployerSettingsPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  // Postal Code validation (Canada)
   function validatePostalCode(code) {
     const regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
     return regex.test(code);
   }
 
-  // Autocomplete City/Province from FSA
   function handlePostalCodeBlur() {
     if (!validatePostalCode(form.postalCode)) {
       toast.error("Invalid Canadian Postal Code format.");
@@ -119,12 +107,10 @@ export default function EmployerSettingsPage() {
     }
   }
 
-  // Business Number validation (local)
   function validateBusinessNumberLocal(bn) {
     return /^\d{9}$/.test(bn);
   }
 
-  // Business Number blur → validate + fetch company name
   async function handleBusinessNumberBlur(e) {
     const bn = e.target.value;
     if (!bn) return;
@@ -142,14 +128,12 @@ export default function EmployerSettingsPage() {
         companyName: result.companyName || prev.companyName,
       }));
     } catch (err) {
-      console.error(err);
       toast.error(err.message || "Error validating Business Number.");
     } finally {
       setLoadingBN(false);
     }
   }
 
-  // Personal ID validation
   function validatePersonalIdNumber(type, number) {
     if (!number.trim()) return false;
 
@@ -170,7 +154,6 @@ export default function EmployerSettingsPage() {
   }
 
   async function handleSave() {
-    // Required fields
     if (!form.firstName || !form.lastName) {
       toast.error("First name and last name are required.");
       return;
@@ -233,7 +216,6 @@ export default function EmployerSettingsPage() {
 
       toast.success("Settings saved successfully.");
     } catch (err) {
-      console.error(err);
       toast.error("Error saving settings.");
     } finally {
       setSaving(false);
@@ -243,7 +225,6 @@ export default function EmployerSettingsPage() {
   return (
     <EmployerDashboardLayout>
       <div className="max-w-3xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-10">
-        {/* HEADER */}
         <div className="flex items-center gap-3">
           <Building2 className="w-8 h-8 text-purple-600" />
           <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
@@ -282,7 +263,6 @@ export default function EmployerSettingsPage() {
               </div>
             </div>
 
-            {/* PERSONAL ID */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -324,7 +304,6 @@ export default function EmployerSettingsPage() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-neutral-800">Company</h2>
 
-            {/* EMPLOYEE REGISTRATION + JOB TITLE */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -339,35 +318,45 @@ export default function EmployerSettingsPage() {
                 />
               </div>
 
+              {/* JOB TITLE — ALINHADO, SEM TEXTO EXTRA, TOGGLE ACIMA */}
               <div>
-  <label className="block text-sm font-medium text-neutral-700 mb-1">
-    Job Title
-  </label>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Job Title
+                </label>
 
-            <NOCJobSelector
-              label="" // remove o label duplicado
-              value={form.jobTitle}
-              onChange={(v) => setForm((prev) => ({ ...prev, jobTitle: v }))}
-              customValue={form.customJobTitle}
-              onCustomChange={(v) =>
-                setForm((prev) => ({ ...prev, customJobTitle: v }))
-              }
-              useCustom={form.allowCustomJobTitle}
-              onToggleCustom={(checked) =>
-                setForm((prev) => ({
-                  ...prev,
-                  allowCustomJobTitle: checked,
-                }))
-              }
-              search={nocSearch}
-              onSearchChange={setNocSearch}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            />
-          </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-neutral-700">Custom entry</span>
+                  <input
+                    type="checkbox"
+                    checked={form.allowCustomJobTitle}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        allowCustomJobTitle: e.target.checked,
+                      }))
+                    }
+                  />
+                </div>
 
+                <NOCJobSelector
+                  label=""
+                  hideHelperText
+                  value={form.jobTitle}
+                  onChange={(v) =>
+                    setForm((prev) => ({ ...prev, jobTitle: v }))
+                  }
+                  customValue={form.customJobTitle}
+                  onCustomChange={(v) =>
+                    setForm((prev) => ({ ...prev, customJobTitle: v }))
+                  }
+                  useCustom={form.allowCustomJobTitle}
+                  search={nocSearch}
+                  onSearchChange={setNocSearch}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2 h-[42px]"
+                />
+              </div>
             </div>
 
-            {/* BUSINESS NUMBER + COMPANY NAME */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -406,7 +395,6 @@ export default function EmployerSettingsPage() {
               Company Address
             </h2>
 
-            {/* Postal Code */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
                 Postal Code *
@@ -421,7 +409,6 @@ export default function EmployerSettingsPage() {
               />
             </div>
 
-            {/* Unit / Street / Number */}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -463,7 +450,6 @@ export default function EmployerSettingsPage() {
               </div>
             </div>
 
-            {/* City / Province / Country */}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -582,17 +568,4 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* SAVE BUTTON */}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-          >
-            <Save className="w-5 h-5" />
-            {saving ? "Saving..." : "Save Settings"}
-          </button>
-        </div>
-      </div>
-    </EmployerDashboardLayout>
-  );
-}
+          <
