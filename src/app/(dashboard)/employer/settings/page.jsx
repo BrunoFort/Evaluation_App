@@ -568,7 +568,7 @@ export default function EmployerSettingsPage() {
           </div>
         </div>
       </div>
-    </EmployerDashboardLayout>
+    </EmployerDashboardLayout>  
   );
 }
 
