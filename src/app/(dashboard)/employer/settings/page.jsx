@@ -339,31 +339,32 @@ export default function EmployerSettingsPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-neutral-700">
-                  Job Title
-                </label>
-                <NOCJobSelector
-                  label="Job Title"
-                  value={form.jobTitle}
-                  onChange={(v) =>
-                    setForm((prev) => ({ ...prev, jobTitle: v }))
-                  }
-                  customValue={form.customJobTitle}
-                  onCustomChange={(v) =>
-                    setForm((prev) => ({ ...prev, customJobTitle: v }))
-                  }
-                  useCustom={form.allowCustomJobTitle}
-                  onToggleCustom={(checked) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      allowCustomJobTitle: checked,
-                    }))
-                  }
-                  search={nocSearch}
-                  onSearchChange={setNocSearch}
-                />
-              </div>
+              <div>
+  <label className="block text-sm font-medium text-neutral-700 mb-1">
+    Job Title
+  </label>
+
+            <NOCJobSelector
+              label="" // remove o label duplicado
+              value={form.jobTitle}
+              onChange={(v) => setForm((prev) => ({ ...prev, jobTitle: v }))}
+              customValue={form.customJobTitle}
+              onCustomChange={(v) =>
+                setForm((prev) => ({ ...prev, customJobTitle: v }))
+              }
+              useCustom={form.allowCustomJobTitle}
+              onToggleCustom={(checked) =>
+                setForm((prev) => ({
+                  ...prev,
+                  allowCustomJobTitle: checked,
+                }))
+              }
+              search={nocSearch}
+              onSearchChange={setNocSearch}
+              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+            />
+          </div>
+
             </div>
 
             {/* BUSINESS NUMBER + COMPANY NAME */}
