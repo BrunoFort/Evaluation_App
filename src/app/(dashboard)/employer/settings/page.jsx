@@ -22,7 +22,7 @@ export default function EmployerSettingsPage() {
   const { employer, login } = useEmployerAuth();
 
   const [form, setForm] = useState({
-    // Responsible person / employer
+    // Employer
     firstName: "",
     lastName: "",
     personalIdType: "",
@@ -74,7 +74,7 @@ export default function EmployerSettingsPage() {
   }, [employer]);
 
   function handleChange(e) {
-    const { name, value, type, checked } = e.target;
+    const { name, value, checked } = e.target;
 
     if (name.startsWith("preferredContact")) {
       const key = name.split(".")[1];
@@ -250,7 +250,7 @@ export default function EmployerSettingsPage() {
         </div>
 
         <div className="space-y-8">
-          {/* EMPLOYER (antes Responsible Person) */}
+          {/* EMPLOYER */}
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-neutral-800">Employer</h2>
 
@@ -346,7 +346,9 @@ export default function EmployerSettingsPage() {
                 <NOCJobSelector
                   label="Job Title"
                   value={form.jobTitle}
-                  onChange={(v) => setForm((prev) => ({ ...prev, jobTitle: v }))}
+                  onChange={(v) =>
+                    setForm((prev) => ({ ...prev, jobTitle: v }))
+                  }
                   customValue={form.customJobTitle}
                   onCustomChange={(v) =>
                     setForm((prev) => ({ ...prev, customJobTitle: v }))
