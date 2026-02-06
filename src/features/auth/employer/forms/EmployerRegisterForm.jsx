@@ -38,20 +38,22 @@ export function EmployerRegisterForm({ onSubmit }) {
           className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
           {...register("businessNumber", { required: true })}
           onBlur={handleBNBlur}
+          maxLength={9}
         />
         {errors.businessNumber && (
           <p className="text-red-600 text-sm mt-1">Required</p>
         )}
       </div>
 
-      {/* COMPANY NAME */}
+      {/* COMPANY NAME (readOnly para alinhar com Settings) */}
       <div>
         <label className="block text-sm font-medium text-neutral-700">
           Company Name
         </label>
         <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
+          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600 bg-neutral-100"
           {...register("companyName", { required: true })}
+          readOnly
           disabled={loadingBN}
         />
       </div>
@@ -138,4 +140,3 @@ export function EmployerRegisterForm({ onSubmit }) {
     </form>
   );
 }
-
