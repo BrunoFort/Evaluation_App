@@ -140,3 +140,4 @@ export function EmployerRegisterForm({ onSubmit }) {
     </form>
   );
 }
+
