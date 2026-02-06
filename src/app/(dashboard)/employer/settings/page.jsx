@@ -565,7 +565,10 @@ export default function EmployerSettingsPage() {
                 />
                 Email
               </label>
-            </div>
           </div>
+        </div>
+      </div>
+    </EmployerDashboardLayout>
+  );
+}
 
-          <
