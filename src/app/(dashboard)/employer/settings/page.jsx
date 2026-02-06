@@ -4,24 +4,25 @@ import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAu
 import { Building2, Save } from "lucide-react";
 import { toast } from "sonner";
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
+import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 
 // FSA → City/Province mapping (expandable)
 const fsaMap = {
-  "K1A": { city: "Ottawa", province: "ON" },
-  "K2P": { city: "Ottawa", province: "ON" },
-  "M5V": { city: "Toronto", province: "ON" },
-  "M4B": { city: "Toronto", province: "ON" },
-  "H2X": { city: "Montréal", province: "QC" },
-  "H3Z": { city: "Montréal", province: "QC" },
-  "V6B": { city: "Vancouver", province: "BC" },
-  "V5K": { city: "Vancouver", province: "BC" },
+  K1A: { city: "Ottawa", province: "ON" },
+  K2P: { city: "Ottawa", province: "ON" },
+  M5V: { city: "Toronto", province: "ON" },
+  M4B: { city: "Toronto", province: "ON" },
+  H2X: { city: "Montréal", province: "QC" },
+  H3Z: { city: "Montréal", province: "QC" },
+  V6B: { city: "Vancouver", province: "BC" },
+  V5K: { city: "Vancouver", province: "BC" },
 };
 
 export default function EmployerSettingsPage() {
   const { employer, login } = useEmployerAuth();
 
   const [form, setForm] = useState({
-    // Responsible person
+    // Responsible person / employer
     firstName: "",
     lastName: "",
     personalIdType: "",
@@ -55,6 +56,7 @@ export default function EmployerSettingsPage() {
   });
 
   const [saving, setSaving] = useState(false);
+  const [loadingBN, setLoadingBN] = useState(false);
 
   // 🔍 Estado externo para busca NOC
   const [nocSearch, setNocSearch] = useState("");
@@ -62,11 +64,12 @@ export default function EmployerSettingsPage() {
   // Load employer data
   useEffect(() => {
     if (employer) {
-      setForm({
-        ...form,
+      setForm((prev) => ({
+        ...prev,
         ...employer,
-        preferredContact: employer.preferredContact || { phone: false, email: true },
-      });
+        preferredContact:
+          employer.preferredContact || { phone: false, email: true },
+      }));
     }
   }, [employer]);
 
@@ -75,17 +78,17 @@ export default function EmployerSettingsPage() {
 
     if (name.startsWith("preferredContact")) {
       const key = name.split(".")[1];
-      setForm({
-        ...form,
+      setForm((prev) => ({
+        ...prev,
         preferredContact: {
-          ...form.preferredContact,
+          ...prev.preferredContact,
           [key]: checked,
         },
-      });
+      }));
       return;
     }
 
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   // Postal Code validation (Canada)
@@ -105,20 +108,45 @@ export default function EmployerSettingsPage() {
     const match = fsaMap[fsa];
 
     if (match) {
-      setForm({
-        ...form,
+      setForm((prev) => ({
+        ...prev,
         city: match.city,
         province: match.province,
         country: "Canada",
-      });
+      }));
     } else {
       toast.error("Postal Code not found in FSA database.");
     }
   }
 
-  // Business Number validation
-  function validateBusinessNumber(bn) {
+  // Business Number validation (local)
+  function validateBusinessNumberLocal(bn) {
     return /^\d{9}$/.test(bn);
+  }
+
+  // Business Number blur → validate + fetch company name
+  async function handleBusinessNumberBlur(e) {
+    const bn = e.target.value;
+    if (!bn) return;
+
+    if (!validateBusinessNumberLocal(bn)) {
+      toast.error("Business Number must have exactly 9 digits.");
+      return;
+    }
+
+    try {
+      setLoadingBN(true);
+      const result = await validateBusinessNumber(bn);
+      setForm((prev) => ({
+        ...prev,
+        companyName: result.companyName || prev.companyName,
+      }));
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Error validating Business Number.");
+    } finally {
+      setLoadingBN(false);
+    }
   }
 
   // Personal ID validation
@@ -158,12 +186,18 @@ export default function EmployerSettingsPage() {
       return;
     }
 
-    if (!validateBusinessNumber(form.businessNumber)) {
+    if (!validateBusinessNumberLocal(form.businessNumber)) {
       toast.error("Business Number must have exactly 9 digits.");
       return;
     }
 
-    if (!form.street || !form.number || !form.city || !form.province || !form.country) {
+    if (
+      !form.street ||
+      !form.number ||
+      !form.city ||
+      !form.province ||
+      !form.country
+    ) {
       toast.error("All address fields except Unit/Apartment are required.");
       return;
     }
@@ -209,20 +243,16 @@ export default function EmployerSettingsPage() {
   return (
     <EmployerDashboardLayout>
       <div className="max-w-3xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-10">
-
         {/* HEADER */}
         <div className="flex items-center gap-3">
           <Building2 className="w-8 h-8 text-purple-600" />
-          <h1 className="text-3xl font-bold text-neutral-900">
-            Settings
-          </h1>
+          <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
         </div>
 
         <div className="space-y-8">
-
-          {/* RESPONSIBLE PERSON */}
+          {/* EMPLOYER (antes Responsible Person) */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-neutral-800">Responsible Person</h2>
+            <h2 className="text-lg font-semibold text-neutral-800">Employer</h2>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -269,7 +299,9 @@ export default function EmployerSettingsPage() {
                   <option value="DriversLicense">Driver’s License</option>
                   <option value="ProvincialID">Provincial ID Card</option>
                   <option value="PRCard">Permanent Resident Card</option>
-                  <option value="CitizenshipCertificate">Citizenship Certificate</option>
+                  <option value="CitizenshipCertificate">
+                    Citizenship Certificate
+                  </option>
                 </select>
               </div>
 
@@ -288,77 +320,90 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* EMPLOYEE REGISTRATION */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Employee Registration Number *
-            </label>
-            <input
-              type="text"
-              name="employeeRegistration"
-              value={form.employeeRegistration}
-              onChange={handleChange}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            />
-          </div>
+          {/* COMPANY */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-neutral-800">Company</h2>
 
-          {/* BUSINESS NUMBER */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Business Number (9 digits) *
-            </label>
-            <input
-              type="text"
-              name="businessNumber"
-              value={form.businessNumber}
-              onChange={handleChange}
-              maxLength={9}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            />
-          </div>
+            {/* EMPLOYEE REGISTRATION + JOB TITLE */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Employee Registration Number *
+                </label>
+                <input
+                  type="text"
+                  name="employeeRegistration"
+                  value={form.employeeRegistration}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
 
-          {/* COMPANY NAME */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Company Name *
-            </label>
-            <input
-              type="text"
-              name="companyName"
-              value={form.companyName}
-              onChange={handleChange}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            />
-          </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-neutral-700">
+                  Job Title
+                </label>
+                <NOCJobSelector
+                  label="Job Title"
+                  value={form.jobTitle}
+                  onChange={(v) => setForm((prev) => ({ ...prev, jobTitle: v }))}
+                  customValue={form.customJobTitle}
+                  onCustomChange={(v) =>
+                    setForm((prev) => ({ ...prev, customJobTitle: v }))
+                  }
+                  useCustom={form.allowCustomJobTitle}
+                  onToggleCustom={(checked) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      allowCustomJobTitle: checked,
+                    }))
+                  }
+                  search={nocSearch}
+                  onSearchChange={setNocSearch}
+                />
+              </div>
+            </div>
 
-          {/* JOB TITLE — NOCJobSelector */}
-          <div className="space-y-2 relative">
-            <label className="block text-sm font-medium text-neutral-700">
-              Job Title (NOC 2021 v1.0)
-            </label>
+            {/* BUSINESS NUMBER + COMPANY NAME */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Business Number (9 digits) *
+                </label>
+                <input
+                  type="text"
+                  name="businessNumber"
+                  value={form.businessNumber}
+                  onChange={handleChange}
+                  onBlur={handleBusinessNumberBlur}
+                  maxLength={9}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
 
-            <NOCJobSelector
-              label="Job Title"
-              value={form.jobTitle}
-              onChange={(v) => setForm({ ...form, jobTitle: v })}
-
-              customValue={form.customJobTitle}
-              onCustomChange={(v) => setForm({ ...form, customJobTitle: v })}
-
-              useCustom={form.allowCustomJobTitle}
-              onToggleCustom={(checked) =>
-                setForm({ ...form, allowCustomJobTitle: checked })
-              }
-
-              search={nocSearch}
-              onSearchChange={setNocSearch}
-            />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Company Name *
+                </label>
+                <input
+                  type="text"
+                  name="companyName"
+                  value={form.companyName}
+                  readOnly
+                  disabled={loadingBN}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
+                />
+              </div>
+            </div>
           </div>
 
           {/* ADDRESS */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-neutral-800">Company Address</h2>
+            <h2 className="text-lg font-semibold text-neutral-800">
+              Company Address
+            </h2>
 
+            {/* Postal Code */}
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
                 Postal Code *
@@ -373,6 +418,7 @@ export default function EmployerSettingsPage() {
               />
             </div>
 
+            {/* Unit / Street / Number */}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -414,6 +460,7 @@ export default function EmployerSettingsPage() {
               </div>
             </div>
 
+            {/* City / Province / Country */}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
