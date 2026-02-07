@@ -5,6 +5,7 @@ import { noc2021 } from "./noc2021";
 export default function NOCJobSelector({
   value,
   onChange,
+  useCustom = false,
   className = "",
 }) {
   const [search, setSearch] = useState(value || "");
@@ -23,6 +24,10 @@ export default function NOCJobSelector({
   }, [search, allSynonyms]);
 
   useEffect(() => {
+    setSearch(value || "");
+  }, [value]);
+
+  useEffect(() => {
     function handleClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setOpen(false);
@@ -32,33 +37,31 @@ export default function NOCJobSelector({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    setSearch(value || "");
-  }, [value]);
-
-  function handleSearchChange(e) {
+  function handleInput(e) {
     const val = e.target.value;
     setSearch(val);
-    setOpen(true);
-  }
+    onChange(val);
 
-  function handleSelect(synonym) {
-    onChange && onChange(synonym);
-    setSearch(synonym);
-    setOpen(false);
+    if (!useCustom) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
   }
 
   return (
     <div className="relative h-[42px]" ref={containerRef}>
       <Input
         value={search}
-        onChange={handleSearchChange}
+        onChange={handleInput}
         placeholder="Search job titles..."
         className={`w-full h-full border border-neutral-300 rounded-lg px-3 py-2 bg-white focus:ring-0 ${className}`}
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          if (!useCustom) setOpen(true);
+        }}
       />
 
-      {open && (
+      {!useCustom && open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {filtered.length === 0 && (
             <div className="px-3 py-2 text-sm text-neutral-500">
@@ -69,7 +72,11 @@ export default function NOCJobSelector({
           {filtered.map((synonym) => (
             <div
               key={synonym}
-              onClick={() => handleSelect(synonym)}
+              onClick={() => {
+                onChange(synonym);
+                setSearch(synonym);
+                setOpen(false);
+              }}
               className="px-3 py-2 text-sm hover:bg-neutral-100 cursor-pointer"
             >
               {synonym}
@@ -80,4 +87,3 @@ export default function NOCJobSelector({
     </div>
   );
 }
-
