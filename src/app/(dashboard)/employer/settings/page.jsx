@@ -383,7 +383,6 @@ export default function EmployerSettingsPage() {
                 />
               </div>
             </div>
-            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
