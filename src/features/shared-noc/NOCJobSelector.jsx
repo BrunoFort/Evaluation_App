@@ -6,10 +6,8 @@ import { noc2021 } from "./noc2021";
 
 export default function NOCJobSelector({
   label = "Job Title",
-
   value,
   onChange,
-
   customValue,
   onCustomChange,
 }) {
@@ -19,20 +17,17 @@ export default function NOCJobSelector({
 
   const containerRef = useRef(null);
 
-  // Extract ONLY synonyms (no group names)
   const allSynonyms = useMemo(() => {
     const list = Object.values(noc2021).flat();
-    return Array.from(new Set(list)); // remove duplicates
+    return Array.from(new Set(list));
   }, []);
 
-  // Filter synonyms by search term
   const filtered = useMemo(() => {
     if (!search) return allSynonyms;
     const term = search.toLowerCase();
     return allSynonyms.filter((s) => s.toLowerCase().includes(term));
   }, [search, allSynonyms]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
@@ -47,7 +42,6 @@ export default function NOCJobSelector({
     setUseCustom(checked);
 
     if (!checked) {
-      // Reset everything when turning OFF custom mode
       onCustomChange("");
       onChange("");
       setSearch("");
@@ -68,8 +62,8 @@ export default function NOCJobSelector({
   }
 
   return (
-    <div className="space-y-3 relative" ref={containerRef}>
-      <div className="flex items-center justify-between">
+    <div className="relative h-full flex flex-col justify-center" ref={containerRef}>
+      <div className="flex items-center justify-between mb-1">
         <Label className="text-neutral-700 font-semibold">{label}</Label>
 
         <div className="flex items-center gap-2">
@@ -79,12 +73,12 @@ export default function NOCJobSelector({
       </div>
 
       {!useCustom ? (
-        <div className="relative">
+        <div className="relative h-full">
           <Input
             value={search}
             onChange={handleSearchChange}
             placeholder="Search job titles..."
-            className="bg-white"
+            className="h-full w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 focus:ring-0"
             onFocus={() => setOpen(true)}
           />
 
@@ -113,13 +107,9 @@ export default function NOCJobSelector({
           value={customValue}
           onChange={(e) => onCustomChange(e.target.value)}
           placeholder="Enter custom job title"
-          className="bg-white"
+          className="h-full w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 focus:ring-0"
         />
       )}
-
-      <p className="text-xs text-neutral-500">
-        Based on NOC 2021 — Synonym-level autocomplete
-      </p>
     </div>
   );
 }
