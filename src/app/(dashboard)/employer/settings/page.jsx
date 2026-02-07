@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 
-// FSA → City/Province mapping (expandable)
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
   K2P: { city: "Ottawa", province: "ON" },
@@ -231,7 +230,6 @@ export default function EmployerSettingsPage() {
         </div>
 
         <div className="space-y-8">
-          {/* EMPLOYER */}
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-neutral-800">Employer</h2>
 
@@ -300,7 +298,6 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* COMPANY */}
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-neutral-800">Company</h2>
 
@@ -318,7 +315,6 @@ export default function EmployerSettingsPage() {
                 />
               </div>
 
-              {/* JOB TITLE — ALINHADO, SEM TEXTO EXTRA, TOGGLE ACIMA */}
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
                   Job Title
@@ -386,6 +382,7 @@ export default function EmployerSettingsPage() {
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
                 />
               </div>
+            </div>
             </div>
           </div>
 
@@ -567,9 +564,19 @@ export default function EmployerSettingsPage() {
               </label>
             </div>
           </div>
+
+          {/* SAVE BUTTON */}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
+          >
+            <Save className="w-5 h-5" />
+            {saving ? "Saving..." : "Save Settings"}
+          </button>
         </div>
       </div>
-    </EmployerDashboardLayout>  
+    </EmployerDashboardLayout>
   );
 }
 
