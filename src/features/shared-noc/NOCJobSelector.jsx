@@ -49,12 +49,12 @@ export default function NOCJobSelector({
   }
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative h-[42px]" ref={containerRef}>
       <Input
         value={search}
         onChange={handleSearchChange}
         placeholder="Search job titles..."
-        className={`w-full border border-neutral-300 rounded-lg px-3 py-2 bg-white focus:ring-0 h-[42px] ${className}`}
+        className={`w-full h-full border border-neutral-300 rounded-lg px-3 py-2 bg-white focus:ring-0 ${className}`}
         onFocus={() => setOpen(true)}
       />
 
