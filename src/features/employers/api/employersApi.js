@@ -1,46 +1,63 @@
 // src/features/employers/api/employersApi.js
 
-const API_URL = "http://localhost:4000/employers";
+import { supabase } from "/src/lib/supabaseClient";
 
+// GET all employers
 export async function getEmployers() {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Failed to fetch employers");
-  return res.json();
+  const { data, error } = await supabase
+    .from("employers")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data;
 }
 
+// GET employer by UUID
 export async function getEmployerById(id) {
-  const res = await fetch(`${API_URL}/${id}`);
-  if (!res.ok) throw new Error("Employer not found");
-  return res.json();
+  const { data, error } = await supabase
+    .from("employers")
+    .select("*")
+    .eq("uuid", id)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
 }
 
+// CREATE employer
 export async function createEmployer(data) {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  const { data: result, error } = await supabase
+    .from("employers")
+    .insert([data])
+    .select()
+    .single();
 
-  if (!res.ok) throw new Error("Failed to create employer");
-  return res.json();
+  if (error) throw new Error(error.message);
+  return result;
 }
 
+// UPDATE employer
 export async function updateEmployer(id, data) {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  const { data: result, error } = await supabase
+    .from("employers")
+    .update(data)
+    .eq("uuid", id)
+    .select()
+    .single();
 
-  if (!res.ok) throw new Error("Failed to update employer");
-  return res.json();
+  if (error) throw new Error(error.message);
+  return result;
 }
 
+// DELETE employer
 export async function deleteEmployer(id) {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
+  const { error } = await supabase
+    .from("employers")
+    .delete()
+    .eq("uuid", id);
 
-  if (!res.ok) throw new Error("Failed to delete employer");
+  if (error) throw new Error(error.message);
   return true;
 }
+
