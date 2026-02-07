@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEmployerAuth } from "@/features/auth/employer/hooks/useEmployerAuth";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 
 import Card from "@/components/ui/card.jsx";
 import Input from "@/components/ui/input.jsx";
