@@ -316,39 +316,42 @@ export default function EmployerSettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Job Title
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-sm font-medium text-neutral-700">
+                    Job Title
+                  </label>
 
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-neutral-700">Custom entry</span>
-                  <input
-                    type="checkbox"
-                    checked={form.allowCustomJobTitle}
-                    onChange={(e) =>
-                      setForm((prev) => ({
-                        ...prev,
-                        allowCustomJobTitle: e.target.checked,
-                      }))
-                    }
-                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-neutral-700">
+                      Custom entry
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={form.allowCustomJobTitle}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          allowCustomJobTitle: e.target.checked,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
 
                 <NOCJobSelector
-                  label=""
-                  hideHelperText
-                  value={form.jobTitle}
+                  value={
+                    form.allowCustomJobTitle
+                      ? form.customJobTitle
+                      : form.jobTitle
+                  }
                   onChange={(v) =>
-                    setForm((prev) => ({ ...prev, jobTitle: v }))
+                    setForm((prev) =>
+                      prev.allowCustomJobTitle
+                        ? { ...prev, customJobTitle: v }
+                        : { ...prev, jobTitle: v }
+                    )
                   }
-                  customValue={form.customJobTitle}
-                  onCustomChange={(v) =>
-                    setForm((prev) => ({ ...prev, customJobTitle: v }))
-                  }
-                  useCustom={form.allowCustomJobTitle}
-                  search={nocSearch}
-                  onSearchChange={setNocSearch}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2 h-[42px]"
+                  className="h-[42px]"
                 />
               </div>
             </div>
@@ -383,89 +386,183 @@ export default function EmployerSettingsPage() {
                 />
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Country Code
-              </label>
-              <select
-                name="phoneCountry"
-                value={form.phoneCountry}
-                onChange={handleChange}
-                className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              >
-                <option value="+1">🇨🇦 +1 Canada</option>
-                <option value="+1">🇺🇸 +1 USA</option>
-                <option value="+55">🇧🇷 +55 Brazil</option>
-                <option value="+44">🇬🇧 +44 UK</option>
-              </select>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-3">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Street *
+                </label>
+                <input
+                  type="text"
+                  name="street"
+                  value={form.street}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Number *
+                </label>
+                <input
+                  type="text"
+                  name="number"
+                  value={form.number}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Unit / Apartment
+                </label>
+                <input
+                  type="text"
+                  name="unit"
+                  value={form.unit}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Province / Territory *
+                </label>
+                <input
+                  type="text"
+                  name="province"
+                  value={form.province}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Country *
+                </label>
+                <input
+                  type="text"
+                  name="country"
+                  value={form.country}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Postal Code *
+                </label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={form.postalCode}
+                  onChange={handleChange}
+                  onBlur={handlePostalCodeBlur}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
             </div>
 
-            <div className="col-span-2">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Country Code
+                </label>
+                <select
+                  name="phoneCountry"
+                  value={form.phoneCountry}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                >
+                  <option value="+1">🇨🇦 +1 Canada</option>
+                  <option value="+1">🇺🇸 +1 USA</option>
+                  <option value="+55">🇧🇷 +55 Brazil</option>
+                  <option value="+44">🇬🇧 +44 UK</option>
+                </select>
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={form.phoneNumber}
+                  onChange={handleChange}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+              </div>
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Phone Number
+                Contact Email *
               </label>
               <input
-                type="text"
-                name="phoneNumber"
-                value={form.phoneNumber}
+                type="email"
+                name="contactEmail"
+                value={form.contactEmail}
                 onChange={handleChange}
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Contact Email *
-            </label>
-            <input
-              type="email"
-              name="contactEmail"
-              value={form.contactEmail}
-              onChange={handleChange}
-              className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-neutral-700">
-              Preferred Contact Method
-            </label>
-
-            <div className="flex items-center gap-6">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="preferredContact.phone"
-                  checked={form.preferredContact.phone}
-                  onChange={handleChange}
-                />
-                Phone
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-neutral-700">
+                Preferred Contact Method
               </label>
 
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="preferredContact.email"
-                  checked={form.preferredContact.email}
-                  onChange={handleChange}
-                />
-                Email
-              </label>
+              <div className="flex items-center gap-6">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="preferredContact.phone"
+                    checked={form.preferredContact.phone}
+                    onChange={handleChange}
+                  />
+                  Phone
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="preferredContact.email"
+                    checked={form.preferredContact.email}
+                    onChange={handleChange}
+                  />
+                  Email
+                </label>
+              </div>
             </div>
-          </div>
 
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-          >
-            <Save className="w-5 h-5" />
-            {saving ? "Saving..." : "Save Settings"}
-          </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
+            >
+              <Save className="w-5 h-5" />
+              {saving ? "Saving..." : "Save Settings"}
+            </button>
+          </div>
         </div>
       </div>
     </EmployerDashboardLayout>
