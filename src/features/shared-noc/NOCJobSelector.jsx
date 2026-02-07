@@ -42,8 +42,8 @@ export default function NOCJobSelector({
     setUseCustom(checked);
 
     if (!checked) {
-      onCustomChange("");
-      onChange("");
+      onCustomChange && onCustomChange("");
+      onChange && onChange("");
       setSearch("");
       setOpen(false);
     }
@@ -56,13 +56,13 @@ export default function NOCJobSelector({
   }
 
   function handleSelect(synonym) {
-    onChange(synonym);
+    onChange && onChange(synonym);
     setSearch(synonym);
     setOpen(false);
   }
 
   return (
-    <div className="relative h-full flex flex-col justify-center" ref={containerRef}>
+    <div className="relative" ref={containerRef}>
       <div className="flex items-center justify-between mb-1">
         <Label className="text-neutral-700 font-semibold">{label}</Label>
 
@@ -73,12 +73,12 @@ export default function NOCJobSelector({
       </div>
 
       {!useCustom ? (
-        <div className="relative h-full">
+        <div className="relative">
           <Input
             value={search}
             onChange={handleSearchChange}
             placeholder="Search job titles..."
-            className="h-full w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 focus:ring-0"
+            className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-white focus:ring-0"
             onFocus={() => setOpen(true)}
           />
 
@@ -105,9 +105,9 @@ export default function NOCJobSelector({
       ) : (
         <Input
           value={customValue}
-          onChange={(e) => onCustomChange(e.target.value)}
+          onChange={(e) => onCustomChange && onCustomChange(e.target.value)}
           placeholder="Enter custom job title"
-          className="h-full w-full bg-white border border-neutral-300 rounded-lg px-3 py-2 focus:ring-0"
+          className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-white focus:ring-0"
         />
       )}
     </div>
