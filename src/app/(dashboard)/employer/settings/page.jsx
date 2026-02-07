@@ -48,7 +48,7 @@ export default function EmployerSettingsPage() {
 
   async function handlePhotoUpload(file) {
     try {
-      const employerId = employer.uuid;
+      const employerId = employer.id;
 
       const filePath = `profile-photos/employers/${employerId}.jpg`;
 
@@ -75,7 +75,7 @@ export default function EmployerSettingsPage() {
 
   async function handlePhotoDelete() {
     try {
-      const employerId = employer.uuid;
+      const employerId = employer.id;
       const filePath = `profile-photos/employers/${employerId}.jpg`;
 
       await supabase.storage.from("shine-assets").remove([filePath]);
@@ -95,7 +95,7 @@ export default function EmployerSettingsPage() {
 
   async function handleSave() {
     try {
-      const employerId = employer.uuid;
+      const employerId = employer.id;
 
       const updated = await updateEmployer(employerId, form);
       setEmployer(updated);
