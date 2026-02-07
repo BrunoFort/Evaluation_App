@@ -386,110 +386,6 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* ADDRESS */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-neutral-800">
-              Company Address
-            </h2>
-
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Postal Code *
-              </label>
-              <input
-                type="text"
-                name="postalCode"
-                value={form.postalCode}
-                onChange={handleChange}
-                onBlur={handlePostalCodeBlur}
-                className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Unit / Apt
-                </label>
-                <input
-                  type="text"
-                  name="unit"
-                  value={form.unit}
-                  onChange={handleChange}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Street *
-                </label>
-                <input
-                  type="text"
-                  name="street"
-                  value={form.street}
-                  onChange={handleChange}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Number *
-                </label>
-                <input
-                  type="text"
-                  name="number"
-                  value={form.number}
-                  onChange={handleChange}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  City *
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={form.city}
-                  onChange={handleChange}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Province *
-                </label>
-                <input
-                  type="text"
-                  name="province"
-                  value={form.province}
-                  onChange={handleChange}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Country *
-                </label>
-                <input
-                  type="text"
-                  name="country"
-                  value={form.country}
-                  readOnly
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* PHONE */}
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
@@ -522,7 +418,6 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* EMAIL */}
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">
               Contact Email *
@@ -536,7 +431,6 @@ export default function EmployerSettingsPage() {
             />
           </div>
 
-          {/* PREFERRED CONTACT */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-neutral-700">
               Preferred Contact Method
@@ -565,7 +459,6 @@ export default function EmployerSettingsPage() {
             </div>
           </div>
 
-          {/* SAVE BUTTON */}
           <button
             onClick={handleSave}
             disabled={saving}
@@ -579,4 +472,3 @@ export default function EmployerSettingsPage() {
     </EmployerDashboardLayout>
   );
 }
-
