@@ -13,12 +13,12 @@ export async function getEmployers() {
   return data;
 }
 
-// GET employer by UUID
+// GET employer by ID (Supabase Auth user.id)
 export async function getEmployerById(id) {
   const { data, error } = await supabase
     .from("employers")
     .select("*")
-    .eq("uuid", id)
+    .eq("id", id)
     .single();
 
   if (error) throw new Error(error.message);
@@ -42,7 +42,7 @@ export async function updateEmployer(id, data) {
   const { data: result, error } = await supabase
     .from("employers")
     .update(data)
-    .eq("uuid", id)
+    .eq("id", id)
     .select()
     .single();
 
@@ -55,9 +55,8 @@ export async function deleteEmployer(id) {
   const { error } = await supabase
     .from("employers")
     .delete()
-    .eq("uuid", id);
+    .eq("id", id);
 
   if (error) throw new Error(error.message);
   return true;
 }
-
