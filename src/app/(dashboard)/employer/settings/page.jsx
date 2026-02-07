@@ -49,7 +49,6 @@ export default function EmployerSettingsPage() {
 
   const [saving, setSaving] = useState(false);
   const [loadingBN, setLoadingBN] = useState(false);
-  const [nocSearch, setNocSearch] = useState("");
 
   useEffect(() => {
     if (employer) {
@@ -339,6 +338,7 @@ export default function EmployerSettingsPage() {
                 </div>
 
                 <NOCJobSelector
+                  useCustom={form.allowCustomJobTitle}
                   value={
                     form.allowCustomJobTitle
                       ? form.customJobTitle
