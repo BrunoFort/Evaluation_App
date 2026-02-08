@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "@/components/ui/input";
+import Input from "@/components/ui/Input.jsx";
 import { Label } from "@/components/ui/label";
 
 export default function WorkPermitInput({ value, onChange, label = "Work Permit" }) {
