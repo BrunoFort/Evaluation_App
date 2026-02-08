@@ -7,6 +7,7 @@ export function EmployerRegisterForm({ onSubmit }) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -29,6 +30,7 @@ export function EmployerRegisterForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
+
       {/* BUSINESS NUMBER */}
       <div>
         <label className="block text-sm font-medium text-neutral-700">
@@ -45,13 +47,13 @@ export function EmployerRegisterForm({ onSubmit }) {
         )}
       </div>
 
-      {/* COMPANY NAME (readOnly para alinhar com Settings) */}
+      {/* COMPANY NAME */}
       <div>
         <label className="block text-sm font-medium text-neutral-700">
           Company Name
         </label>
         <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600 bg-neutral-100"
+          className="mt-1 w-full rounded-md border border-neutral-300 p-2 bg-neutral-100 focus:border-purple-600 focus:ring-purple-600"
           {...register("companyName", { required: true })}
           readOnly
           disabled={loadingBN}
@@ -82,22 +84,15 @@ export function EmployerRegisterForm({ onSubmit }) {
 
       {/* JOB TITLE */}
       <div>
-  <label className="block text-sm font-medium text-neutral-700 mb-1">
-    Job Title
-      </label>
-    
-      <NOCJobSelector
-        label="" // evita label duplicado
-        value={watch("jobTitle")}
-        onChange={(v) => setValue("jobTitle", v)}
-        customValue={watch("customJobTitle")}
-        onCustomChange={(v) => setValue("customJobTitle", v)}
-        useCustom={watch("allowCustomJobTitle")}
-        onToggleCustom={(checked) => setValue("allowCustomJobTitle", checked)}
-        className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-      />
-    </div>
-
+        <label className="block text-sm font-medium text-neutral-700">
+          Job Title
+        </label>
+        <input
+          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
+          {...register("jobTitle", { required: true })}
+          placeholder="e.g., HR Manager"
+        />
+      </div>
 
       {/* EMAIL */}
       <div>
