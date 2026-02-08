@@ -1,26 +1,39 @@
-import React from "react";
-import ShineLogo from "@/assets/shine-logo.png";
+import { Link } from "react-router-dom";
 
 export default function PublicLayout({ children }) {
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col">
 
-      {/* HEADER */}
-      <header className="w-full bg-white border-b border-neutral-200 py-6 px-10 shadow-sm flex items-center gap-4">
-        <img src={ShineLogo} alt="Shine Logo" className="w-12 h-12 object-contain" />
-        <h1 className="text-3xl font-extrabold text-neutral-900 tracking-tight">
-          Shine
-        </h1>
+      {/* Top Bar */}
+      <header className="w-full border-b border-neutral-200 bg-white">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link to="/" className="text-2xl font-bold text-purple-700">
+            Shine
+          </Link>
+
+          <nav className="flex items-center gap-6 text-sm text-neutral-700">
+            <Link to="/employee/login" className="hover:text-purple-600">
+              Employee Login
+            </Link>
+            <Link to="/employer/login" className="hover:text-purple-600">
+              Employer Login
+            </Link>
+          </nav>
+        </div>
       </header>
 
-      {/* CONTENT */}
-      <main className="flex-1 p-10 max-w-4xl mx-auto">
-        {children}
+      {/* Content */}
+      <main className="flex-1 w-full">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          {children}
+        </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="py-6 text-center text-neutral-500 text-sm border-t border-neutral-200">
-        © {new Date().getFullYear()} Shine — Professional References
+      {/* Footer */}
+      <footer className="border-t border-neutral-200 bg-white mt-12">
+        <div className="max-w-5xl mx-auto px-6 py-6 text-center text-neutral-500 text-sm">
+          © {new Date().getFullYear()} Shine — Verified Work References
+        </div>
       </footer>
 
     </div>
