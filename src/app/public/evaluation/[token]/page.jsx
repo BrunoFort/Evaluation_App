@@ -1,16 +1,42 @@
-// src/app/public/evaluation/[token]/page.jsx
-
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { supabase } from "/src/lib/supabaseClient";
 import PublicLayout from "/src/layouts/PublicLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
 
-import { usePublicEvaluation } from "/src/features/evaluations/hooks/usePublicEvaluation.js";
-
 export default function PublicEvaluationPage() {
   const { token } = useParams();
-  const { evaluation, loading, error } = usePublicEvaluation(token);
+
+  const [evaluations, setEvaluations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  async function loadEvaluations() {
+    const { data, error } = await supabase.rpc("get_detailed_evaluations", {
+      token_input: token,
+    });
+
+    if (error) {
+      setError("Evaluation not found or access denied.");
+      setLoading(false);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      setError("No evaluations found for this link.");
+      setLoading(false);
+      return;
+    }
+
+    setEvaluations(data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadEvaluations();
+  }, [token]);
 
   if (loading) {
     return (
@@ -20,10 +46,10 @@ export default function PublicEvaluationPage() {
     );
   }
 
-  if (error || !evaluation) {
+  if (error) {
     return (
       <PublicLayout>
-        <p className="text-red-600">Evaluation not found.</p>
+        <p className="text-red-600">{error}</p>
       </PublicLayout>
     );
   }
@@ -32,67 +58,63 @@ export default function PublicEvaluationPage() {
     <PublicLayout>
       <div className="max-w-3xl mx-auto space-y-10">
 
-        {/* Header */}
-        <Card className="p-8 space-y-4 border border-neutral-200 rounded-2xl shadow-sm">
-          <h1 className="text-3xl font-bold text-neutral-900">
-            {evaluation.title}
-          </h1>
+        {evaluations.map((evaluation) => (
+          <Card
+            key={evaluation.id}
+            className="p-8 space-y-6 border border-neutral-200 rounded-2xl shadow-sm"
+          >
+            <h1 className="text-2xl font-bold text-neutral-900">
+              {evaluation.title || "Evaluation"}
+            </h1>
 
-          <p className="text-neutral-600 text-sm">
-            Created on{" "}
-            {evaluation.createdAt
-              ? new Date(evaluation.createdAt).toLocaleDateString()
-              : "Unknown date"}
-          </p>
+            <p className="text-neutral-600 text-sm">
+              Created on{" "}
+              {evaluation.created_at
+                ? new Date(evaluation.created_at).toLocaleDateString()
+                : "Unknown date"}
+            </p>
 
-          <StatusPill status={evaluation.status} />
-        </Card>
+            <StatusPill status={evaluation.status} />
 
-        {/* Employer Info */}
-        {evaluation.employerName && (
-          <Card className="p-6 border border-neutral-200 rounded-2xl shadow-sm">
-            <h2 className="text-xl font-semibold text-neutral-900">
-              Employer
-            </h2>
-            <p className="text-neutral-700 mt-1">{evaluation.employerName}</p>
-          </Card>
-        )}
+            {evaluation.scores && (
+              <div className="space-y-4 mt-6">
+                <h2 className="text-xl font-semibold text-neutral-900">
+                  Evaluation Criteria
+                </h2>
 
-        {/* Criteria */}
-        {evaluation.criteria?.length > 0 && (
-          <Card className="p-6 space-y-6 border border-neutral-200 rounded-2xl shadow-sm">
-            <h2 className="text-xl font-semibold text-neutral-900">
-              Evaluation Criteria
-            </h2>
+                {Object.entries(evaluation.scores).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="border border-neutral-200 rounded-lg p-4"
+                  >
+                    <p className="font-medium text-neutral-900">{key}</p>
+                    <p className="text-neutral-700 mt-1">Score: {value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            <div className="space-y-4">
-              {evaluation.criteria.map((c, index) => (
-                <div
-                  key={index}
-                  className="border border-neutral-200 rounded-lg p-4"
-                >
-                  <p className="font-medium text-neutral-900">{c.label}</p>
-                  <p className="text-neutral-700 mt-1">Score: {c.score}</p>
-                  {c.notes && (
-                    <p className="text-neutral-600 mt-2 whitespace-pre-line">
-                      {c.notes}
-                    </p>
-                  )}
-                </div>
-              ))}
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold text-neutral-900">
+                Overall Score
+              </h2>
+              <p className="text-neutral-800 text-lg mt-2">
+                {evaluation.overallscore ?? "N/A"}
+              </p>
             </div>
-          </Card>
-        )}
 
-        {/* Overall Score */}
-        <Card className="p-6 border border-neutral-200 rounded-2xl shadow-sm">
-          <h2 className="text-xl font-semibold text-neutral-900">
-            Overall Score
-          </h2>
-          <p className="text-neutral-800 text-lg mt-2">
-            {evaluation.overallScore ?? "N/A"}
-          </p>
-        </Card>
+            {evaluation.comments && (
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold text-neutral-900">
+                  Comments
+                </h2>
+                <p className="text-neutral-700 mt-2 whitespace-pre-line">
+                  {evaluation.comments}
+                </p>
+              </div>
+            )}
+          </Card>
+        ))}
       </div>
     </PublicLayout>
   );
