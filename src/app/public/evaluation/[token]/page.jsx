@@ -1,42 +1,12 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-import { supabase } from "/src/lib/supabaseClient";
 import PublicLayout from "/src/layouts/PublicLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
+import { usePublicEvaluation } from "/src/features/evaluations/hooks/usePublicEvaluation.js";
 
 export default function PublicEvaluationPage() {
   const { token } = useParams();
-
-  const [evaluations, setEvaluations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  async function loadEvaluations() {
-    const { data, error } = await supabase.rpc("get_detailed_evaluations", {
-      token_input: token,
-    });
-
-    if (error) {
-      setError("Evaluation not found or access denied.");
-      setLoading(false);
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      setError("No evaluations found for this link.");
-      setLoading(false);
-      return;
-    }
-
-    setEvaluations(data);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    loadEvaluations();
-  }, [token]);
+  const { evaluations, loading, error } = usePublicEvaluation(token);
 
   if (loading) {
     return (
@@ -115,7 +85,9 @@ export default function PublicEvaluationPage() {
             )}
           </Card>
         ))}
+
       </div>
     </PublicLayout>
   );
 }
+
