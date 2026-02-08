@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
+import CanadianPhoneInput from "@/features/shared-phone/CanadianPhoneInput";
 import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 
 const fsaMap = {
@@ -45,10 +46,9 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       phoneCountry: "+1",
       phoneNumber: "",
       contactEmail: "",
-      preferredContact: {
-        phone: false,
-        email: true,
-      },
+      preferredContact: { phone: false, email: true },
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -79,30 +79,6 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     }
   }
 
-  function validateBusinessNumberLocal(bn) {
-    return /^\d{9}$/.test(bn);
-  }
-
-  async function handleBusinessNumberBlur() {
-    const bn = watch("businessNumber");
-    if (!bn) return;
-
-    if (!validateBusinessNumberLocal(bn)) {
-      toast.error("Business Number must have exactly 9 digits.");
-      return;
-    }
-
-    try {
-      setLoadingBN(true);
-      const result = await validateBusinessNumber(bn);
-      setValue("companyName", result.companyName || "");
-    } catch (err) {
-      toast.error(err.message || "Error validating Business Number.");
-    } finally {
-      setLoadingBN(false);
-    }
-  }
-
   function validatePersonalIdNumber(type, number) {
     if (!number.trim()) return false;
 
@@ -122,6 +98,40 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     }
   }
 
+  function validatePhoneNumber(number, countryCode) {
+    const cleaned = number.replace(/\D/g, "");
+
+    if (countryCode === "+1") return cleaned.length === 10;
+    if (countryCode === "+44") return cleaned.length >= 10 && cleaned.length <= 11;
+    if (countryCode === "+55") return cleaned.length >= 10 && cleaned.length <= 11;
+
+    return cleaned.length >= 8;
+  }
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async function handleBusinessNumberBlur() {
+    const bn = watch("businessNumber");
+    if (!bn) return;
+
+    if (!/^\d{9}$/.test(bn)) {
+      toast.error("Business Number must have exactly 9 digits.");
+      return;
+    }
+
+    try {
+      setLoadingBN(true);
+      const result = await validateBusinessNumber(bn);
+      setValue("companyName", result.companyName || "");
+    } catch (err) {
+      toast.error(err.message || "Error validating Business Number.");
+    } finally {
+      setLoadingBN(false);
+    }
+  }
+
   function handlePreferredContactChange(type, checked) {
     const current = watch("preferredContact");
     setValue("preferredContact", {
@@ -136,7 +146,7 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       return;
     }
 
-    if (!validateBusinessNumberLocal(data.businessNumber)) {
+    if (!/^\d{9}$/.test(data.businessNumber)) {
       toast.error("Business Number must have exactly 9 digits.");
       return;
     }
@@ -146,8 +156,23 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       return;
     }
 
-    if (!data.contactEmail.includes("@")) {
+    if (!validateEmail(data.contactEmail)) {
       toast.error("Invalid email format.");
+      return;
+    }
+
+    if (!validatePhoneNumber(data.phoneNumber, data.phoneCountry)) {
+      toast.error("Invalid phone number for selected country.");
+      return;
+    }
+
+    if (!data.password || data.password.length < 6) {
+      toast.error("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match.");
       return;
     }
 
@@ -307,24 +332,13 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold text-neutral-800">Contact Information</h2>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Country Code</label>
-            <select className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("phoneCountry")}>
-              <option value="+1">🇨🇦 +1 Canada</option>
-              <option value="+1">🇺🇸 +1 USA</option>
-              <option value="+55">🇧🇷 +55 Brazil</option>
-              <option value="+44">🇬🇧 +44 UK</option>
-            </select>
-          </div>
-
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Phone Number</label>
-            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("phoneNumber")} />
-          </div>
-        </div>
+        <CanadianPhoneInput
+          value={watch("phoneNumber")}
+          onChange={(v) => setValue("phoneNumber", v)}
+          countryCode={watch("phoneCountry")}
+          onCountryCodeChange={(v) => setValue("phoneCountry", v)}
+          required
+        />
 
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">Contact Email *</label>
@@ -351,6 +365,29 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
               Email
             </label>
           </div>
+        </div>
+      </div>
+
+      {/* PASSWORD */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-neutral-800">Account Security</h2>
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">Password *</label>
+          <input
+            type="password"
+            className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+            {...register("password", { required: true })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">Confirm Password *</label>
+          <input
+            type="password"
+            className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+            {...register("confirmPassword", { required: true })}
+          />
         </div>
       </div>
 
