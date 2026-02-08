@@ -102,7 +102,7 @@ export default function EmployerLoginPage() {
               Forgot password?
             </Link>
 
-            <Link to="/employer/signup" className="hover:text-purple-600">
+            <Link to="/employer/register" className="hover:text-purple-600">
               Create account
             </Link>
           </div>
