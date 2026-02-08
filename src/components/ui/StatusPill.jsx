@@ -1,42 +1,41 @@
-import { CheckCircle, Clock, UserCheck, XCircle, Minus } from "lucide-react";
+// src/components/ui/StatusPill.jsx
 
-export default function StatusPill({
-  status = "default",
-  size = "md",
-  showIcon = true,
-  className = "",
-}) {
-  const base =
-    "inline-flex items-center gap-1.5 rounded-full font-medium capitalize";
-
-  const sizes = {
-    sm: "text-xs px-2 py-0.5",
-    md: "text-xs px-3 py-1",
+export default function StatusPill({ status }) {
+  const map = {
+    approved: {
+      label: "Approved",
+      bg: "bg-green-100",
+      text: "text-green-700",
+      border: "border-green-300",
+    },
+    pending: {
+      label: "Pending",
+      bg: "bg-yellow-100",
+      text: "text-yellow-800",
+      border: "border-yellow-300",
+    },
+    rejected: {
+      label: "Rejected",
+      bg: "bg-red-100",
+      text: "text-red-700",
+      border: "border-red-300",
+    },
+    default: {
+      label: "Unknown",
+      bg: "bg-neutral-100",
+      text: "text-neutral-700",
+      border: "border-neutral-300",
+    },
   };
 
-  const variants = {
-    completed: "bg-emerald-50 text-emerald-700",
-    pending: "bg-amber-50 text-amber-700",
-    active: "bg-blue-50 text-blue-700",
-    terminated: "bg-red-50 text-red-700",
-    default: "bg-neutral-50 text-neutral-600",
-  };
-
-  const icons = {
-    completed: <CheckCircle className="w-3 h-3" />,
-    pending: <Clock className="w-3 h-3" />,
-    active: <UserCheck className="w-3 h-3" />,
-    terminated: <XCircle className="w-3 h-3" />,
-    default: <Minus className="w-3 h-3" />,
-  };
-
-  const variant = variants[status] || variants.default;
-  const icon = icons[status] || icons.default;
+  const style = map[status] || map.default;
 
   return (
-    <span className={`${base} ${sizes[size]} ${variant} ${className}`}>
-      {showIcon && icon}
-      {status}
+    <span
+      className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${style.bg} ${style.text} ${style.border}`}
+    >
+      {style.label}
     </span>
   );
 }
+
