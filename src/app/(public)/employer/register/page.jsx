@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
-
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
+
+import { createEmployer } from "/src/features/employers/api/employersApi";
+import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
@@ -19,13 +21,31 @@ export default function EmployerRegisterPage() {
     setLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      login({
-        role: "employer",
-        ...data,
+      // 1) Criar usuário de autenticação
+      const { data: auth, error: authError } = await supabase.auth.signUp({
+        email: data.contactEmail,
+        password: data.password,
       });
 
+      if (authError) throw authError;
+
+      const authUserId = auth.user.id;
+
+      // 2) Criar employer no banco
+      const employerPayload = {
+        ...data,
+        authUserId,
+      };
+
+      const employer = await createEmployer(employerPayload);
+
+      // 3) Login real
+      login({
+        employerId: employer.employerId,
+        ...employer,
+      });
+
+      // 4) Navegar para dashboard
       navigate("/employer");
     } catch (err) {
       console.error(err);
@@ -72,3 +92,4 @@ export default function EmployerRegisterPage() {
     </div>
   );
 }
+
