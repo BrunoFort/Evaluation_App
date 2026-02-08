@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Input from "@/components/ui/Input.jsx";
-import { Label } from "@/components/ui/label";
+import Label from "@/components/ui/Label.jsx";
 
 const canadianJobTitles = [
   // ... mesma lista

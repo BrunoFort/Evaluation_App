@@ -1,6 +1,6 @@
 import React from "react";
 import Input from "@/components/ui/Input.jsx";
-import { Label } from "@/components/ui/label";
+import Label from "@/components/ui/Label.jsx";
 
 export default function SINInput({ value, onChange, label = "SIN" }) {
   const formatSIN = (input) => {
