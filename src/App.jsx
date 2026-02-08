@@ -5,8 +5,8 @@ import { supabase } from "/src/lib/supabaseClient";
 // HOME
 import HomePage from "@/app/(public)/home/page.jsx";
 
-// PUBLIC
-import PublicEvaluation from "@/Pages/PublicEvaluation/PublicEvaluation";
+// PUBLIC EVALUATION PAGE
+import PublicEvaluationPage from "@/app/public/evaluation/[token]/page.jsx";
 
 // EMPLOYER AUTH
 import { EmployerAuthProvider } from "@/features/auth/employer/providers/EmployerAuthProvider";
@@ -18,6 +18,7 @@ import { RequireEmployeeAuth } from "@/features/auth/employee/guards/RequireEmpl
 
 // EMPLOYER AUTH PAGES
 import EmployerLoginPage from "@/app/(public)/employer/login/page.jsx";
+import EmployerRegisterPage from "@/app/(public)/employer/register/page.jsx";
 import EmployerForgotPasswordPage from "@/app/(public)/employer/forgot-password/page.jsx";
 import EmployerResetPasswordPage from "@/app/(public)/employer/reset-password/page.jsx";
 
@@ -32,7 +33,7 @@ import EmployerEmployeeEditPage from "@/app/(dashboard)/employer/employees/[id]/
 // EMPLOYER EVALUATIONS
 import EmployerEvaluationCreatePage from "@/app/(dashboard)/employer/evaluations/create/page.jsx";
 
-// EMPLOYER SETTINGS (A ROTA QUE FALTAVA)
+// EMPLOYER SETTINGS
 import EmployerSettingsPage from "@/app/(dashboard)/employer/settings/page.jsx";
 
 // EMPLOYEE AUTH PAGES
@@ -45,14 +46,9 @@ import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/pa
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 
 export default function App() {
-
-  // Listener global para capturar o token de recuperação
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
       console.log("Auth event:", event);
-      if (event === "PASSWORD_RECOVERY") {
-        console.log("🔑 Token de recuperação recebido pelo Supabase.");
-      }
     });
 
     return () => listener.subscription.unsubscribe();
@@ -65,7 +61,7 @@ export default function App() {
       <Route path="/" element={<HomePage />} />
 
       {/* PUBLIC EVALUATION PAGE */}
-      <Route path="/reference/:token" element={<PublicEvaluation />} />
+      <Route path="/reference/:token" element={<PublicEvaluationPage />} />
 
       {/* EMPLOYER ROUTES */}
       <Route
@@ -77,6 +73,7 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
+        <Route path="/employer/register" element={<EmployerRegisterPage />} />
         <Route path="/employer/forgot-password" element={<EmployerForgotPasswordPage />} />
         <Route path="/employer/reset-password" element={<EmployerResetPasswordPage />} />
 
@@ -128,7 +125,7 @@ export default function App() {
           }
         />
 
-        {/* ⭐ EMPLOYER SETTINGS — AGORA FUNCIONA */}
+        {/* EMPLOYER SETTINGS */}
         <Route
           path="/employer/settings"
           element={
