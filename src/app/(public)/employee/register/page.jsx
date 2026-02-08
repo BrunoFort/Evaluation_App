@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -23,7 +24,7 @@ export default function EmployeeRegisterPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -48,18 +49,37 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    setTimeout(() => {
-      localStorage.setItem(
-        "employee",
-        JSON.stringify({
-          name,
-          email,
-          employeeId: 1,
-        })
-      );
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-      navigate("/employee");
-    }, 600);
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+
+    const userId = signUpData.user.id;
+
+    const { data: identity } = await supabase
+      .from("employee_identity")
+      .select("globalemployeekey")
+      .eq("employeeid", userId)
+      .maybeSingle();
+
+    let globalKey = identity?.globalemployeekey;
+
+    if (!globalKey) {
+      globalKey = crypto.randomUUID();
+
+      await supabase.from("employee_identity").insert({
+        employeeid: userId,
+        globalemployeekey: globalKey,
+      });
+    }
+
+    navigate("/employee");
   }
 
   return (
