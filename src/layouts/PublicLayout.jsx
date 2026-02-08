@@ -1,10 +1,19 @@
+// src/layouts/PublicLayout.jsx
+
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
-export default function PublicLayout({ children }) {
+export default function PublicLayout({ children, title = "Shine" }) {
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col">
 
-      {/* Top Bar */}
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content="Verified work references on Shine" />
+        <meta property="og:title" content={title} />
+        <meta property="og:site_name" content="Shine" />
+      </Helmet>
+
       <header className="w-full border-b border-neutral-200 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="text-2xl font-bold text-purple-700">
@@ -22,20 +31,15 @@ export default function PublicLayout({ children }) {
         </div>
       </header>
 
-      {/* Content */}
       <main className="flex-1 w-full">
-        <div className="max-w-4xl mx-auto px-6 py-12">
-          {children}
-        </div>
+        <div className="max-w-4xl mx-auto px-6 py-12">{children}</div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-neutral-200 bg-white mt-12">
         <div className="max-w-5xl mx-auto px-6 py-6 text-center text-neutral-500 text-sm">
           © {new Date().getFullYear()} Shine — Verified Work References
         </div>
       </footer>
-
     </div>
   );
 }
