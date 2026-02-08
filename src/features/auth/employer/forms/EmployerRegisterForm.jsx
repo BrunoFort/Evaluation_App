@@ -1,145 +1,366 @@
 import { useForm } from "react-hook-form";
-import { validateBusinessNumber } from "../../shared/api/validateBusinessNumber";
 import { useState } from "react";
+import { toast } from "sonner";
 
-export function EmployerRegisterForm({ onSubmit }) {
+import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
+import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
+
+const fsaMap = {
+  K1A: { city: "Ottawa", province: "ON" },
+  K2P: { city: "Ottawa", province: "ON" },
+  M5V: { city: "Toronto", province: "ON" },
+  M4B: { city: "Toronto", province: "ON" },
+  H2X: { city: "Montréal", province: "QC" },
+  H3Z: { city: "Montréal", province: "QC" },
+  V6B: { city: "Vancouver", province: "BC" },
+  V5K: { city: "Vancouver", province: "BC" },
+};
+
+export function EmployerRegisterForm({ onSubmit, loading }) {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      personalIdType: "",
+      personalIdNumber: "",
+      employeeRegistration: "",
+      businessNumber: "",
+      companyName: "",
+      jobTitle: "",
+      customJobTitle: "",
+      allowCustomJobTitle: false,
+      street: "",
+      number: "",
+      unit: "",
+      city: "",
+      province: "",
+      country: "Canada",
+      postalCode: "",
+      phoneCountry: "+1",
+      phoneNumber: "",
+      contactEmail: "",
+      preferredContact: {
+        phone: false,
+        email: true,
+      },
+    },
+  });
 
   const [loadingBN, setLoadingBN] = useState(false);
 
-  async function handleBNBlur(e) {
-    const bn = e.target.value;
+  function validatePostalCode(code) {
+    const regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+    return regex.test(code);
+  }
+
+  function handlePostalCodeBlur() {
+    const code = watch("postalCode");
+
+    if (!validatePostalCode(code)) {
+      toast.error("Invalid Canadian Postal Code format.");
+      return;
+    }
+
+    const fsa = code.substring(0, 3).toUpperCase();
+    const match = fsaMap[fsa];
+
+    if (match) {
+      setValue("city", match.city);
+      setValue("province", match.province);
+      setValue("country", "Canada");
+    } else {
+      toast.error("Postal Code not found in FSA database.");
+    }
+  }
+
+  function validateBusinessNumberLocal(bn) {
+    return /^\d{9}$/.test(bn);
+  }
+
+  async function handleBusinessNumberBlur() {
+    const bn = watch("businessNumber");
     if (!bn) return;
+
+    if (!validateBusinessNumberLocal(bn)) {
+      toast.error("Business Number must have exactly 9 digits.");
+      return;
+    }
 
     try {
       setLoadingBN(true);
       const result = await validateBusinessNumber(bn);
-      setValue("companyName", result.companyName);
+      setValue("companyName", result.companyName || "");
     } catch (err) {
-      console.error(err);
+      toast.error(err.message || "Error validating Business Number.");
     } finally {
       setLoadingBN(false);
     }
   }
 
+  function validatePersonalIdNumber(type, number) {
+    if (!number.trim()) return false;
+
+    switch (type) {
+      case "Passport":
+        return /^[A-Za-z0-9]{6,9}$/.test(number);
+      case "DriversLicense":
+        return /^[A-Za-z0-9]{5,15}$/.test(number);
+      case "ProvincialID":
+        return /^[A-Za-z0-9]{5,12}$/.test(number);
+      case "PRCard":
+        return /^[A-Za-z0-9]{6,12}$/.test(number);
+      case "CitizenshipCertificate":
+        return /^[A-Za-z0-9]{6,12}$/.test(number);
+      default:
+        return false;
+    }
+  }
+
+  function handlePreferredContactChange(type, checked) {
+    const current = watch("preferredContact");
+    setValue("preferredContact", {
+      ...current,
+      [type]: checked,
+    });
+  }
+
+  function internalSubmit(data) {
+    if (!validatePersonalIdNumber(data.personalIdType, data.personalIdNumber)) {
+      toast.error("Invalid Personal ID Number.");
+      return;
+    }
+
+    if (!validateBusinessNumberLocal(data.businessNumber)) {
+      toast.error("Business Number must have exactly 9 digits.");
+      return;
+    }
+
+    if (!validatePostalCode(data.postalCode)) {
+      toast.error("Invalid Postal Code.");
+      return;
+    }
+
+    if (!data.contactEmail.includes("@")) {
+      toast.error("Invalid email format.");
+      return;
+    }
+
+    onSubmit(data);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
+    <form onSubmit={handleSubmit(internalSubmit)} className="space-y-8">
 
-      {/* BUSINESS NUMBER */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Business Number (9 digits)
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("businessNumber", { required: true })}
-          onBlur={handleBNBlur}
-          maxLength={9}
-        />
-        {errors.businessNumber && (
-          <p className="text-red-600 text-sm mt-1">Required</p>
-        )}
+      {/* EMPLOYER */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-neutral-800">Employer</h2>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">First Name *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("firstName", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Last Name *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("lastName", { required: true })} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Type *</label>
+            <select className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("personalIdType", { required: true })}>
+              <option value="">Select ID Type</option>
+              <option value="Passport">Passport</option>
+              <option value="DriversLicense">Driver’s License</option>
+              <option value="ProvincialID">Provincial ID Card</option>
+              <option value="PRCard">Permanent Resident Card</option>
+              <option value="CitizenshipCertificate">Citizenship Certificate</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Number *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("personalIdNumber", { required: true })} />
+          </div>
+        </div>
       </div>
 
-      {/* COMPANY NAME */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Company Name
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 bg-neutral-100 focus:border-purple-600 focus:ring-purple-600"
-          {...register("companyName", { required: true })}
-          readOnly
-          disabled={loadingBN}
-        />
+      {/* COMPANY */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-neutral-800">Company</h2>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Employee Registration Number *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("employeeRegistration", { required: true })} />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-medium text-neutral-700">Job Title</label>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-neutral-700">Custom entry</span>
+                <input type="checkbox"
+                  checked={watch("allowCustomJobTitle")}
+                  onChange={(e) => setValue("allowCustomJobTitle", e.target.checked)} />
+              </div>
+            </div>
+
+            <NOCJobSelector
+              useCustom={watch("allowCustomJobTitle")}
+              value={watch("allowCustomJobTitle") ? watch("customJobTitle") : watch("jobTitle")}
+              onChange={(v) =>
+                setValue(
+                  watch("allowCustomJobTitle") ? "customJobTitle" : "jobTitle",
+                  v
+                )
+              }
+              className="h-[42px]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Business Number (9 digits) *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("businessNumber", { required: true })}
+              maxLength={9}
+              onBlur={handleBusinessNumberBlur} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Company Name *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
+              {...register("companyName", { required: true })}
+              readOnly
+              disabled={loadingBN} />
+          </div>
+        </div>
       </div>
 
-      {/* FIRST NAME */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          First Name
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("firstName", { required: true })}
-        />
+      {/* ADDRESS */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-neutral-800">Address</h2>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-3">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Street *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("street", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Number *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("number", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Unit / Apartment</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("unit")} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">City *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("city", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Province / Territory *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("province", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Country *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("country", { required: true })} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("postalCode", { required: true })}
+              onBlur={handlePostalCodeBlur} />
+          </div>
+        </div>
       </div>
 
-      {/* LAST NAME */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Last Name
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("lastName", { required: true })}
-        />
-      </div>
+      {/* CONTACT */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-neutral-800">Contact Information</h2>
 
-      {/* JOB TITLE */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Job Title
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("jobTitle", { required: true })}
-          placeholder="e.g., HR Manager"
-        />
-      </div>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Country Code</label>
+            <select className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("phoneCountry")}>
+              <option value="+1">🇨🇦 +1 Canada</option>
+              <option value="+1">🇺🇸 +1 USA</option>
+              <option value="+55">🇧🇷 +55 Brazil</option>
+              <option value="+44">🇬🇧 +44 UK</option>
+            </select>
+          </div>
 
-      {/* EMAIL */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Email
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          type="email"
-          {...register("email", { required: true })}
-        />
-      </div>
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Phone Number</label>
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              {...register("phoneNumber")} />
+          </div>
+        </div>
 
-      {/* PHONE */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Phone
-        </label>
-        <input
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("phone", { required: true })}
-          placeholder="(555) 123-4567"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">Contact Email *</label>
+          <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+            type="email"
+            {...register("contactEmail", { required: true })} />
+        </div>
 
-      {/* CONTACT PREFERENCE */}
-      <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Preferred Contact
-        </label>
-        <select
-          className="mt-1 w-full rounded-md border border-neutral-300 p-2 focus:border-purple-600 focus:ring-purple-600"
-          {...register("contactPreference")}
-        >
-          <option value="email">Email</option>
-          <option value="phone">Phone</option>
-          <option value="both">Both</option>
-        </select>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-neutral-700">Preferred Contact Method</label>
+
+          <div className="flex items-center gap-6">
+            <label className="flex items-center gap-2">
+              <input type="checkbox"
+                checked={watch("preferredContact.phone")}
+                onChange={(e) => handlePreferredContactChange("phone", e.target.checked)} />
+              Phone
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input type="checkbox"
+                checked={watch("preferredContact.email")}
+                onChange={(e) => handlePreferredContactChange("email", e.target.checked)} />
+              Email
+            </label>
+          </div>
+        </div>
       </div>
 
       <button
-        className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition"
         type="submit"
+        disabled={loading}
+        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
       >
-        Register
+        {loading ? "Registering..." : "Register"}
       </button>
     </form>
   );
 }
-
