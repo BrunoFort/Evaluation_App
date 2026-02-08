@@ -1,5 +1,5 @@
 import React from "react";
-import Label from "@/components/ui/Label.jsx";
+import Label from "@/components/ui/label.jsx";
 import {
   Select,
   SelectContent,

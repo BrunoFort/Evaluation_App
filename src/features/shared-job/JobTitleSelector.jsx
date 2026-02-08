@@ -6,8 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Input from "@/components/ui/Input.jsx";
-import Label from "@/components/ui/Label.jsx";
+import Input from "@/components/ui/input.jsx";
+import Label from "@/components/ui/label.jsx";
 
 const canadianJobTitles = [
   // ... mesma lista
