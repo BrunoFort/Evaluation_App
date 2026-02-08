@@ -1,4 +1,6 @@
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import PublicLayout from "/src/layouts/PublicLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
@@ -6,28 +8,33 @@ import { usePublicEvaluation } from "/src/features/evaluations/hooks/usePublicEv
 
 export default function PublicEvaluationPage() {
   const { token } = useParams();
+  const navigate = useNavigate();
+
   const { evaluations, loading, error } = usePublicEvaluation(token);
+
+  useEffect(() => {
+    if (!loading) {
+      if (error === "expired") {
+        navigate("/public/token-expired");
+      } else if (error === "invalid") {
+        navigate("/public/token-invalid");
+      } else if (error) {
+        navigate("/public/error");
+      }
+    }
+  }, [loading, error, navigate]);
 
   if (loading) {
     return (
-      <PublicLayout>
+      <PublicLayout title="Loading – Shine">
         <p className="text-neutral-500">Loading evaluation...</p>
       </PublicLayout>
     );
   }
 
-  if (error) {
-    return (
-      <PublicLayout>
-        <p className="text-red-600">{error}</p>
-      </PublicLayout>
-    );
-  }
-
   return (
-    <PublicLayout>
+    <PublicLayout title="Evaluation – Shine">
       <div className="max-w-3xl mx-auto space-y-10">
-
         {evaluations.map((evaluation) => (
           <Card
             key={evaluation.id}
@@ -85,9 +92,7 @@ export default function PublicEvaluationPage() {
             )}
           </Card>
         ))}
-
       </div>
     </PublicLayout>
   );
 }
-
