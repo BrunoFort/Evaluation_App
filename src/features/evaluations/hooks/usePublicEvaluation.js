@@ -1,40 +1,47 @@
-// src/features/evaluations/hooks/usePublicEvaluation.js
-
 import { useEffect, useState } from "react";
-import { getEvaluations } from "/src/features/evaluations/api/evaluationsApi.js";
+import { supabase } from "/src/lib/supabaseClient";
 
 export function usePublicEvaluation(token) {
-  const [evaluation, setEvaluation] = useState(null);
+  const [evaluations, setEvaluations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function load() {
-      try {
-        setLoading(true);
-        setError(null);
+      setLoading(true);
+      setError(null);
 
-        if (!token) {
-          setEvaluation(null);
-          return;
-        }
-
-        const all = await getEvaluations();
-        const found = all.find((ev) => ev.publicToken === token);
-
-        setEvaluation(found || null);
-
-      } catch (err) {
-        setError(err.message || "Failed to load evaluation");
-        setEvaluation(null);
-
-      } finally {
+      if (!token) {
+        setEvaluations([]);
         setLoading(false);
+        return;
       }
+
+      const { data, error } = await supabase.rpc(
+        "get_detailed_evaluations",
+        { token_input: token }
+      );
+
+      if (error) {
+        setError("Evaluation not found or access denied.");
+        setEvaluations([]);
+        setLoading(false);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        setError("No evaluations found for this link.");
+        setEvaluations([]);
+        setLoading(false);
+        return;
+      }
+
+      setEvaluations(data);
+      setLoading(false);
     }
 
     load();
   }, [token]);
 
-  return { evaluation, loading, error };
+  return { evaluations, loading, error };
 }
