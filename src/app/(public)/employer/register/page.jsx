@@ -22,7 +22,7 @@ export default function EmployerRegisterPage() {
     setLoading(true);
 
     try {
-      // 1) Criar usuário de autenticação
+      // 1) cria usuário de autenticação
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contactEmail,
         password: data.password,
@@ -30,23 +30,22 @@ export default function EmployerRegisterPage() {
 
       if (authError) throw authError;
 
-      const authUserId = auth.user.id;
-
-      // 2) Criar employer no banco
+      // A API de employerregister espera "authUser"
       const employerPayload = {
         ...data,
-        authUserId,
+        authUser: auth.user,          // <- chave que o backend está cobrando
       };
 
+      // 2) cria employer no banco
       const employer = await createEmployer(employerPayload);
 
-      // 3) Login real
+      // 3) login real
       login({
         employerId: employer.id,
         ...employer,
       });
 
-      // 4) Redirecionar
+      // 4) redireciona
       navigate("/employer");
     } catch (err) {
       console.error(err);
@@ -59,7 +58,6 @@ export default function EmployerRegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-xl space-y-8">
-
         <PageHeader
           title="Employer Registration"
           subtitle="Create your company account"
@@ -67,24 +65,23 @@ export default function EmployerRegisterPage() {
         />
 
         <Card padding="lg" shadow="md" className="space-y-6">
-
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          <EmployerRegisterForm
-            onSubmit={handleRegister}
-            loading={loading}
-          />
+          <EmployerRegisterForm onSubmit={handleRegister} loading={loading} />
 
           <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
             <Link to="/employer/login" className="hover:text-purple-600">
               Already have an account?
             </Link>
 
-            <Link to="/employer/forgot-password" className="hover:text-purple-600">
+            <Link
+              to="/employer/forgot-password"
+              className="hover:text-purple-600"
+            >
               Forgot password?
             </Link>
           </div>
