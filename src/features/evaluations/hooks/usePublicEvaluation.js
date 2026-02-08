@@ -12,7 +12,7 @@ export function usePublicEvaluation(token) {
       setError(null);
 
       if (!token) {
-        setEvaluations([]);
+        setError("invalid");
         setLoading(false);
         return;
       }
@@ -23,15 +23,26 @@ export function usePublicEvaluation(token) {
       );
 
       if (error) {
-        setError("Evaluation not found or access denied.");
-        setEvaluations([]);
+        setError("invalid");
         setLoading(false);
         return;
       }
 
       if (!data || data.length === 0) {
-        setError("No evaluations found for this link.");
-        setEvaluations([]);
+        const { data: link } = await supabase
+          .from("evaluation_links")
+          .select("expires_at")
+          .eq("token", token)
+          .maybeSingle();
+
+        if (!link) {
+          setError("invalid");
+        } else if (new Date(link.expires_at) < new Date()) {
+          setError("expired");
+        } else {
+          setError("invalid");
+        }
+
         setLoading(false);
         return;
       }
