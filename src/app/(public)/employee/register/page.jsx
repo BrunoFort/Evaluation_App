@@ -13,6 +13,11 @@ import {
   savePhoto,
   readFileAsDataUrl,
 } from "/src/features/shared-photo/photoStorage";
+import {
+  dataUrlToBlob,
+  uploadProfilePhoto,
+  updateAuthAvatar,
+} from "/src/features/shared-photo/supabasePhotoStorage";
 
 export default function EmployeeRegisterPage() {
   const navigate = useNavigate();
@@ -95,7 +100,18 @@ export default function EmployeeRegisterPage() {
 
     const storedPhoto = loadPhoto(registerPhotoKey);
     if (storedPhoto) {
-      savePhoto(`employee-photo-${userId}`, storedPhoto);
+      const blob = dataUrlToBlob(storedPhoto);
+      if (blob) {
+        const uploadResult = await uploadProfilePhoto({
+          userId,
+          file: blob,
+          role: "employee",
+        });
+        await updateAuthAvatar({
+          url: uploadResult?.publicUrl,
+          path: uploadResult?.path,
+        });
+      }
     }
     removePhoto(registerPhotoKey);
 

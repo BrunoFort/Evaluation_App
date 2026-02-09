@@ -3,11 +3,11 @@ import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAu
 import { useEmployeeConsolidated } from "/src/features/evaluations/hooks/useEmployeeConsolidated.js";
 import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
 import {
-  loadPhoto,
-  removePhoto,
-  savePhoto,
-  readFileAsDataUrl,
-} from "/src/features/shared-photo/photoStorage";
+  deleteProfilePhoto,
+  loadAuthAvatar,
+  updateAuthAvatar,
+  uploadProfilePhoto,
+} from "/src/features/shared-photo/supabasePhotoStorage";
 
 export default function EmployeeProfilePage() {
   const { employee } = useEmployeeAuth();
@@ -17,20 +17,48 @@ export default function EmployeeProfilePage() {
 
   useEffect(() => {
     if (!employeeId) return;
-    setPhotoUrl(loadPhoto(`employee-photo-${employeeId}`));
+    async function loadAvatar() {
+      try {
+        const metadata = await loadAuthAvatar();
+        setPhotoUrl(metadata.avatar_url || null);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadAvatar();
   }, [employeeId]);
 
   async function handlePhotoUpload(file) {
     if (!employeeId) return;
-    const dataUrl = await readFileAsDataUrl(file);
-    setPhotoUrl(dataUrl);
-    savePhoto(`employee-photo-${employeeId}`, dataUrl);
+    const uploadResult = await uploadProfilePhoto({
+      userId: employeeId,
+      file,
+      role: "employee",
+    });
+    setPhotoUrl(uploadResult?.publicUrl || null);
+    await updateAuthAvatar({
+      url: uploadResult?.publicUrl,
+      path: uploadResult?.path,
+    });
   }
 
   function handlePhotoDelete() {
     if (!employeeId) return;
-    setPhotoUrl(null);
-    removePhoto(`employee-photo-${employeeId}`);
+    async function removeAvatar() {
+      try {
+        const metadata = await loadAuthAvatar();
+        if (metadata?.avatar_path) {
+          await deleteProfilePhoto(metadata.avatar_path);
+        }
+        await updateAuthAvatar({ url: null, path: null });
+        setPhotoUrl(null);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    removeAvatar();
   }
 
   if (!employee || employee.role !== "employee") {

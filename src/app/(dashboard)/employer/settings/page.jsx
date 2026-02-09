@@ -11,11 +11,11 @@ import CanadianPhoneInput from "@/features/shared-phone/CanadianPhoneInput";
 import { phoneRules } from "@/features/shared-phone/countryCodes";
 import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
 import {
-  loadPhoto,
-  removePhoto,
-  savePhoto,
-  readFileAsDataUrl,
-} from "/src/features/shared-photo/photoStorage";
+  deleteProfilePhoto,
+  loadAuthAvatar,
+  updateAuthAvatar,
+  uploadProfilePhoto,
+} from "/src/features/shared-photo/supabasePhotoStorage";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -86,20 +86,48 @@ export default function EmployerSettingsPage() {
 
   useEffect(() => {
     if (!employer?.employerId) return;
-    setPhotoUrl(loadPhoto(`employer-photo-${employer.employerId}`));
+    async function loadAvatar() {
+      try {
+        const metadata = await loadAuthAvatar();
+        setPhotoUrl(metadata.avatar_url || null);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadAvatar();
   }, [employer?.employerId]);
 
   async function handlePhotoUpload(file) {
     if (!employer?.employerId) return;
-    const dataUrl = await readFileAsDataUrl(file);
-    setPhotoUrl(dataUrl);
-    savePhoto(`employer-photo-${employer.employerId}`, dataUrl);
+    const uploadResult = await uploadProfilePhoto({
+      userId: employer.employerId,
+      file,
+      role: "employer",
+    });
+    setPhotoUrl(uploadResult?.publicUrl || null);
+    await updateAuthAvatar({
+      url: uploadResult?.publicUrl,
+      path: uploadResult?.path,
+    });
   }
 
   function handlePhotoDelete() {
     if (!employer?.employerId) return;
-    setPhotoUrl(null);
-    removePhoto(`employer-photo-${employer.employerId}`);
+    async function removeAvatar() {
+      try {
+        const metadata = await loadAuthAvatar();
+        if (metadata?.avatar_path) {
+          await deleteProfilePhoto(metadata.avatar_path);
+        }
+        await updateAuthAvatar({ url: null, path: null });
+        setPhotoUrl(null);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    removeAvatar();
   }
 
   function handleChange(e) {
