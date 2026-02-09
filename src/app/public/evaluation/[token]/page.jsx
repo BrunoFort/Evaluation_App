@@ -59,15 +59,29 @@ export default function PublicEvaluationPage() {
                   Evaluation Criteria
                 </h2>
 
-                {Object.entries(evaluation.scores).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="border border-neutral-200 rounded-lg p-4"
-                  >
-                    <p className="font-medium text-neutral-900">{key}</p>
-                    <p className="text-neutral-700 mt-1">Score: {value}</p>
-                  </div>
-                ))}
+                {Array.isArray(evaluation.scores)
+                  ? evaluation.scores.map((item, index) => (
+                      <div
+                        key={item.key || item.label || index}
+                        className="border border-neutral-200 rounded-lg p-4"
+                      >
+                        <p className="font-medium text-neutral-900">
+                          {item.label || item.key || `Criteria ${index + 1}`}
+                        </p>
+                        <p className="text-neutral-700 mt-1">
+                          Score: {item.score ?? "N/A"}
+                        </p>
+                      </div>
+                    ))
+                  : Object.entries(evaluation.scores).map(([key, value]) => (
+                      <div
+                        key={key}
+                        className="border border-neutral-200 rounded-lg p-4"
+                      >
+                        <p className="font-medium text-neutral-900">{key}</p>
+                        <p className="text-neutral-700 mt-1">Score: {value}</p>
+                      </div>
+                    ))}
               </div>
             )}
 
@@ -80,13 +94,13 @@ export default function PublicEvaluationPage() {
               </p>
             </div>
 
-            {evaluation.comments && (
+            {(evaluation.comments || evaluation.comments_text || evaluation.comment) && (
               <div className="mt-6">
                 <h2 className="text-xl font-semibold text-neutral-900">
                   Comments
                 </h2>
                 <p className="text-neutral-700 mt-2 whitespace-pre-line">
-                  {evaluation.comments}
+                  {evaluation.comments || evaluation.comments_text || evaluation.comment}
                 </p>
               </div>
             )}

@@ -1,46 +1,52 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const API_URL = `${BASE_URL}/departments`;
+import { supabase } from "/src/lib/supabaseClient";
 
-async function request(url, options = {}) {
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+const TABLE = "departments";
 
-  if (!res.ok) {
-    const message = `Request failed: ${res.status} ${res.statusText}`;
-    throw new Error(message);
-  }
-
-  return res.json();
+export async function getDepartments() {
+  const { data, error } = await supabase.from(TABLE).select("*");
+  if (error) throw new Error(error.message);
+  return data;
 }
 
-export function getDepartments() {
-  return request(API_URL);
+export async function getDepartmentById(id) {
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) throw new Error(error.message || "Department not found");
+  return data;
 }
 
-export function getDepartmentById(id) {
-  return request(`${API_URL}/${id}`);
+export async function createDepartment(data) {
+  const { data: result, error } = await supabase
+    .from(TABLE)
+    .insert([data])
+    .select("*")
+    .single();
+
+  if (error) throw new Error(error.message || "Failed to create department");
+  return result;
 }
 
-export function createDepartment(data) {
-  return request(API_URL, {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+export async function updateDepartment(id, data) {
+  const { data: result, error } = await supabase
+    .from(TABLE)
+    .update(data)
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) throw new Error(error.message || "Failed to update department");
+  return result;
 }
 
-export function updateDepartment(id, data) {
-  return request(`${API_URL}/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
-}
+export async function deleteDepartment(id) {
+  const { error } = await supabase.from(TABLE).delete().eq("id", id);
 
-export function deleteDepartment(id) {
-  return request(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
+  if (error) throw new Error(error.message || "Failed to delete department");
+  return true;
 }
 
 

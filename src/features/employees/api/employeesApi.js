@@ -1,43 +1,51 @@
-const API_URL = "http://localhost:4000/employees";
+import { supabase } from "/src/lib/supabaseClient";
 
-async function handleResponse(res, errorMessage) {
-  if (!res.ok) throw new Error(errorMessage);
-  return res.json();
-}
+const TABLE = "employees";
 
 export async function getEmployees() {
-  const res = await fetch(API_URL);
-  return handleResponse(res, "Failed to fetch employees");
+  const { data, error } = await supabase.from(TABLE).select("*");
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export async function getEmployeeById(id) {
-  const res = await fetch(`${API_URL}/${id}`);
-  return handleResponse(res, "Employee not found");
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) throw new Error(error.message || "Employee not found");
+  return data;
 }
 
 export async function createEmployee(data) {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return handleResponse(res, "Failed to create employee");
+  const { data: result, error } = await supabase
+    .from(TABLE)
+    .insert([data])
+    .select("*")
+    .single();
+
+  if (error) throw new Error(error.message || "Failed to create employee");
+  return result;
 }
 
 export async function updateEmployee(id, data) {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return handleResponse(res, "Failed to update employee");
+  const { data: result, error } = await supabase
+    .from(TABLE)
+    .update(data)
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (error) throw new Error(error.message || "Failed to update employee");
+  return result;
 }
 
 export async function deleteEmployee(id) {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) throw new Error("Failed to delete employee");
+  const { error } = await supabase.from(TABLE).delete().eq("id", id);
+
+  if (error) throw new Error(error.message || "Failed to delete employee");
   return true;
 }
 

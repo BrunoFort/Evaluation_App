@@ -7,7 +7,6 @@ import { ClipboardCheck } from "lucide-react";
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
-import { generatePublicToken } from "/src/utils/generatePublicToken.js";
 import { CriteriaEditor } from "/src/features/reference/components/CriteriaEditor.jsx";
 import { useCreateEvaluation } from "/src/features/evaluations/hooks/useCreateEvaluation.js";
 
@@ -67,7 +66,6 @@ export default function EmployerCreateEvaluationPage() {
       employerId,
       createdAt: new Date().toISOString(),
       status: "completed",
-      publicToken: generatePublicToken(),
       scores: formattedCriteria,
       overallScore: calculateOverallScore(),
     };

@@ -7,6 +7,7 @@ import PageHeader from "/src/components/ui/PageHeader.jsx";
 import Input from "/src/components/ui/input.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
+import { createEmployee } from "/src/features/employees/api/employeesApi.js";
 
 export default function AddEmployeePage() {
   const navigate = useNavigate();
@@ -32,19 +33,11 @@ export default function AddEmployeePage() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:4000/employees", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          createdAt: new Date().toISOString(),
-          status: "active",
-        }),
+      const saved = await createEmployee({
+        ...form,
+        createdAt: new Date().toISOString(),
+        status: "active",
       });
-
-      if (!res.ok) throw new Error("Failed to save employee");
-
-      const saved = await res.json();
       navigate(`/employees/${saved.id}`);
     } catch (err) {
       console.error(err);

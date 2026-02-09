@@ -20,7 +20,7 @@ function toEvaluation(row) {
     score: row.score,
     starRating: row.starRating ?? row.star_rating,
     referenceContact: row.referenceContact ?? row.reference_contact,
-    comments: row.comments,
+    comments: row.comments ?? row.comments_text ?? row.comment,
     date: row.date,
     scores: row.scores,
   };

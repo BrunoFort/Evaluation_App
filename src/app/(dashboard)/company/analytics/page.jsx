@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CompanyLayout from "/src/layouts/CompanyLayout.jsx";
+import { supabase } from "/src/lib/supabaseClient";
 
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import Card from "/src/components/ui/Card.jsx";
@@ -14,20 +15,19 @@ export default function CompanyAnalyticsPage() {
 
   useEffect(() => {
     async function loadData() {
-      const [employeesRes, evaluationsRes] = await Promise.all([
-        fetch("http://localhost:4000/employees"),
-        fetch("http://localhost:4000/evaluations"),
+      const [employeesRes, evaluationsRes, pendingRes] = await Promise.all([
+        supabase.from("employees").select("id", { count: "exact", head: true }),
+        supabase.from("evaluations").select("id", { count: "exact", head: true }),
+        supabase
+          .from("evaluations")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "pending"),
       ]);
 
-      const employees = await employeesRes.json();
-      const evaluations = await evaluationsRes.json();
-
-      const pending = evaluations.filter((ev) => ev.status === "pending").length;
-
       setStats({
-        employees: employees.length,
-        evaluations: evaluations.length,
-        pendingEvaluations: pending,
+        employees: employeesRes.count || 0,
+        evaluations: evaluationsRes.count || 0,
+        pendingEvaluations: pendingRes.count || 0,
       });
     }
 

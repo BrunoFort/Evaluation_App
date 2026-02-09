@@ -1,70 +1,37 @@
 // src/app/(dashboard)/employer/reference/[id]/page.jsx
 
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
-
-import { useEmployee } from "/src/features/employees/hooks/useEmployee.js";
-import { useEvaluations } from "/src/features/evaluations/hooks/useEvaluations.js";
-import { useEmployers } from "/src/features/employers/hooks/useEmployers.js";
-
-import { CriteriaStars } from "/src/features/reference/components/CriteriaStars.jsx";
-import { validateReferenceToken } from "/src/features/reference/referenceTokensStore.js";
+import StatusPill from "/src/components/ui/StatusPill.jsx";
+import { usePublicEvaluation } from "/src/features/evaluations/hooks/usePublicEvaluation.js";
 
 export default function EmployerReferenceReportPage() {
-  const { id: employeeId, token } = useParams();
+  const { token } = useParams();
+  const navigate = useNavigate();
+  const { evaluations, loading, error } = usePublicEvaluation(token);
 
-  const { employee, loading: loadingEmployee } = useEmployee(employeeId);
-  const { evaluations, loading: loadingEvaluations } = useEvaluations({
-    employeeId,
-  });
-  const { employers, loading: loadingEmployers } = useEmployers();
+  useEffect(() => {
+    if (!loading) {
+      if (error === "expired") {
+        navigate("/public/token-expired");
+      } else if (error === "invalid") {
+        navigate("/public/token-invalid");
+      } else if (error) {
+        navigate("/public/error");
+      }
+    }
+  }, [loading, error, navigate]);
 
-  const isTokenValid = validateReferenceToken(token, employeeId);
-
-  if (!isTokenValid) {
-    return (
-      <EmployerDashboardLayout>
-        <div className="max-w-2xl mx-auto p-6">
-          <h1 className="text-2xl font-bold text-red-600 mb-2">
-            Invalid or expired link
-          </h1>
-          <p className="text-neutral-600">
-            This reference link is no longer valid. Ask the candidate to
-            generate a new one.
-          </p>
-        </div>
-      </EmployerDashboardLayout>
-    );
-  }
-
-  if (loadingEmployee || loadingEvaluations || loadingEmployers) {
+  if (loading) {
     return (
       <EmployerDashboardLayout>
         <p className="p-6 text-neutral-500">Loading reference report...</p>
       </EmployerDashboardLayout>
     );
   }
-
-  if (!employee) {
-    return (
-      <EmployerDashboardLayout>
-        <p className="p-6 text-red-600">
-          Employee not found or link is invalid.
-        </p>
-      </EmployerDashboardLayout>
-    );
-  }
-
-  const employeeEvaluations = evaluations.filter(
-    (ev) => ev.employeeId === Number(employeeId)
-  );
-
-  const evaluationsWithEmployer = employeeEvaluations.map((ev) => ({
-    ...ev,
-    employer: employers.find((emp) => emp.id === ev.employerId),
-  }));
 
   return (
     <EmployerDashboardLayout>
@@ -73,7 +40,7 @@ export default function EmployerReferenceReportPage() {
         {/* Header */}
         <header className="space-y-2 border-b pb-4">
           <h1 className="text-4xl font-bold text-neutral-900">
-            Reference Report for {employee.fullName}
+            Reference Report
           </h1>
 
           <p className="text-neutral-600">
@@ -86,53 +53,68 @@ export default function EmployerReferenceReportPage() {
         </header>
 
         {/* No evaluations */}
-        {evaluationsWithEmployer.length === 0 && (
+        {evaluations.length === 0 && (
           <Card className="p-6 text-neutral-600">
             This candidate has no evaluations yet.
           </Card>
         )}
 
         {/* Evaluations */}
-        {evaluationsWithEmployer.map((ev) => (
+        {evaluations.map((ev) => (
           <Card
             key={ev.id}
             className="p-6 space-y-4 border border-neutral-200 rounded-2xl shadow-sm"
           >
-            {/* Employer + Score */}
-            <div className="flex justify-between gap-6">
+            {/* Title + Status */}
+            <div className="flex items-center justify-between">
               <div>
                 <p className="font-semibold text-neutral-900">
-                  {ev.employer?.companyName || "Unknown company"}
+                  {ev.title || "Evaluation"}
                 </p>
-
                 <p className="text-sm text-neutral-600">
-                  {ev.employer?.evaluatorName} —{" "}
-                  {ev.employer?.evaluatorPosition}
-                </p>
-
-                <p className="text-xs text-neutral-500 mt-1">
-                  Contact: {ev.employer?.email} · {ev.employer?.phone}
+                  {ev.created_at
+                    ? new Date(ev.created_at).toLocaleDateString()
+                    : "Unknown date"}
                 </p>
               </div>
-
-              <div className="text-right">
-                <p className="font-semibold text-neutral-900">
-                  {ev.score}/100
-                </p>
-
-                <p className="text-yellow-500">
-                  {"★".repeat(ev.starRating)}
-                  {"☆".repeat(5 - ev.starRating)}
-                </p>
-
-                <p className="text-xs text-neutral-500 mt-1">
-                  {ev.date}
-                </p>
-              </div>
+              <StatusPill status={ev.status} />
             </div>
 
             {/* Criteria */}
-            <CriteriaStars evaluation={ev} />
+            {ev.scores && (
+              <div className="space-y-3">
+                {Array.isArray(ev.scores)
+                  ? ev.scores.map((item, index) => (
+                      <div
+                        key={item.key || item.label || index}
+                        className="border border-neutral-200 rounded-lg p-4"
+                      >
+                        <p className="font-medium text-neutral-900">
+                          {item.label || item.key || `Criteria ${index + 1}`}
+                        </p>
+                        <p className="text-neutral-700 mt-1">
+                          Score: {item.score ?? "N/A"}
+                        </p>
+                      </div>
+                    ))
+                  : Object.entries(ev.scores).map(([key, value]) => (
+                      <div
+                        key={key}
+                        className="border border-neutral-200 rounded-lg p-4"
+                      >
+                        <p className="font-medium text-neutral-900">{key}</p>
+                        <p className="text-neutral-700 mt-1">Score: {value}</p>
+                      </div>
+                    ))}
+              </div>
+            )}
+
+            <div>
+              <p className="text-sm text-neutral-500 mb-1">Overall Score</p>
+              <p className="text-neutral-900 font-semibold">
+                {ev.overallScore ?? ev.overallscore ?? "N/A"}
+              </p>
+            </div>
 
             {/* Comments */}
             {ev.comments && (
@@ -144,15 +126,6 @@ export default function EmployerReferenceReportPage() {
               </div>
             )}
 
-            {/* Reference Contact */}
-            {ev.referenceContact && (
-              <div className="text-sm">
-                <p className="text-neutral-500">Reference contact:</p>
-                <p className="font-medium text-neutral-900">
-                  {ev.referenceContact}
-                </p>
-              </div>
-            )}
           </Card>
         ))}
       </div>

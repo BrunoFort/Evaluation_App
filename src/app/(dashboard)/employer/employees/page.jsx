@@ -7,6 +7,7 @@ import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import Input from "/src/components/ui/Input.jsx";
+import { getEmployees } from "/src/features/employees/api/employeesApi.js";
 
 export default function EmployerEmployeeListPage() {
   const navigate = useNavigate();
@@ -18,23 +19,24 @@ export default function EmployerEmployeeListPage() {
   useEffect(() => {
     async function loadEmployees() {
       setLoading(true);
-
-      // MOCK — integração real virá depois
-      const data = [
-        { id: 1, name: "John Doe", position: "Frontend Developer", email: "john@example.com" },
-        { id: 2, name: "Sarah Smith", position: "Backend Developer", email: "sarah@example.com" },
-        { id: 3, name: "Michael Brown", position: "Product Manager", email: "michael@example.com" },
-      ];
-
-      setEmployees(data);
-      setLoading(false);
+      try {
+        const data = await getEmployees();
+        setEmployees(data || []);
+      } catch (err) {
+        console.error("Failed to load employees:", err);
+        setEmployees([]);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadEmployees();
   }, []);
 
   const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(search.toLowerCase())
+    (emp.name || emp.full_name || "")
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   return (
@@ -97,8 +99,12 @@ export default function EmployerEmployeeListPage() {
                 <tbody>
                   {filteredEmployees.map((emp) => (
                     <tr key={emp.id} className="border-b border-neutral-100">
-                      <td className="py-4 text-neutral-900">{emp.name}</td>
-                      <td className="py-4 text-neutral-700">{emp.position}</td>
+                      <td className="py-4 text-neutral-900">
+                        {emp.name || emp.full_name || "Unknown"}
+                      </td>
+                      <td className="py-4 text-neutral-700">
+                        {emp.position || emp.role || "-"}
+                      </td>
                       <td className="py-4 text-neutral-700">{emp.email}</td>
                       <td className="py-4 text-right">
                         <Button
