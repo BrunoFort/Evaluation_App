@@ -76,6 +76,15 @@ export default function EmployerEmployeeAddPage() {
           </Link>
         </div>
 
+        {error && (
+          <Card className="border-red-200 bg-red-50 text-red-700 p-4">
+            {error}
+          </Card>
+        )}
+
+        <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
+          <form onSubmit={handleSubmit} className="space-y-10">
+
             {/* BASIC INFO */}
             <SectionCard title="Employee Details">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
