@@ -1,5 +1,5 @@
 import PublicLayout from "/src/layouts/PublicLayout.jsx";
-import IconBack from "/src/components/ui/IconBack.jsx";
+import IconHome from "/src/components/ui/IconHome.jsx";
 
 export default function PublicErrorPage() {
   return (
@@ -17,7 +17,7 @@ export default function PublicErrorPage() {
           href="/"
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 text-lg"
         >
-          <IconBack />
+          <IconHome />
           Home
         </a>
       </div>

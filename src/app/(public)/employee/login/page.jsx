@@ -6,7 +6,7 @@ import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
-import IconBack from "/src/components/ui/IconBack.jsx";
+import IconHome from "/src/components/ui/IconHome.jsx";
 
 export default function EmployeeLoginPage() {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function EmployeeLoginPage() {
             to="/"
             className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
           >
-            <IconBack />
+            <IconHome />
             Home
           </Link>
         </div>

@@ -7,7 +7,7 @@ import Card from "@/components/ui/card.jsx";
 import Input from "@/components/ui/input.jsx";
 import Button from "@/components/ui/Button.jsx";
 import PageHeader from "@/components/ui/PageHeader.jsx";
-import IconBack from "@/components/ui/IconBack.jsx";
+import IconHome from "@/components/ui/IconHome.jsx";
 
 export default function EmployerLoginPage() {
   const { login } = useEmployerAuth();
@@ -66,7 +66,7 @@ export default function EmployerLoginPage() {
             to="/"
             className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
           >
-            <IconBack />
+            <IconHome />
             Home
           </Link>
         </div>

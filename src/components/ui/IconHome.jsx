@@ -1,9 +1,9 @@
-export default function IconBack({ className = "" }) {
+export default function IconHome({ className = "" }) {
   return (
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={className}
+      className={`h-4 w-4 ${className}`}
     >
       <path
         d="M4 11.5L12 5l8 6.5"
