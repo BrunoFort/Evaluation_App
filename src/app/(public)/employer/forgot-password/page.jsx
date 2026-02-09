@@ -24,8 +24,13 @@ export default function EmployerForgotPasswordPage() {
       return;
     }
 
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/employer/reset-password`
+        : undefined;
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:5173/employer/reset-password",
+      redirectTo,
     });
 
     if (error) {
@@ -88,7 +93,7 @@ export default function EmployerForgotPasswordPage() {
                   Back to login
                 </Link>
 
-                <Link to="/employer/signup" className="hover:text-purple-600">
+                <Link to="/employer/register" className="hover:text-purple-600">
                   Create account
                 </Link>
               </div>
