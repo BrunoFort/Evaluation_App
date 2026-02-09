@@ -37,10 +37,14 @@ export default function EmployeeForgotPasswordPage() {
     setSent(true);
     setLoading(false);
   }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/employee/reset-password`
+        : undefined;
       <div className="w-full max-w-md space-y-8">
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
 
         <PageHeader
           title="Reset Password"
@@ -88,7 +92,7 @@ export default function EmployeeForgotPasswordPage() {
                   Back to login
                 </Link>
 
-                <Link to="/employee/signup" className="hover:text-purple-600">
+                <Link to="/employee/register" className="hover:text-purple-600">
                   Create account
                 </Link>
               </div>
