@@ -119,15 +119,6 @@ export default function EmployerEmployeeAddPage() {
 
               </div>
             </SectionCard>
-                    name="country"
-                    value={form.country}
-                    onChange={handleChange}
-                    placeholder="Country"
-                  />
-                </div>
-
-              </div>
-            </SectionCard>
 
             {/* ACTIONS */}
             <div className="pt-4 flex justify-end gap-3">
