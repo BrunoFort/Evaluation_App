@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "/src/lib/supabaseClient";
 
@@ -6,6 +6,13 @@ import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
+import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
+import {
+  loadPhoto,
+  removePhoto,
+  savePhoto,
+  readFileAsDataUrl,
+} from "/src/features/shared-photo/photoStorage";
 
 export default function EmployeeRegisterPage() {
   const navigate = useNavigate();
@@ -19,6 +26,24 @@ export default function EmployeeRegisterPage() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState(null);
+
+  const registerPhotoKey = "employee-register-photo";
+
+  useEffect(() => {
+    setPhotoUrl(loadPhoto(registerPhotoKey));
+  }, []);
+
+  async function handlePhotoUpload(file) {
+    const dataUrl = await readFileAsDataUrl(file);
+    setPhotoUrl(dataUrl);
+    savePhoto(registerPhotoKey, dataUrl);
+  }
+
+  function handlePhotoDelete() {
+    setPhotoUrl(null);
+    removePhoto(registerPhotoKey);
+  }
 
   function updateField(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -68,6 +93,12 @@ export default function EmployeeRegisterPage() {
 
     const userId = signUpData.user.id;
 
+    const storedPhoto = loadPhoto(registerPhotoKey);
+    if (storedPhoto) {
+      savePhoto(`employee-photo-${userId}`, storedPhoto);
+    }
+    removePhoto(registerPhotoKey);
+
     const { data: identity } = await supabase
       .from("employee_identity")
       .select("globalemployeekey")
@@ -99,6 +130,13 @@ export default function EmployeeRegisterPage() {
         />
 
         <Card padding="lg" shadow="md" className="space-y-6">
+          <div className="flex justify-end">
+            <ProfilePhotoUploader
+              photoUrl={photoUrl}
+              onUpload={handlePhotoUpload}
+              onDelete={handlePhotoDelete}
+            />
+          </div>
 
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">

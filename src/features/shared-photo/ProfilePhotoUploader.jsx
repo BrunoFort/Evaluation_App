@@ -1,10 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { EllipsisVertical, User as UserIcon } from "lucide-react";
 
 export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(photoUrl || null);
+
+  useEffect(() => {
+    setPreview(photoUrl || null);
+  }, [photoUrl]);
 
   function handleFileSelect(event) {
     const file = event.target.files?.[0];

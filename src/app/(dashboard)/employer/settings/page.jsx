@@ -9,6 +9,13 @@ import { getEmployerById, updateEmployer } from "@/features/employers/api/employ
 import { supabase } from "/src/lib/supabaseClient";
 import CanadianPhoneInput from "@/features/shared-phone/CanadianPhoneInput";
 import { phoneRules } from "@/features/shared-phone/countryCodes";
+import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
+import {
+  loadPhoto,
+  removePhoto,
+  savePhoto,
+  readFileAsDataUrl,
+} from "/src/features/shared-photo/photoStorage";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -52,6 +59,7 @@ export default function EmployerSettingsPage() {
   const [loadingBN, setLoadingBN] = useState(false);
   const [sendingReset, setSendingReset] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [photoUrl, setPhotoUrl] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -75,6 +83,24 @@ export default function EmployerSettingsPage() {
 
     load();
   }, [employer]);
+
+  useEffect(() => {
+    if (!employer?.employerId) return;
+    setPhotoUrl(loadPhoto(`employer-photo-${employer.employerId}`));
+  }, [employer?.employerId]);
+
+  async function handlePhotoUpload(file) {
+    if (!employer?.employerId) return;
+    const dataUrl = await readFileAsDataUrl(file);
+    setPhotoUrl(dataUrl);
+    savePhoto(`employer-photo-${employer.employerId}`, dataUrl);
+  }
+
+  function handlePhotoDelete() {
+    if (!employer?.employerId) return;
+    setPhotoUrl(null);
+    removePhoto(`employer-photo-${employer.employerId}`);
+  }
 
   function handleChange(e) {
     const { name, value, checked } = e.target;
@@ -314,9 +340,17 @@ export default function EmployerSettingsPage() {
   return (
     <EmployerDashboardLayout>
       <div className="max-w-3xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-10">
-        <div className="flex items-center gap-3">
-          <Building2 className="w-8 h-8 text-purple-600" />
-          <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <Building2 className="w-8 h-8 text-purple-600" />
+            <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
+          </div>
+
+          <ProfilePhotoUploader
+            photoUrl={photoUrl}
+            onUpload={handlePhotoUpload}
+            onDelete={handlePhotoDelete}
+          />
         </div>
 
         <div className="space-y-8">
