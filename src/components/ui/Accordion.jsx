@@ -5,7 +5,7 @@ export default function Accordion({ title, children }) {
   const panelId = `accordion-panel-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
-    <div className="border border-neutral-200 rounded-lg">
+    <div className="border border-neutral-200 rounded-lg hover:border-neutral-300 transition">
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}

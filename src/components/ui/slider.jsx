@@ -10,7 +10,7 @@ const Slider = React.forwardRef(({ className, ...props }, ref) => (
     {...props}
   >
     <SliderPrimitive.Track
-      className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-neutral-200"
+      className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-neutral-200 hover:bg-neutral-300"
     >
       <SliderPrimitive.Range className="absolute h-full bg-purple-600" />
     </SliderPrimitive.Track>
@@ -19,6 +19,7 @@ const Slider = React.forwardRef(({ className, ...props }, ref) => (
       className={cn(
         "block h-4 w-4 rounded-full",
         "border border-neutral-300 bg-background",
+        "hover:border-purple-400",
         "transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-600",
         "disabled:pointer-events-none disabled:opacity-50"
