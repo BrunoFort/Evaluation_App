@@ -66,7 +66,7 @@ export default function EmployerLoginPage() {
             to="/"
             className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
           >
-            <IconBack className="h-4 w-4" />
+            <IconBack />
             Back home
           </Link>
         </div>
