@@ -6,26 +6,20 @@ export default function IconBack({ className = "" }) {
       className={className}
     >
       <path
-        d="M19 6H9.2C6.7 6 5 7.7 5 10.2V14"
+        d="M16 5.5L9.5 12L16 18.5"
         stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M8.6 9.6L5 13.2L8.6 16.8"
-        stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
       />
       <path
-        d="M12 6L19 6"
+        d="M20 12H10.2"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="2"
         strokeLinecap="round"
         opacity="0.35"
+        fill="none"
       />
     </svg>
   );
