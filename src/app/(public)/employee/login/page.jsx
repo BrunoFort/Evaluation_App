@@ -50,7 +50,7 @@ export default function EmployeeLoginPage() {
             className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
           >
             <IconBack />
-            Back home
+            Home
           </Link>
         </div>
 

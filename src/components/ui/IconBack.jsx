@@ -1,16 +1,34 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
-import { faStar } from "@fortawesome/free-regular-svg-icons";
-
 export default function IconBack({ className = "" }) {
   return (
-    <span className={`relative inline-flex items-center justify-center ${className}`}>
-      <FontAwesomeIcon icon={faHouse} className="h-4 w-4" />
-      <FontAwesomeIcon
-        icon={faStar}
-        className="absolute h-2.5 w-2.5 opacity-70"
-        style={{ top: "50%", left: "50%", transform: "translate(-50%, -35%)" }}
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M4 11.5L12 5l8 6.5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
-    </span>
+      <path
+        d="M6.5 10.5V19h11V10.5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M12 10.8l.9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
   );
 }

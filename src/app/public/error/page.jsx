@@ -18,7 +18,7 @@ export default function PublicErrorPage() {
           className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 text-lg"
         >
           <IconBack />
-          Back home
+          Home
         </a>
       </div>
     </PublicLayout>
