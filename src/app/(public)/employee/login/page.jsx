@@ -45,7 +45,7 @@ export default function EmployeeLoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="flex items-center justify-start">
           <Link to="/" className="text-sm text-neutral-600 hover:text-purple-600">
-            Voltar para Home
+            Voltar ao inicio
           </Link>
         </div>
 
