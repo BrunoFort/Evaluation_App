@@ -106,6 +106,7 @@ const NavigationMenuViewport = React.forwardRef(({ className, ...props }, ref) =
         "h-[var(--radix-navigation-menu-viewport-height)] w-full",
         "overflow-hidden rounded-md border border-neutral-300",
         "bg-background text-neutral-800 shadow",
+        "hover:border-purple-400 hover:shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90",
         "md:w-[var(--radix-navigation-menu-viewport-width)]",

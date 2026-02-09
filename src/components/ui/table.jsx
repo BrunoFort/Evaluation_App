@@ -75,6 +75,7 @@ const TableCell = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       "p-2 align-middle",
+      "hover:text-neutral-900",
       "[&:has([role=checkbox])]:pr-0",
       "[&>[role=checkbox]]:translate-y-[2px]",
       className
