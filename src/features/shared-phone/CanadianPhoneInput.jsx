@@ -1,20 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import Input from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
-
-const fallbackCountryCodes = [
-  { code: "+1", country: "Canada" },
-  { code: "+1", country: "United States" },
-  { code: "+44", country: "United Kingdom" },
-  { code: "+55", country: "Brazil" },
-  { code: "+61", country: "Australia" },
-  { code: "+81", country: "Japan" },
-  { code: "+91", country: "India" },
-  { code: "+86", country: "China" },
-  { code: "+33", country: "France" },
-  { code: "+49", country: "Germany" },
-];
+import { countryCodes as cachedCountryCodes, phoneRules } from "./countryCodes";
 
 const formatPhoneNumber = (value, countryCode) => {
   const cleaned = value.replace(/\D/g, "");
@@ -53,7 +41,8 @@ const isValidPhoneNumber = (value, countryCode) => {
   const digits = normalizePhoneNumber(value);
   if (!digits) return false;
 
-  if (countryCode === "+1") return digits.length === 10;
+  const rule = phoneRules[countryCode];
+  if (rule) return digits.length >= rule.min && digits.length <= rule.max;
 
   return digits.length >= 8 && digits.length <= 15;
 };
@@ -68,53 +57,12 @@ export default function CanadianPhoneInput({
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [countryCodes, setCountryCodes] = useState(fallbackCountryCodes);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    async function loadCountries() {
-      try {
-        const res = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,idd"
-        );
-        const data = await res.json();
-
-        const list = [];
-
-        data.forEach((country) => {
-          const root = country?.idd?.root;
-          const suffixes = country?.idd?.suffixes || [];
-          const name = country?.name?.common;
-
-          if (!root || !name) return;
-
-          if (suffixes.length === 0) {
-            list.push({ code: root, country: name });
-            return;
-          }
-
-          suffixes.forEach((suffix) => {
-            list.push({ code: `${root}${suffix}`, country: name });
-          });
-        });
-
-        const unique = new Map();
-        list.forEach((item) => {
-          const key = `${item.country}|${item.code}`;
-          if (!unique.has(key)) unique.set(key, item);
-        });
-
-        const sorted = Array.from(unique.values()).sort((a, b) =>
-          a.country.localeCompare(b.country)
-        );
-
-        if (sorted.length > 0) setCountryCodes(sorted);
-      } catch {
-        setCountryCodes(fallbackCountryCodes);
-      }
-    }
-
-    loadCountries();
+  const countryCodes = useMemo(() => {
+    return [...cachedCountryCodes].sort((a, b) =>
+      a.country.localeCompare(b.country)
+    );
   }, []);
 
   useEffect(() => {

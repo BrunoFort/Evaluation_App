@@ -8,6 +8,7 @@ import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusin
 import { getEmployerById, updateEmployer } from "@/features/employers/api/employersApi";
 import { supabase } from "/src/lib/supabaseClient";
 import CanadianPhoneInput from "@/features/shared-phone/CanadianPhoneInput";
+import { phoneRules } from "@/features/shared-phone/countryCodes";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -197,7 +198,8 @@ export default function EmployerSettingsPage() {
   function isValidPhoneNumber(value, countryCode) {
     const digits = normalizePhoneNumber(value || "");
     if (!digits) return false;
-    if (countryCode === "+1") return digits.length === 10;
+    const rule = phoneRules[countryCode];
+    if (rule) return digits.length >= rule.min && digits.length <= rule.max;
     return digits.length >= 8 && digits.length <= 15;
   }
 
@@ -405,6 +407,9 @@ export default function EmployerSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Business Number (9 digits) *</label>
+                <p className="text-xs text-neutral-500 mb-1">
+                  Format-only validation for now.
+                </p>
                 <input
                   type="text"
                   name="businessNumber"

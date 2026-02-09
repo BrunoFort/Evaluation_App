@@ -304,6 +304,9 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Business Number (9 digits) *</label>
+            <p className="text-xs text-neutral-500 mb-1">
+              Format-only validation for now.
+            </p>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("businessNumber", { required: true })}
               maxLength={9}
