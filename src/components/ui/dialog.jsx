@@ -38,6 +38,7 @@ const DialogContent = React.forwardRef(
           "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg",
           "-translate-x-1/2 -translate-y-1/2 gap-4",
           "border border-neutral-300 bg-background p-6 shadow-lg",
+          "hover:border-purple-400 hover:shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)]",
           "duration-200 sm:rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -53,7 +54,7 @@ const DialogContent = React.forwardRef(
         <DialogPrimitive.Close
           className={cn(
             "absolute right-4 top-4 rounded-sm opacity-70 transition-opacity",
-            "hover:opacity-100 focus:outline-none",
+            "hover:opacity-100 hover:bg-neutral-100 focus:outline-none",
             "focus:ring-2 focus:ring-purple-600 focus:ring-offset-2",
             "disabled:pointer-events-none",
             "data-[state=open]:bg-accent data-[state=open]:text-neutral-600"
