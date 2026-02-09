@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Building2,
   Users,
@@ -9,9 +9,11 @@ import {
 } from "lucide-react";
 
 import ShineLogo from "@/assets/shine-logo.png";
+import { supabase } from "/src/lib/supabaseClient";
 
 export default function CompanyLayout({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { label: "Overview", icon: Building2, path: "/company" },
@@ -59,7 +61,13 @@ export default function CompanyLayout({ children }) {
         <div className="flex-1" />
 
         {/* Logout */}
-        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white">
+        <button
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            navigate("/");
+          }}
+        >
           <LogOut className="w-5 h-5" />
           Logout
         </button>

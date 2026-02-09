@@ -30,10 +30,9 @@ export default function EmployerRegisterPage() {
 
       if (authError) throw authError;
 
-      // A API de employerregister espera "authUser"
       const employerPayload = {
         ...data,
-        authUser: auth.user,          // <- chave que o backend está cobrando
+        id: auth.user.id,
       };
 
       // 2) cria employer no banco
@@ -41,7 +40,9 @@ export default function EmployerRegisterPage() {
 
       // 3) login real
       login({
-        employerId: employer.id,
+        role: "employer",
+        email: auth.user.email,
+        employerId: auth.user.id,
         ...employer,
       });
 

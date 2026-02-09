@@ -1,10 +1,13 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Share2, LogOut } from "lucide-react";
 import ShineLogo from "@/assets/shine-logo.png";
+import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAuth";
 
 export default function EmployeeDashboardLayout({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useEmployeeAuth();
 
   const navItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/employee" },
@@ -44,7 +47,13 @@ export default function EmployeeDashboardLayout({ children }) {
 
         <div className="flex-1" />
 
-        <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white">
+        <button
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
+          onClick={async () => {
+            await logout();
+            navigate("/employee/login");
+          }}
+        >
           <LogOut className="w-5 h-5" />
           Logout
         </button>

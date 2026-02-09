@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 import { getEmployerById, updateEmployer } from "@/features/employers/api/employersApi";
+import { supabase } from "/src/lib/supabaseClient";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -50,6 +51,7 @@ export default function EmployerSettingsPage() {
 
   const [saving, setSaving] = useState(false);
   const [loadingBN, setLoadingBN] = useState(false);
+  const [sendingReset, setSendingReset] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -217,6 +219,37 @@ export default function EmployerSettingsPage() {
     }
   }
 
+  async function handlePasswordResetEmail() {
+    const targetEmail = employer?.email || form.contactEmail;
+
+    if (!targetEmail) {
+      toast.error("Email not found. Please update your contact email first.");
+      return;
+    }
+
+    try {
+      setSendingReset(true);
+
+      const redirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/employer/reset-password`
+          : undefined;
+
+      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
+        redirectTo,
+      });
+
+      if (error) throw error;
+
+      toast.success("Password reset email sent successfully.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send reset email.");
+    } finally {
+      setSendingReset(false);
+    }
+  }
+
   return (
     <EmployerDashboardLayout>
       <div className="max-w-3xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-10">
@@ -378,6 +411,28 @@ export default function EmployerSettingsPage() {
                   Email
                 </label>
               </div>
+            </div>
+
+            <div className="space-y-3 pt-4 border-t border-neutral-200">
+              <h2 className="text-lg font-semibold text-neutral-800">Security</h2>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Account Email</label>
+                <input
+                  type="email"
+                  value={employer?.email || form.contactEmail || ""}
+                  readOnly
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
+                />
+              </div>
+
+              <button
+                onClick={handlePasswordResetEmail}
+                disabled={sendingReset}
+                className="w-full border border-neutral-300 text-neutral-800 py-3 rounded-lg hover:bg-neutral-50 flex items-center justify-center gap-2 font-semibold"
+              >
+                {sendingReset ? "Sending email..." : "Send password reset email"}
+              </button>
             </div>
 
             <button onClick={handleSave} disabled={saving} className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold">
