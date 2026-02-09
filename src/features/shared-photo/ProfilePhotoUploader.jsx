@@ -46,7 +46,7 @@ export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
     <div className="flex items-center gap-4">
       
       {/* Avatar */}
-      <div className="w-32 h-32 rounded-full overflow-hidden border border-neutral-300 bg-neutral-100 flex items-center justify-center">
+      <div className="w-32 h-32 rounded-full overflow-hidden border border-purple-200 bg-purple-50 flex items-center justify-center">
         {preview ? (
           <img
             src={preview}
@@ -54,7 +54,7 @@ export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <UserIcon className="w-16 h-16 text-neutral-400" />
+          <UserIcon className="w-16 h-16 text-purple-400" />
         )}
       </div>
 
