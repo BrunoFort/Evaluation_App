@@ -61,7 +61,7 @@ export default function EmployerRegisterPage() {
       <div className="w-full max-w-xl space-y-8">
         <PageHeader
           title="Employer Registration"
-          subtitle="Create your company account"
+          subtitle="Create your employer account"
           align="center"
         />
 
@@ -77,13 +77,6 @@ export default function EmployerRegisterPage() {
           <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
             <Link to="/employer/login" className="hover:text-purple-600">
               Already have an account?
-            </Link>
-
-            <Link
-              to="/employer/forgot-password"
-              className="hover:text-purple-600"
-            >
-              Forgot password?
             </Link>
           </div>
         </Card>

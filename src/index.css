@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input,
+select,
+textarea,
+button,
+a {
+	transition: color 150ms ease, border-color 150ms ease,
+		background-color 150ms ease, box-shadow 150ms ease,
+		filter 150ms ease;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+	border-color: #a855f7;
+	box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.25);
+}
+
+button:hover {
+	filter: brightness(0.98);
+}
+
+a:hover {
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}

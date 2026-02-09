@@ -35,9 +35,6 @@ export default function EmployerSettingsPage() {
     jobTitle: "",
     customJobTitle: "",
     allowCustomJobTitle: false,
-    unit: "",
-    street: "",
-    number: "",
     city: "",
     province: "",
     country: "Canada",
@@ -63,10 +60,12 @@ export default function EmployerSettingsPage() {
       try {
         const data = await getEmployerById(employer.employerId);
 
+        const { street, number, unit, ...rest } = data || {};
+
         setForm((prev) => ({
           ...prev,
-          ...data,
-          preferredContact: data.preferredContact || { phone: false, email: true },
+          ...rest,
+          preferredContact: data?.preferredContact || { phone: false, email: true },
         }));
       } catch (err) {
         console.error(err);
@@ -236,8 +235,8 @@ export default function EmployerSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, companyName: "" }));
 
-    if (!form.street || !form.number || !form.city || !form.province || !form.country) {
-      toast.error("All address fields except Unit/Apartment are required.");
+    if (!form.city || !form.province || !form.country) {
+      toast.error("City, province/territory, and country are required.");
       return;
     }
 
@@ -440,20 +439,20 @@ export default function EmployerSettingsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-3">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Street *</label>
-                <input type="text" name="street" value={form.street} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
-              </div>
-
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Number *</label>
-                <input type="text" name="number" value={form.number} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Unit / Apartment</label>
-                <input type="text" name="unit" value={form.unit} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={form.postalCode}
+                  onChange={handleChange}
+                  onBlur={handlePostalCodeBlur}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+                {fieldErrors.postalCode && (
+                  <p className="text-red-600 text-sm">{fieldErrors.postalCode}</p>
+                )}
               </div>
 
               <div>
@@ -469,21 +468,6 @@ export default function EmployerSettingsPage() {
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Country *</label>
                 <input type="text" name="country" value={form.country} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
-                <input
-                  type="text"
-                  name="postalCode"
-                  value={form.postalCode}
-                  onChange={handleChange}
-                  onBlur={handlePostalCodeBlur}
-                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-                />
-                {fieldErrors.postalCode && (
-                  <p className="text-red-600 text-sm">{fieldErrors.postalCode}</p>
-                )}
               </div>
             </div>
 

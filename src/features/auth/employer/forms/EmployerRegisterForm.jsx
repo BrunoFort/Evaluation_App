@@ -38,9 +38,6 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       jobTitle: "",
       customJobTitle: "",
       allowCustomJobTitle: false,
-      street: "",
-      number: "",
-      unit: "",
       city: "",
       province: "",
       country: "Canada",
@@ -329,23 +326,15 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold text-neutral-800">Address</h2>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-3">
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Street *</label>
-            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("street", { required: true })} />
-          </div>
-
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Number *</label>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("number", { required: true })} />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Unit / Apartment</label>
-            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("unit")} />
+              {...register("postalCode", { required: true })}
+              onBlur={handlePostalCodeBlur} />
+            {errors.postalCode && (
+              <p className="text-red-600 text-sm">{errors.postalCode.message}</p>
+            )}
           </div>
 
           <div>
@@ -364,16 +353,6 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
             <label className="block text-sm font-medium text-neutral-700 mb-1">Country *</label>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("country", { required: true })} />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
-            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("postalCode", { required: true })}
-              onBlur={handlePostalCodeBlur} />
-            {errors.postalCode && (
-              <p className="text-red-600 text-sm">{errors.postalCode.message}</p>
-            )}
           </div>
         </div>
       </div>
