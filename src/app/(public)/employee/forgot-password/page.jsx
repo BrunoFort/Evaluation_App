@@ -24,8 +24,13 @@ export default function EmployeeForgotPasswordPage() {
       return;
     }
 
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/employee/reset-password`
+        : undefined;
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:5173/employee/reset-password",
+      redirectTo,
     });
 
     if (error) {
@@ -37,14 +42,10 @@ export default function EmployeeForgotPasswordPage() {
     setSent(true);
     setLoading(false);
   }
-    const redirectTo =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/employee/reset-password`
-        : undefined;
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-md space-y-8">
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo,
-    });
 
         <PageHeader
           title="Reset Password"
