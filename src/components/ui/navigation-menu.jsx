@@ -35,7 +35,7 @@ NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName
 const NavigationMenuItem = NavigationMenuPrimitive.Item
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2",
+  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 hover:bg-neutral-100",
   {
     variants: {},
     defaultVariants: {},
@@ -84,7 +84,18 @@ const NavigationMenuContent = React.forwardRef(({ className, ...props }, ref) =>
 ))
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName
 
-const NavigationMenuLink = NavigationMenuPrimitive.Link
+const NavigationMenuLink = React.forwardRef(({ className, ...props }, ref) => (
+  <NavigationMenuPrimitive.Link
+    ref={ref}
+    className={cn(
+      "rounded-md transition-colors",
+      "hover:bg-neutral-100 hover:text-neutral-900",
+      className
+    )}
+    {...props}
+  />
+))
+NavigationMenuLink.displayName = NavigationMenuPrimitive.Link.displayName
 
 const NavigationMenuViewport = React.forwardRef(({ className, ...props }, ref) => (
   <div className="absolute left-0 top-full flex justify-center">

@@ -19,6 +19,7 @@ const PopoverContent = React.forwardRef(
         className={cn(
           "z-50 w-72 rounded-md border border-neutral-300",
           "bg-background p-4 text-neutral-800 shadow-md outline-none",
+          "hover:border-purple-400 hover:shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)]",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
