@@ -37,6 +37,12 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       setLoading(false);
@@ -134,6 +140,16 @@ export default function EmployeeRegisterPage() {
 
             <Button type="submit" fullWidth size="lg" disabled={loading}>
               {loading ? "Creating account..." : "Create Account"}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              fullWidth
+              size="lg"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
             </Button>
           </form>
 

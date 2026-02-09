@@ -23,6 +23,8 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     handleSubmit,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -59,13 +61,23 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     return regex.test(code);
   }
 
+  function normalizePostalCode(code) {
+    return code.replace(/\s/g, "").toUpperCase();
+  }
+
   function handlePostalCodeBlur() {
-    const code = watch("postalCode");
+    const raw = watch("postalCode");
+    const code = normalizePostalCode(raw);
+
+    setValue("postalCode", code, { shouldValidate: true });
 
     if (!validatePostalCode(code)) {
       toast.error("Invalid Canadian Postal Code format.");
+      setError("postalCode", { type: "manual", message: "Invalid postal code." });
       return;
     }
+
+    clearErrors("postalCode");
 
     const fsa = code.substring(0, 3).toUpperCase();
     const match = fsaMap[fsa];
@@ -102,10 +114,7 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     const cleaned = number.replace(/\D/g, "");
 
     if (countryCode === "+1") return cleaned.length === 10;
-    if (countryCode === "+44") return cleaned.length >= 10 && cleaned.length <= 11;
-    if (countryCode === "+55") return cleaned.length >= 10 && cleaned.length <= 11;
-
-    return cleaned.length >= 8;
+    return cleaned.length >= 8 && cleaned.length <= 15;
   }
 
   function validateEmail(email) {
@@ -118,15 +127,24 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
 
     if (!/^\d{9}$/.test(bn)) {
       toast.error("Business Number must have exactly 9 digits.");
+      setError("businessNumber", { type: "manual", message: "Enter 9 digits." });
       return;
     }
+
+    clearErrors("businessNumber");
 
     try {
       setLoadingBN(true);
       const result = await validateBusinessNumber(bn);
-      setValue("companyName", result.companyName || "");
+      if (result?.companyName) {
+        setValue("companyName", result.companyName, { shouldValidate: true });
+      }
     } catch (err) {
       toast.error(err.message || "Error validating Business Number.");
+      setError("businessNumber", {
+        type: "manual",
+        message: "Business Number could not be verified.",
+      });
     } finally {
       setLoadingBN(false);
     }
@@ -141,6 +159,15 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
   }
 
   function internalSubmit(data) {
+    const normalizedPostalCode = normalizePostalCode(data.postalCode || "");
+    const normalizedBusinessNumber = (data.businessNumber || "").replace(/\D/g, "");
+
+    setValue("postalCode", normalizedPostalCode, { shouldValidate: true });
+    setValue("businessNumber", normalizedBusinessNumber, { shouldValidate: true });
+
+    data.postalCode = normalizedPostalCode;
+    data.businessNumber = normalizedBusinessNumber;
+
     if (!validatePersonalIdNumber(data.personalIdType, data.personalIdNumber)) {
       toast.error("Invalid Personal ID Number.");
       return;
@@ -217,7 +244,22 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Number *</label>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("personalIdNumber", { required: true })} />
+              {...register("personalIdNumber", { required: true })}
+              onBlur={() => {
+                const type = watch("personalIdType");
+                const number = watch("personalIdNumber");
+                if (!validatePersonalIdNumber(type, number)) {
+                  setError("personalIdNumber", {
+                    type: "manual",
+                    message: "Invalid Personal ID Number.",
+                  });
+                } else {
+                  clearErrors("personalIdNumber");
+                }
+              }} />
+            {errors.personalIdNumber && (
+              <p className="text-red-600 text-sm">{errors.personalIdNumber.message}</p>
+            )}
           </div>
         </div>
       </div>
@@ -266,13 +308,15 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
               {...register("businessNumber", { required: true })}
               maxLength={9}
               onBlur={handleBusinessNumberBlur} />
+            {errors.businessNumber && (
+              <p className="text-red-600 text-sm">{errors.businessNumber.message}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Company Name *</label>
-            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100"
+            <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("companyName", { required: true })}
-              readOnly
               disabled={loadingBN} />
           </div>
         </div>
@@ -324,6 +368,9 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("postalCode", { required: true })}
               onBlur={handlePostalCodeBlur} />
+            {errors.postalCode && (
+              <p className="text-red-600 text-sm">{errors.postalCode.message}</p>
+            )}
           </div>
         </div>
       </div>
@@ -344,7 +391,16 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <label className="block text-sm font-medium text-neutral-700 mb-1">Contact Email *</label>
           <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             type="email"
-            {...register("contactEmail", { required: true })} />
+            {...register("contactEmail", {
+              required: true,
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email format",
+              },
+            })} />
+          {errors.contactEmail && (
+            <p className="text-red-600 text-sm">{errors.contactEmail.message}</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -391,13 +447,23 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-      >
-        {loading ? "Registering..." : "Register"}
-      </button>
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="px-4 py-3 rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-6 py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition"
+        >
+          {loading ? "Registering..." : "Register"}
+        </button>
+      </div>
     </form>
   );
 }

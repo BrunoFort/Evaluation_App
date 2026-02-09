@@ -7,6 +7,7 @@ import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 import { getEmployerById, updateEmployer } from "@/features/employers/api/employersApi";
 import { supabase } from "/src/lib/supabaseClient";
+import CanadianPhoneInput from "@/features/shared-phone/CanadianPhoneInput";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -52,6 +53,7 @@ export default function EmployerSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [loadingBN, setLoadingBN] = useState(false);
   const [sendingReset, setSendingReset] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     async function load() {
@@ -97,13 +99,24 @@ export default function EmployerSettingsPage() {
     return regex.test(code);
   }
 
+  function normalizePostalCode(code) {
+    return code.replace(/\s/g, "").toUpperCase();
+  }
+
   function handlePostalCodeBlur() {
-    if (!validatePostalCode(form.postalCode)) {
+    const normalized = normalizePostalCode(form.postalCode || "");
+
+    setForm((prev) => ({ ...prev, postalCode: normalized }));
+
+    if (!validatePostalCode(normalized)) {
       toast.error("Invalid Canadian Postal Code format.");
+      setFieldErrors((prev) => ({ ...prev, postalCode: "Invalid postal code." }));
       return;
     }
 
-    const fsa = form.postalCode.substring(0, 3).toUpperCase();
+    setFieldErrors((prev) => ({ ...prev, postalCode: "" }));
+
+    const fsa = normalized.substring(0, 3).toUpperCase();
     const match = fsaMap[fsa];
 
     if (match) {
@@ -128,18 +141,27 @@ export default function EmployerSettingsPage() {
 
     if (!validateBusinessNumberLocal(bn)) {
       toast.error("Business Number must have exactly 9 digits.");
+      setFieldErrors((prev) => ({ ...prev, businessNumber: "Enter 9 digits." }));
       return;
     }
+
+    setFieldErrors((prev) => ({ ...prev, businessNumber: "" }));
 
     try {
       setLoadingBN(true);
       const result = await validateBusinessNumber(bn);
-      setForm((prev) => ({
-        ...prev,
-        companyName: result.companyName || prev.companyName,
-      }));
+      if (result?.companyName) {
+        setForm((prev) => ({
+          ...prev,
+          companyName: result.companyName,
+        }));
+      }
     } catch (err) {
       toast.error(err.message || "Error validating Business Number.");
+      setFieldErrors((prev) => ({
+        ...prev,
+        businessNumber: "Business Number could not be verified.",
+      }));
     } finally {
       setLoadingBN(false);
     }
@@ -164,6 +186,21 @@ export default function EmployerSettingsPage() {
     }
   }
 
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function normalizePhoneNumber(value) {
+    return value.replace(/\D/g, "");
+  }
+
+  function isValidPhoneNumber(value, countryCode) {
+    const digits = normalizePhoneNumber(value || "");
+    if (!digits) return false;
+    if (countryCode === "+1") return digits.length === 10;
+    return digits.length >= 8 && digits.length <= 15;
+  }
+
   async function handleSave() {
     if (!form.firstName || !form.lastName) {
       toast.error("First name and last name are required.");
@@ -177,13 +214,25 @@ export default function EmployerSettingsPage() {
 
     if (!validatePersonalIdNumber(form.personalIdType, form.personalIdNumber)) {
       toast.error("Invalid Personal ID Number.");
+      setFieldErrors((prev) => ({ ...prev, personalIdNumber: "Invalid Personal ID Number." }));
       return;
     }
 
+    setFieldErrors((prev) => ({ ...prev, personalIdNumber: "" }));
+
     if (!validateBusinessNumberLocal(form.businessNumber)) {
       toast.error("Business Number must have exactly 9 digits.");
+      setFieldErrors((prev) => ({ ...prev, businessNumber: "Enter 9 digits." }));
       return;
     }
+
+    if (!form.companyName?.trim()) {
+      toast.error("Company Name is required.");
+      setFieldErrors((prev) => ({ ...prev, companyName: "Company Name is required." }));
+      return;
+    }
+
+    setFieldErrors((prev) => ({ ...prev, companyName: "" }));
 
     if (!form.street || !form.number || !form.city || !form.province || !form.country) {
       toast.error("All address fields except Unit/Apartment are required.");
@@ -195,10 +244,21 @@ export default function EmployerSettingsPage() {
       return;
     }
 
-    if (!form.contactEmail.includes("@")) {
+    if (!validateEmail(form.contactEmail)) {
       toast.error("Invalid email format.");
+      setFieldErrors((prev) => ({ ...prev, contactEmail: "Invalid email format." }));
       return;
     }
+
+    setFieldErrors((prev) => ({ ...prev, contactEmail: "" }));
+
+    if (form.phoneNumber && !isValidPhoneNumber(form.phoneNumber, form.phoneCountry)) {
+      toast.error("Invalid phone number for selected country.");
+      setFieldErrors((prev) => ({ ...prev, phoneNumber: "Invalid phone number." }));
+      return;
+    }
+
+    setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
 
     setSaving(true);
 
@@ -289,7 +349,23 @@ export default function EmployerSettingsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Number *</label>
-                <input type="text" name="personalIdNumber" value={form.personalIdNumber} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input
+                  type="text"
+                  name="personalIdNumber"
+                  value={form.personalIdNumber}
+                  onChange={handleChange}
+                  onBlur={() => {
+                    if (!validatePersonalIdNumber(form.personalIdType, form.personalIdNumber)) {
+                      setFieldErrors((prev) => ({ ...prev, personalIdNumber: "Invalid Personal ID Number." }));
+                    } else {
+                      setFieldErrors((prev) => ({ ...prev, personalIdNumber: "" }));
+                    }
+                  }}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+                {fieldErrors.personalIdNumber && (
+                  <p className="text-red-600 text-sm">{fieldErrors.personalIdNumber}</p>
+                )}
               </div>
             </div>
           </div>
@@ -329,12 +405,33 @@ export default function EmployerSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Business Number (9 digits) *</label>
-                <input type="text" name="businessNumber" value={form.businessNumber} onChange={handleChange} onBlur={handleBusinessNumberBlur} maxLength={9} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input
+                  type="text"
+                  name="businessNumber"
+                  value={form.businessNumber}
+                  onChange={handleChange}
+                  onBlur={handleBusinessNumberBlur}
+                  maxLength={9}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+                {fieldErrors.businessNumber && (
+                  <p className="text-red-600 text-sm">{fieldErrors.businessNumber}</p>
+                )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Company Name *</label>
-                <input type="text" name="companyName" value={form.companyName} readOnly disabled={loadingBN} className="w-full border border-neutral-300 rounded-lg px-3 py-2 bg-neutral-100" />
+                <input
+                  type="text"
+                  name="companyName"
+                  value={form.companyName}
+                  onChange={handleChange}
+                  disabled={loadingBN}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+                {fieldErrors.companyName && (
+                  <p className="text-red-600 text-sm">{fieldErrors.companyName}</p>
+                )}
               </div>
             </div>
 
@@ -371,30 +468,52 @@ export default function EmployerSettingsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Postal Code *</label>
-                <input type="text" name="postalCode" value={form.postalCode} onChange={handleChange} onBlur={handlePostalCodeBlur} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Country Code</label>
-                <select name="phoneCountry" value={form.phoneCountry} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2">
-                  <option value="+1">🇨🇦 +1 Canada</option>
-                  <option value="+1">🇺🇸 +1 USA</option>
-                  <option value="+55">🇧🇷 +55 Brazil</option>
-                  <option value="+44">🇬🇧 +44 UK</option>
-                </select>
-              </div>
-
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Phone Number</label>
-                <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={form.postalCode}
+                  onChange={handleChange}
+                  onBlur={handlePostalCodeBlur}
+                  className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+                />
+                {fieldErrors.postalCode && (
+                  <p className="text-red-600 text-sm">{fieldErrors.postalCode}</p>
+                )}
               </div>
             </div>
 
             <div>
+              <CanadianPhoneInput
+                value={form.phoneNumber}
+                onChange={(v) => setForm((prev) => ({ ...prev, phoneNumber: v }))}
+                countryCode={form.phoneCountry}
+                onCountryCodeChange={(v) => setForm((prev) => ({ ...prev, phoneCountry: v }))}
+                label="Phone Number"
+              />
+              {fieldErrors.phoneNumber && (
+                <p className="text-red-600 text-sm">{fieldErrors.phoneNumber}</p>
+              )}
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">Contact Email *</label>
-              <input type="email" name="contactEmail" value={form.contactEmail} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+              <input
+                type="email"
+                name="contactEmail"
+                value={form.contactEmail}
+                onChange={handleChange}
+                onBlur={() => {
+                  if (!validateEmail(form.contactEmail)) {
+                    setFieldErrors((prev) => ({ ...prev, contactEmail: "Invalid email format." }));
+                  } else {
+                    setFieldErrors((prev) => ({ ...prev, contactEmail: "" }));
+                  }
+                }}
+                className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+              />
+              {fieldErrors.contactEmail && (
+                <p className="text-red-600 text-sm">{fieldErrors.contactEmail}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -435,10 +554,24 @@ export default function EmployerSettingsPage() {
               </button>
             </div>
 
-            <button onClick={handleSave} disabled={saving} className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold">
-              <Save className="w-5 h-5" />
-              {saving ? "Saving..." : "Save Settings"}
-            </button>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => window.history.back()}
+                className="px-4 py-3 rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
+              >
+                <Save className="w-5 h-5" />
+                {saving ? "Saving..." : "Save Settings"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

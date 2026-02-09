@@ -1,27 +1,19 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import Input from "@/components/ui/Input.jsx";
+import Input from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const countryCodes = [
-  { code: "+1", country: "Canada/USA", flag: "🇨🇦", format: "(XXX) XXX-XXXX" },
-  { code: "+44", country: "UK", flag: "🇬🇧", format: "XXXX XXX XXXX" },
-  { code: "+91", country: "India", flag: "🇮🇳", format: "XXXXX XXXXX" },
-  { code: "+86", country: "China", flag: "🇨🇳", format: "XXX XXXX XXXX" },
-  { code: "+52", country: "Mexico", flag: "🇲🇽", format: "XX XXXX XXXX" },
-  { code: "+55", country: "Brazil", flag: "🇧🇷", format: "XX XXXXX XXXX" },
-  { code: "+61", country: "Australia", flag: "🇦🇺", format: "XXX XXX XXX" },
-  { code: "+49", country: "Germany", flag: "🇩🇪", format: "XXX XXXXXXX" },
-  { code: "+33", country: "France", flag: "🇫🇷", format: "X XX XX XX XX" },
-  { code: "+81", country: "Japan", flag: "🇯🇵", format: "XX XXXX XXXX" },
+const fallbackCountryCodes = [
+  { code: "+1", country: "Canada" },
+  { code: "+1", country: "United States" },
+  { code: "+44", country: "United Kingdom" },
+  { code: "+55", country: "Brazil" },
+  { code: "+61", country: "Australia" },
+  { code: "+81", country: "Japan" },
+  { code: "+91", country: "India" },
+  { code: "+86", country: "China" },
+  { code: "+33", country: "France" },
+  { code: "+49", country: "Germany" },
 ];
 
 const formatPhoneNumber = (value, countryCode) => {
@@ -55,6 +47,17 @@ const formatPhoneNumber = (value, countryCode) => {
   return cleaned.replace(/(\d{3})/g, "$1 ").trim();
 };
 
+const normalizePhoneNumber = (value) => value.replace(/\D/g, "");
+
+const isValidPhoneNumber = (value, countryCode) => {
+  const digits = normalizePhoneNumber(value);
+  if (!digits) return false;
+
+  if (countryCode === "+1") return digits.length === 10;
+
+  return digits.length >= 8 && digits.length <= 15;
+};
+
 export default function CanadianPhoneInput({
   value,
   onChange,
@@ -63,14 +66,86 @@ export default function CanadianPhoneInput({
   label = "Phone Number",
   required = false,
 }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [countryCodes, setCountryCodes] = useState(fallbackCountryCodes);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    async function loadCountries() {
+      try {
+        const res = await fetch(
+          "https://restcountries.com/v3.1/all?fields=name,idd"
+        );
+        const data = await res.json();
+
+        const list = [];
+
+        data.forEach((country) => {
+          const root = country?.idd?.root;
+          const suffixes = country?.idd?.suffixes || [];
+          const name = country?.name?.common;
+
+          if (!root || !name) return;
+
+          if (suffixes.length === 0) {
+            list.push({ code: root, country: name });
+            return;
+          }
+
+          suffixes.forEach((suffix) => {
+            list.push({ code: `${root}${suffix}`, country: name });
+          });
+        });
+
+        const unique = new Map();
+        list.forEach((item) => {
+          const key = `${item.country}|${item.code}`;
+          if (!unique.has(key)) unique.set(key, item);
+        });
+
+        const sorted = Array.from(unique.values()).sort((a, b) =>
+          a.country.localeCompare(b.country)
+        );
+
+        if (sorted.length > 0) setCountryCodes(sorted);
+      } catch {
+        setCountryCodes(fallbackCountryCodes);
+      }
+    }
+
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!search) return countryCodes;
+    const term = search.toLowerCase();
+    return countryCodes.filter(
+      (item) =>
+        item.country.toLowerCase().includes(term) ||
+        item.code.toLowerCase().includes(term)
+    );
+  }, [search, countryCodes]);
+
+  const selectedCountry =
+    countryCodes.find((c) => c.code === countryCode) || countryCodes[0];
+
   const handleChange = (e) => {
     const input = e.target.value;
     const formatted = formatPhoneNumber(input, countryCode);
     onChange(formatted);
   };
-
-  const selectedCountry =
-    countryCodes.find((c) => c.code === countryCode) || countryCodes[0];
 
   return (
     <div className="space-y-2">
@@ -79,39 +154,69 @@ export default function CanadianPhoneInput({
       </Label>
 
       <div className="flex gap-2">
-        <Select value={countryCode} onValueChange={onCountryCodeChange}>
-          <SelectTrigger className="w-[140px] border-neutral-300 bg-white">
-            <SelectValue>
-              <span className="flex items-center gap-2">
-                <span>{selectedCountry.flag}</span>
-                <span className="font-mono text-sm">{selectedCountry.code}</span>
+        <div className="relative w-[190px]" ref={containerRef}>
+          <button
+            type="button"
+            onClick={() => setOpen((prev) => !prev)}
+            className="w-full h-[42px] border border-neutral-300 rounded-lg bg-white px-3 py-2 text-left text-sm"
+          >
+            <span className="flex items-center justify-between">
+              <span className="truncate">
+                {selectedCountry?.country} ({selectedCountry?.code})
               </span>
-            </SelectValue>
-          </SelectTrigger>
+              <span className="text-neutral-500">▾</span>
+            </span>
+          </button>
 
-          <SelectContent>
-            {countryCodes.map(({ code, country, flag }) => (
-              <SelectItem key={code} value={code}>
-                <span className="flex items-center gap-2">
-                  <span>{flag}</span>
-                  <span>{country}</span>
-                  <span className="font-mono text-neutral-500">({code})</span>
-                </span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {open && (
+            <div className="absolute z-50 mt-1 w-full bg-white border border-neutral-300 rounded-lg shadow-lg">
+              <div className="p-2">
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search country or code..."
+                  className="w-full h-9"
+                />
+              </div>
+              <div className="max-h-56 overflow-y-auto">
+                {filtered.length === 0 && (
+                  <div className="px-3 py-2 text-sm text-neutral-500">
+                    No results found
+                  </div>
+                )}
+                {filtered.map((item) => (
+                  <button
+                    type="button"
+                    key={`${item.country}-${item.code}`}
+                    onClick={() => {
+                      onCountryCodeChange(item.code);
+                      setOpen(false);
+                      setSearch("");
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-neutral-100"
+                  >
+                    {item.country} ({item.code})
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         <Input
           value={value}
           onChange={handleChange}
-          placeholder={selectedCountry.format}
+          placeholder={countryCode === "+1" ? "(555) 123-4567" : "Enter phone number"}
           className="flex-1 bg-white"
         />
       </div>
 
       <p className="text-xs text-neutral-500">
-        Format: {selectedCountry.format}
+        {normalizePhoneNumber(value).length === 0
+          ? "Enter a phone number for the selected country."
+          : isValidPhoneNumber(value, countryCode)
+          ? "Phone number format looks valid."
+          : "Phone number must match the selected country code."}
       </p>
     </div>
   );
