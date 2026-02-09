@@ -1,4 +1,5 @@
 import PublicLayout from "/src/layouts/PublicLayout.jsx";
+import IconBack from "/src/components/ui/IconBack.jsx";
 
 export default function PublicErrorPage() {
   return (
@@ -14,9 +15,10 @@ export default function PublicErrorPage() {
 
         <a
           href="/"
-          className="text-purple-600 font-medium hover:underline text-lg"
+          className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 text-lg"
         >
-          Go back to home
+          <IconBack className="h-5 w-5" />
+          Voltar ao inicio
         </a>
       </div>
     </PublicLayout>
