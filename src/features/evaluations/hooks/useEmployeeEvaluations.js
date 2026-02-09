@@ -20,13 +20,10 @@ export function useEmployeeEvaluations(employeeId, employerId) {
           return;
         }
 
-        const all = await getEvaluations();
-
-        const filtered = all.filter(
-          (ev) =>
-            String(ev.employeeId) === String(employeeId) &&
-            String(ev.employerId) === String(employerId)
-        );
+        const filtered = await getEvaluations({
+          employeeId,
+          employerId,
+        });
 
         setEvaluations(filtered);
 

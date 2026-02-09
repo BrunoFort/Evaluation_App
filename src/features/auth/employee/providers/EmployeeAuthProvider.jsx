@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { supabase } from "/src/lib/supabaseClient";
 
 const EmployeeAuthContext = createContext(null);
 
@@ -7,31 +8,52 @@ export function EmployeeAuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    let unsubscribe = null;
 
-    const stored = localStorage.getItem("employee");
-    if (stored) {
-      try {
-        setEmployee(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem("employee");
+    async function loadSession() {
+      const { data } = await supabase.auth.getSession();
+      const session = data?.session;
+
+      if (session?.user) {
+        setEmployee({
+          role: "employee",
+          email: session.user.email,
+          employeeId: session.user.id,
+        });
       }
+
+      setLoading(false);
     }
 
-    setLoading(false);
+    loadSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setEmployee({
+            role: "employee",
+            email: session.user.email,
+            employeeId: session.user.id,
+          });
+        } else {
+          setEmployee(null);
+        }
+      }
+    );
+
+    unsubscribe = listener.subscription.unsubscribe;
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   function login(data) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("employee", JSON.stringify(data));
-    }
     setEmployee(data);
   }
 
-  function logout() {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("employee");
-    }
+  async function logout() {
+    await supabase.auth.signOut();
     setEmployee(null);
   }
 

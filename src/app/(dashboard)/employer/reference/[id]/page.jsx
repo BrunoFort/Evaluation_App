@@ -16,7 +16,9 @@ export default function EmployerReferenceReportPage() {
   const { id: employeeId, token } = useParams();
 
   const { employee, loading: loadingEmployee } = useEmployee(employeeId);
-  const { evaluations, loading: loadingEvaluations } = useEvaluations();
+  const { evaluations, loading: loadingEvaluations } = useEvaluations({
+    employeeId,
+  });
   const { employers, loading: loadingEmployers } = useEmployers();
 
   const isTokenValid = validateReferenceToken(token, employeeId);

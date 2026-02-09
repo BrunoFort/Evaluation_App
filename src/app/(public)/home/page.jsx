@@ -7,8 +7,26 @@ export default function HomePage() {
   const [token, setToken] = useState("");
 
   const handleAccessLink = () => {
-    if (!token.trim()) return;
-    window.location.href = `/reference/${token}`;
+    const raw = token.trim();
+    if (!raw) return;
+
+    let normalized = raw;
+
+    try {
+      const url = new URL(raw, window.location.origin);
+      const paramToken = url.searchParams.get("token");
+      if (paramToken) {
+        normalized = paramToken;
+      } else if (url.pathname.includes("/reference/")) {
+        normalized = url.pathname.split("/reference/").pop() || raw;
+      }
+    } catch {
+      if (raw.includes("/reference/")) {
+        normalized = raw.split("/reference/").pop() || raw;
+      }
+    }
+
+    window.location.href = `/reference/${normalized}`;
   };
 
   return (
@@ -60,7 +78,7 @@ export default function HomePage() {
       {/* DIRECT LINK ACCESS (DISCREET) */}
       <section className="w-full max-w-xl mb-20 opacity-80">
         <label className="block text-sm font-medium text-neutral-600 mb-2">
-          Received a Shine evaluation link?
+          Received a Shine evaluation link? (Employer access only)
         </label>
 
         <div className="flex gap-3">

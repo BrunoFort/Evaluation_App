@@ -4,13 +4,16 @@ import { Link } from "react-router-dom";
 
 import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import { useEvaluations } from "/src/features/evaluations/hooks/useEvaluations.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 import Card from "/src/components/ui/Card.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
 
 export default function EmployerEvaluationsListPage() {
-  const { evaluations, loading, error } = useEvaluations();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
+  const { evaluations, loading, error } = useEvaluations({ employerId });
 
   return (
     <EmployerDashboardLayout>

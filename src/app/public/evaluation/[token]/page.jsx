@@ -76,7 +76,7 @@ export default function PublicEvaluationPage() {
                 Overall Score
               </h2>
               <p className="text-neutral-800 text-lg mt-2">
-                {evaluation.overallscore ?? "N/A"}
+                {evaluation.overallScore ?? evaluation.overallscore ?? "N/A"}
               </p>
             </div>
 

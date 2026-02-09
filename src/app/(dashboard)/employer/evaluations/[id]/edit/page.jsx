@@ -11,6 +11,7 @@ import { Textarea } from "/src/components/ui/textarea.jsx";
 
 import { useEvaluation } from "/src/features/evaluations/hooks/useEvaluation.js";
 import { useUpdateEvaluation } from "/src/features/evaluations/hooks/useUpdateEvaluation.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 export default function EmployerEditEvaluationPage() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function EmployerEditEvaluationPage() {
 
   const { evaluation, loading, error } = useEvaluation(id);
   const { update, updating } = useUpdateEvaluation();
+  const { employer } = useEmployerAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -58,6 +60,16 @@ export default function EmployerEditEvaluationPage() {
         <p className="text-red-600">Evaluation not found.</p>
       </EmployerDashboardLayout>
     );
+  }
+
+  if (evaluation.employerId && employer?.employerId) {
+    if (String(evaluation.employerId) !== String(employer.employerId)) {
+      return (
+        <EmployerDashboardLayout>
+          <p className="text-red-600">Unauthorized access.</p>
+        </EmployerDashboardLayout>
+      );
+    }
   }
 
   return (

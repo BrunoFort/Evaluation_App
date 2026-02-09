@@ -9,6 +9,7 @@ import Card from "/src/components/ui/Card.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import StatusPill from "/src/components/ui/StatusPill.jsx";
 import { DeleteEvaluationDialog } from "/src/features/evaluations/components/DeleteEvaluationDialog.jsx";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 export default function EmployerEvaluationDetailsPage() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export default function EmployerEvaluationDetailsPage() {
 
   const { evaluation, loading, error } = useEvaluation(id);
   const { remove, loading: deleting } = useDeleteEvaluation();
+  const { employer } = useEmployerAuth();
 
   async function handleDelete() {
     await remove(id);
@@ -36,6 +38,16 @@ export default function EmployerEvaluationDetailsPage() {
         <p className="text-red-600">Evaluation not found.</p>
       </EmployerDashboardLayout>
     );
+  }
+
+  if (evaluation.employerId && employer?.employerId) {
+    if (String(evaluation.employerId) !== String(employer.employerId)) {
+      return (
+        <EmployerDashboardLayout>
+          <p className="text-red-600">Unauthorized access.</p>
+        </EmployerDashboardLayout>
+      );
+    }
   }
 
   return (
@@ -119,14 +131,6 @@ export default function EmployerEvaluationDetailsPage() {
               </div>
             </div>
           )}
-
-          {/* Public Link */}
-          <div>
-            <p className="text-sm text-neutral-600 mb-1">Public Link</p>
-            <p className="text-neutral-900 break-all">
-              {`${window.location.origin}/public/evaluation/${evaluation.publicToken}`}
-            </p>
-          </div>
 
         </Card>
       </div>

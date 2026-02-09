@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "/src/lib/supabaseClient";
 import EmployeeDashboardLayout from "/src/layouts/EmployeeDashboardLayout.jsx";
 import { Star, Link as LinkIcon, ClipboardList } from "lucide-react";
@@ -33,7 +34,10 @@ export default function EmployeeDashboardPage() {
       global_key: globalKey,
     });
 
-    setPublicLink(`https://shine.app/evaluations?token=${token}`);
+    const baseUrl =
+      typeof window !== "undefined" ? window.location.origin : "https://shine.app";
+
+    setPublicLink(`${baseUrl}/reference/${token}`);
   }
 
   useEffect(() => {
@@ -80,9 +84,12 @@ export default function EmployeeDashboardPage() {
                 </div>
               </div>
 
-              <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-90 transition">
-                View Full Evaluation History
-              </button>
+                <Link
+                  to="/employee/profile"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-90 transition inline-block"
+                >
+                  View Full Evaluation History
+                </Link>
             </>
           ) : (
             <p className="text-neutral-600">No evaluations yet.</p>

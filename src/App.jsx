@@ -38,12 +38,14 @@ import EmployerSettingsPage from "@/app/(dashboard)/employer/settings/page.jsx";
 
 // EMPLOYEE AUTH PAGES
 import EmployeeLoginPage from "@/app/(public)/employee/login/page.jsx";
+import EmployeeRegisterPage from "@/app/(public)/employee/register/page.jsx";
 import EmployeeCompleteRegistrationPage from "@/app/(public)/employee/complete-registration/page.jsx";
 import EmployeeForgotPasswordPage from "@/app/(public)/employee/forgot-password/page.jsx";
 import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/page.jsx";
 
 // EMPLOYEE DASHBOARD
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
+import EmployeeProfilePage from "@/app/(dashboard)/employee/profile/page.jsx";
 
 export default function App() {
   useEffect(() => {
@@ -60,9 +62,6 @@ export default function App() {
       {/* PUBLIC HOME */}
       <Route path="/" element={<HomePage />} />
 
-      {/* PUBLIC EVALUATION PAGE */}
-      <Route path="/reference/:token" element={<PublicEvaluationPage />} />
-
       {/* EMPLOYER ROUTES */}
       <Route
         element={
@@ -71,6 +70,16 @@ export default function App() {
           </EmployerAuthProvider>
         }
       >
+        {/* REFERENCE LINK (EMPLOYER ONLY) */}
+        <Route
+          path="/reference/:token"
+          element={
+            <RequireEmployerAuth>
+              <PublicEvaluationPage />
+            </RequireEmployerAuth>
+          }
+        />
+
         {/* PUBLIC */}
         <Route path="/employer/login" element={<EmployerLoginPage />} />
         <Route path="/employer/register" element={<EmployerRegisterPage />} />
@@ -146,6 +155,7 @@ export default function App() {
       >
         {/* PUBLIC */}
         <Route path="/employee/login" element={<EmployeeLoginPage />} />
+        <Route path="/employee/register" element={<EmployeeRegisterPage />} />
         <Route path="/employee/forgot-password" element={<EmployeeForgotPasswordPage />} />
         <Route path="/employee/reset-password" element={<EmployeeResetPasswordPage />} />
 
@@ -161,6 +171,15 @@ export default function App() {
           element={
             <RequireEmployeeAuth>
               <EmployeeDashboardPage />
+            </RequireEmployeeAuth>
+          }
+        />
+
+        <Route
+          path="/employee/profile"
+          element={
+            <RequireEmployeeAuth>
+              <EmployeeProfilePage />
             </RequireEmployeeAuth>
           }
         />

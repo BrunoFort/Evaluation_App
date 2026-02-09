@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getEvaluations } from "/src/features/evaluations/api/evaluationsApi.js";
 
-export function useEvaluations() {
+export function useEvaluations(filters = {}) {
   const [evaluations, setEvaluations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ export function useEvaluations() {
         setLoading(true);
         setError(null);
 
-        const data = await getEvaluations();
+        const data = await getEvaluations(filters);
         setEvaluations(data);
 
       } catch (err) {

@@ -9,6 +9,7 @@ import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAu
 
 import { generatePublicToken } from "/src/utils/generatePublicToken.js";
 import { CriteriaEditor } from "/src/features/reference/components/CriteriaEditor.jsx";
+import { useCreateEvaluation } from "/src/features/evaluations/hooks/useCreateEvaluation.js";
 
 export default function EmployerCreateEvaluationPage() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function EmployerCreateEvaluationPage() {
   });
 
   const [saving, setSaving] = useState(false);
+  const { create } = useCreateEvaluation();
 
   function handleChange(e) {
     setFormData((prev) => ({
@@ -63,21 +65,15 @@ export default function EmployerCreateEvaluationPage() {
       ...formData,
       employeeId: Number(formData.employeeId),
       employerId,
-      employerName: employer.companyName,
       createdAt: new Date().toISOString(),
       status: "completed",
       publicToken: generatePublicToken(),
-      criteria: formattedCriteria,
+      scores: formattedCriteria,
       overallScore: calculateOverallScore(),
     };
 
     try {
-      await fetch("http://localhost:4000/evaluations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEvaluation),
-      });
-
+      await create(newEvaluation);
       navigate("/employer/evaluations");
     } catch (error) {
       console.error("Error creating evaluation:", error);
