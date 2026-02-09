@@ -12,7 +12,7 @@ import { useEmployee } from "/src/features/employees/hooks/useEmployee.js";
 import { useEmployeeEvaluations } from "/src/features/evaluations/hooks/useEmployeeEvaluations.js";
 import EmployeeEvaluationsTab from "/src/features/employees/components/EmployeeEvaluationsTab.jsx";
 
-import { useEmployerAuth } from "/src/features/auth/employer/useEmployerAuth.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 import {
   User,
@@ -113,7 +113,6 @@ export default function EmployeeProfileAdminPage() {
                 <p><strong>Name:</strong> {employee.name}</p>
                 <p><strong>Email:</strong> {employee.email}</p>
                 <p><strong>Role:</strong> {employee.role || "Not assigned"}</p>
-                <p><strong>Department:</strong> {employee.department || "Not assigned"}</p>
                 <p><strong>Status:</strong> {employee.status}</p>
               </div>
             </AccordionSection>

@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { EmployeeForm } from "/src/features/employees/components/EmployeeForm.jsx";
 import { useCreateEmployee } from "/src/features/employees/hooks/useCreateEmployee.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import Card from "/src/components/ui/Card.jsx";
@@ -10,10 +11,21 @@ import Card from "/src/components/ui/Card.jsx";
 export default function EmployeeCreatePage() {
   const navigate = useNavigate();
   const { create } = useCreateEmployee();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   async function handleCreate(data) {
     try {
-      await create(data);
+      if (!employerId) {
+        throw new Error("Employer account not found.");
+      }
+
+      await create({
+        employerid: employerId,
+        name: data.name,
+        role: data.role,
+        email: data.email,
+      });
       toast.success("Employee created successfully!");
       navigate("/employees");
     } catch (err) {
@@ -35,7 +47,7 @@ export default function EmployeeCreatePage() {
           defaultValues={{
             name: "",
             role: "",
-            departmentId: ""
+            email: "",
           }}
           onSubmit={handleCreate}
           isSubmitting={false}

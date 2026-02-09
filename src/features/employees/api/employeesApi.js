@@ -2,8 +2,14 @@ import { supabase } from "/src/lib/supabaseClient";
 
 const TABLE = "employees";
 
-export async function getEmployees() {
-  const { data, error } = await supabase.from(TABLE).select("*");
+export async function getEmployees(filters = {}) {
+  let query = supabase.from(TABLE).select("*");
+
+  if (filters.employerId) {
+    query = query.eq("employerid", filters.employerId);
+  }
+
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
   return data;
 }

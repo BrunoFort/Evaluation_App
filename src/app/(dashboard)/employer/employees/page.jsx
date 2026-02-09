@@ -8,9 +8,12 @@ import Card from "/src/components/ui/Card.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import Input from "/src/components/ui/Input.jsx";
 import { getEmployees } from "/src/features/employees/api/employeesApi.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 export default function EmployerEmployeeListPage() {
   const navigate = useNavigate();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [loading, setLoading] = useState(true);
   const [employees, setEmployees] = useState([]);
@@ -20,7 +23,12 @@ export default function EmployerEmployeeListPage() {
     async function loadEmployees() {
       setLoading(true);
       try {
-        const data = await getEmployees();
+        if (!employerId) {
+          setEmployees([]);
+          return;
+        }
+
+        const data = await getEmployees({ employerId });
         setEmployees(data || []);
       } catch (err) {
         console.error("Failed to load employees:", err);
@@ -31,7 +39,7 @@ export default function EmployerEmployeeListPage() {
     }
 
     loadEmployees();
-  }, []);
+  }, [employerId]);
 
   const filteredEmployees = employees.filter((emp) =>
     (emp.name || emp.full_name || "")

@@ -2,20 +2,11 @@ import { useForm } from "react-hook-form";
 import Button from "/src/components/ui/Button.jsx";
 import { Input } from "/src/components/ui/input.jsx";
 import { Label } from "/src/components/ui/label.jsx";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "/src/components/ui/select.jsx";
 
 export function EmployeeForm({ defaultValues, onSubmit, isSubmitting }) {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm({ defaultValues });
 
@@ -37,40 +28,25 @@ export function EmployeeForm({ defaultValues, onSubmit, isSubmitting }) {
       {/* ROLE */}
       <div className="flex flex-col gap-2">
         <Label>Role</Label>
-
-        <Select
-          defaultValue={watch("role")}
-          onValueChange={(value) => setValue("role", value, { shouldValidate: true })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a role" />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="Employee">Employee</SelectItem>
-            <SelectItem value="Manager">Manager</SelectItem>
-            <SelectItem value="Director">Director</SelectItem>
-          </SelectContent>
-        </Select>
-
+        <Input
+          {...register("role", { required: "Role is required" })}
+          placeholder="Employee role"
+        />
         {errors.role && (
           <p className="text-red-600 text-sm">{errors.role.message}</p>
         )}
       </div>
 
-      {/* DEPARTMENT ID */}
+      {/* EMAIL */}
       <div className="flex flex-col gap-2">
-        <Label>Department ID</Label>
+        <Label>Email</Label>
         <Input
-          type="number"
-          {...register("departmentId", {
-            required: "Department ID is required",
-            valueAsNumber: true,
-          })}
-          placeholder="1"
+          type="email"
+          {...register("email", { required: "Email is required" })}
+          placeholder="email@example.com"
         />
-        {errors.departmentId && (
-          <p className="text-red-600 text-sm">{errors.departmentId.message}</p>
+        {errors.email && (
+          <p className="text-red-600 text-sm">{errors.email.message}</p>
         )}
       </div>
 

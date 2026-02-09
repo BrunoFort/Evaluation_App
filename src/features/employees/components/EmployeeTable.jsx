@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, Briefcase, Building2, ArrowRight } from "lucide-react";
+import { User, Briefcase, ArrowRight } from "lucide-react";
 
 export default function EmployeeTable({ employees }) {
   return (
@@ -9,7 +9,6 @@ export default function EmployeeTable({ employees }) {
           <tr>
             <th className="px-4 py-3 text-neutral-700 font-semibold">Employee</th>
             <th className="px-4 py-3 text-neutral-700 font-semibold">Role</th>
-            <th className="px-4 py-3 text-neutral-700 font-semibold">Department</th>
             <th className="px-4 py-3 text-neutral-700 font-semibold w-24"></th>
           </tr>
         </thead>
@@ -34,11 +33,6 @@ export default function EmployeeTable({ employees }) {
               <td className="px-4 py-3 text-neutral-700 flex items-center gap-1">
                 <Briefcase className="w-4 h-4 text-neutral-500" />
                 {emp.role || "No role"}
-              </td>
-
-              <td className="px-4 py-3 text-neutral-700 flex items-center gap-1">
-                <Building2 className="w-4 h-4 text-neutral-500" />
-                {emp.department || "No department"}
               </td>
 
               <td className="px-4 py-3 text-right">

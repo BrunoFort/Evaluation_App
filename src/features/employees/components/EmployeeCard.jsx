@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, Briefcase, Building2 } from "lucide-react";
+import { User, Briefcase } from "lucide-react";
 
 export default function EmployeeCard({ employee }) {
   return (
@@ -24,10 +24,6 @@ export default function EmployeeCard({ employee }) {
             {employee.role || "No role assigned"}
           </p>
 
-          <p className="text-neutral-600 flex items-center gap-1">
-            <Building2 className="w-4 h-4" />
-            {employee.department || "No department"}
-          </p>
         </div>
       </div>
     </Link>

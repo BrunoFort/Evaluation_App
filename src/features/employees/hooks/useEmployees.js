@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getEmployees } from "/src/features/employees/api/employeesApi";
 
-export function useEmployees() {
+export function useEmployees(employerId) {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -9,7 +9,7 @@ export function useEmployees() {
     setLoading(true);
 
     try {
-      const data = await getEmployees();
+      const data = await getEmployees({ employerId });
       setEmployees(data);
     } catch (err) {
       console.error("Failed to fetch employees:", err);
@@ -21,7 +21,7 @@ export function useEmployees() {
 
   useEffect(() => {
     fetchEmployees();
-  }, []);
+  }, [employerId]);
 
   return { employees, loading };
 }

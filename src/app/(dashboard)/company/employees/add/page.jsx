@@ -8,15 +8,17 @@ import Input from "/src/components/ui/input.jsx";
 import Button from "/src/components/ui/Button.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
 import { createEmployee } from "/src/features/employees/api/employeesApi.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 export default function AddEmployeePage() {
   const navigate = useNavigate();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     role: "",
-    department: "",
   });
 
   const [saving, setSaving] = useState(false);
@@ -33,10 +35,16 @@ export default function AddEmployeePage() {
     setError("");
 
     try {
+      if (!employerId) {
+        setError("Employer account not found. Please sign in again.");
+        return;
+      }
+
       const saved = await createEmployee({
-        ...form,
-        createdAt: new Date().toISOString(),
-        status: "active",
+        employerid: employerId,
+        name: form.name,
+        role: form.role,
+        email: form.email,
       });
       navigate(`/employees/${saved.id}`);
     } catch (err) {
@@ -120,18 +128,6 @@ export default function AddEmployeePage() {
                     value={form.role}
                     onChange={handleChange}
                     placeholder="Job title"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Department
-                  </label>
-                  <Input
-                    name="department"
-                    value={form.department}
-                    onChange={handleChange}
-                    placeholder="Department name"
                   />
                 </div>
 

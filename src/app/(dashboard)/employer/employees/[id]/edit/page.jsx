@@ -7,34 +7,52 @@ import EmployerDashboardLayout from "/src/layouts/EmployerDashboardLayout.jsx";
 import Card from "/src/components/ui/Card.jsx";
 import Input from "/src/components/ui/Input.jsx";
 import Button from "/src/components/ui/Button.jsx";
-import { Textarea } from "/src/components/ui/textarea.jsx";
+import { getEmployeeById, updateEmployee } from "/src/features/employees/api/employeesApi.js";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 
 export default function EmployerEmployeeEditPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [loading, setLoading] = useState(true);
   const [employee, setEmployee] = useState({
     name: "",
-    position: "",
+    role: "",
     email: "",
-    notes: "",
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadEmployee() {
       try {
         setLoading(true);
+        setError("");
 
-        // MOCK — integração real virá depois
-        const data = {
-          name: "John Doe",
-          position: "Frontend Developer",
-          email: "john.doe@example.com",
-          notes: "Strong performer, great communication.",
-        };
+        if (!employerId) {
+          setError("Employer account not found. Please sign in again.");
+          setEmployee(null);
+          return;
+        }
 
-        setEmployee(data);
+        const data = await getEmployeeById(id);
+
+        if (String(data.employerid) !== String(employerId)) {
+          setError("Unauthorized access.");
+          setEmployee(null);
+          return;
+        }
+
+        setEmployee({
+          name: data.name || "",
+          role: data.role || "",
+          email: data.email || "",
+        });
+      } catch (err) {
+        console.error("Failed to load employee:", err);
+        setError("Employee not found.");
+        setEmployee(null);
       } finally {
         setLoading(false);
       }
@@ -47,11 +65,27 @@ export default function EmployerEmployeeEditPage() {
     setEmployee((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // MOCK — integração real virá depois
-    navigate("/employer/employees");
+    try {
+      if (!employerId) {
+        setError("Employer account not found. Please sign in again.");
+        return;
+      }
+
+      await updateEmployee(id, {
+        name: employee.name,
+        role: employee.role,
+        email: employee.email,
+        employerid: employerId,
+      });
+
+      navigate("/employer/employees");
+    } catch (err) {
+      console.error("Failed to update employee:", err);
+      setError("Failed to update employee.");
+    }
   };
 
   return (
@@ -64,9 +98,13 @@ export default function EmployerEmployeeEditPage() {
 
         <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
 
+          {error && (
+            <p className="text-red-600 text-sm mb-4">{error}</p>
+          )}
+
           {loading ? (
             <p className="text-neutral-600 text-center">Loading employee...</p>
-          ) : (
+          ) : employee ? (
             <form onSubmit={handleSubmit} className="space-y-6">
 
               {/* Name */}
@@ -84,12 +122,12 @@ export default function EmployerEmployeeEditPage() {
               {/* Position */}
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Position
+                  Role
                 </label>
                 <Input
-                  value={employee.position}
-                  onChange={(e) => handleChange("position", e.target.value)}
-                  placeholder="Enter position"
+                  value={employee.role}
+                  onChange={(e) => handleChange("role", e.target.value)}
+                  placeholder="Enter role"
                 />
               </div>
 
@@ -103,19 +141,6 @@ export default function EmployerEmployeeEditPage() {
                   value={employee.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   placeholder="Enter email"
-                />
-              </div>
-
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Notes
-                </label>
-                <Textarea
-                  rows={5}
-                  value={employee.notes}
-                  onChange={(e) => handleChange("notes", e.target.value)}
-                  placeholder="Additional notes about this employee..."
                 />
               </div>
 
@@ -139,6 +164,8 @@ export default function EmployerEmployeeEditPage() {
               </div>
 
             </form>
+          ) : (
+            <p className="text-neutral-600 text-center">Employee not found.</p>
           )}
 
         </Card>

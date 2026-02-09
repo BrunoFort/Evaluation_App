@@ -6,29 +6,21 @@ import Card from "/src/components/ui/Card.jsx";
 import SectionCard from "/src/components/ui/SectionCard.jsx";
 import Input from "/src/components/ui/Input.jsx";
 import Button from "/src/components/ui/Button.jsx";
+import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
+import { createEmployee } from "/src/features/employees/api/employeesApi.js";
 
 export default function EmployerEmployeeAddPage() {
   const navigate = useNavigate();
+  const { employer } = useEmployerAuth();
+  const employerId = employer?.employerId;
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-    employeeId: "",
+    name: "",
     role: "",
-    department: "",
-    firstName: "",
-    lastName: "",
-    personalIdType: "",
-    personalIdNumber: "",
     email: "",
-    phone: "",
-    street: "",
-    unit: "",
-    postalCode: "",
-    city: "",
-    province: "",
-    country: "",
   });
 
   function handleChange(e) {
@@ -42,10 +34,18 @@ export default function EmployerEmployeeAddPage() {
     setError("");
 
     try {
-      // MOCK — integração real virá depois
-      console.log("Saving employee:", form);
+      if (!employerId) {
+        setError("Employer account not found. Please sign in again.");
+        return;
+      }
 
-      // Redireciona para a lista
+      await createEmployee({
+        employerid: employerId,
+        name: form.name || form.email || "Employee",
+        role: form.role,
+        email: form.email,
+      });
+
       navigate("/employer/employees");
     } catch (err) {
       console.error(err);
@@ -76,34 +76,25 @@ export default function EmployerEmployeeAddPage() {
           </Link>
         </div>
 
-        {error && (
-          <Card className="border-red-200 bg-red-50 text-red-700 p-4">
-            {error}
-          </Card>
-        )}
-
-        <Card className="p-8 border border-neutral-200 shadow-sm bg-white rounded-2xl">
-          <form onSubmit={handleSubmit} className="space-y-10">
-
-            {/* IDENTIFICATION */}
-            <SectionCard title="Employee Identification">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* BASIC INFO */}
+            <SectionCard title="Employee Details">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Employee ID (Internal)
+                    Full Name
                   </label>
                   <Input
-                    name="employeeId"
-                    value={form.employeeId}
+                    name="name"
+                    value={form.name}
                     onChange={handleChange}
-                    placeholder="Internal employee ID"
+                    placeholder="Employee full name"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Role / Position
+                    Role
                   </label>
                   <Input
                     name="role"
@@ -115,81 +106,7 @@ export default function EmployerEmployeeAddPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Department
-                  </label>
-                  <Input
-                    name="department"
-                    value={form.department}
-                    onChange={handleChange}
-                    placeholder="Department"
-                  />
-                </div>
-
-              </div>
-            </SectionCard>
-
-            {/* PERSONAL INFO */}
-            <SectionCard title="Personal Information">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    First Name
-                  </label>
-                  <Input
-                    name="firstName"
-                    value={form.firstName}
-                    onChange={handleChange}
-                    placeholder="First name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Last Name
-                  </label>
-                  <Input
-                    name="lastName"
-                    value={form.lastName}
-                    onChange={handleChange}
-                    placeholder="Last name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Personal ID Type
-                  </label>
-                  <Input
-                    name="personalIdType"
-                    value={form.personalIdType}
-                    onChange={handleChange}
-                    placeholder="Passport, ID, Driver License..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Personal ID Number
-                  </label>
-                  <Input
-                    name="personalIdNumber"
-                    value={form.personalIdNumber}
-                    onChange={handleChange}
-                    placeholder="Document number"
-                  />
-                </div>
-
-              </div>
-            </SectionCard>
-
-            {/* CONTACT */}
-            <SectionCard title="Contact Information">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Personal Email
+                    Email
                   </label>
                   <Input
                     type="email"
@@ -200,90 +117,8 @@ export default function EmployerEmployeeAddPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Phone Number
-                  </label>
-                  <Input
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="(555) 123‑4567"
-                  />
-                </div>
-
               </div>
             </SectionCard>
-
-            {/* ADDRESS */}
-            <SectionCard title="Address">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Street / Number
-                  </label>
-                  <Input
-                    name="street"
-                    value={form.street}
-                    onChange={handleChange}
-                    placeholder="Street and number"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Unit / Apartment
-                  </label>
-                  <Input
-                    name="unit"
-                    value={form.unit}
-                    onChange={handleChange}
-                    placeholder="Unit, apt, suite..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Postal Code
-                  </label>
-                  <Input
-                    name="postalCode"
-                    value={form.postalCode}
-                    onChange={handleChange}
-                    placeholder="Postal code"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    City
-                  </label>
-                  <Input
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    placeholder="City"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Province / State
-                  </label>
-                  <Input
-                    name="province"
-                    value={form.province}
-                    onChange={handleChange}
-                    placeholder="Province or state"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Country
-                  </label>
-                  <Input
                     name="country"
                     value={form.country}
                     onChange={handleChange}
