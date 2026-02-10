@@ -67,7 +67,7 @@ export default function EmployerLoginPage() {
             className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 leading-none"
           >
             <IconHome />
-            <span className="relative top-[1px]">Home</span>
+            <span className="relative top-[2px]">Home</span>
           </Link>
         </div>
 

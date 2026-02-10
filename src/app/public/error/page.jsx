@@ -18,7 +18,7 @@ export default function PublicErrorPage() {
           className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-700 text-lg leading-none"
         >
           <IconHome />
-          <span className="relative top-[1px]">Home</span>
+          <span className="relative top-[2px]">Home</span>
         </a>
       </div>
     </PublicLayout>
