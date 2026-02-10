@@ -316,6 +316,9 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
               }
               className="h-[42px]"
             />
+            <input type="hidden" {...register("jobTitle")} />
+            <input type="hidden" {...register("customJobTitle")} />
+            <input type="hidden" {...register("allowCustomJobTitle")} />
           </div>
         </div>
 

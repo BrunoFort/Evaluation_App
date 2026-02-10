@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { Building2, Save } from "lucide-react";
@@ -12,10 +12,12 @@ import { phoneRules } from "@/features/shared-phone/countryCodes";
 import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
 import {
   deleteProfilePhoto,
+  dataUrlToBlob,
   loadAuthAvatar,
   updateAuthAvatar,
   uploadProfilePhoto,
 } from "/src/features/shared-photo/supabasePhotoStorage";
+import { loadPhoto, removePhoto } from "/src/features/shared-photo/photoStorage";
 
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
@@ -60,6 +62,9 @@ export default function EmployerSettingsPage() {
   const [sendingReset, setSendingReset] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [photoUrl, setPhotoUrl] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isDirty, setIsDirty] = useState(false);
+  const initialFormRef = useRef(null);
 
   useEffect(() => {
     async function load() {
@@ -75,6 +80,11 @@ export default function EmployerSettingsPage() {
           ...rest,
           preferredContact: data?.preferredContact || { phone: false, email: true },
         }));
+
+        initialFormRef.current = {
+          ...rest,
+          preferredContact: data?.preferredContact || { phone: false, email: true },
+        };
       } catch (err) {
         console.error(err);
         toast.error("Error loading employer settings.");
@@ -97,6 +107,42 @@ export default function EmployerSettingsPage() {
 
     loadAvatar();
   }, [employer?.employerId]);
+
+  useEffect(() => {
+    if (!employer?.employerId) return;
+    const pendingPhoto = loadPhoto("employer-register-photo");
+    if (!pendingPhoto) return;
+
+    async function uploadPending() {
+      try {
+        const blob = dataUrlToBlob(pendingPhoto);
+        if (!blob) return;
+        const uploadResult = await uploadProfilePhoto({
+          userId: employer.employerId,
+          file: blob,
+          role: "employer",
+        });
+        await updateAuthAvatar({
+          url: uploadResult?.publicUrl,
+          path: uploadResult?.path,
+        });
+        setPhotoUrl(uploadResult?.publicUrl || null);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        removePhoto("employer-register-photo");
+      }
+    }
+
+    uploadPending();
+  }, [employer?.employerId]);
+
+  useEffect(() => {
+    if (!initialFormRef.current) return;
+    const current = JSON.stringify(form);
+    const initial = JSON.stringify(initialFormRef.current);
+    setIsDirty(current !== initial);
+  }, [form]);
 
   async function handlePhotoUpload(file) {
     if (!employer?.employerId) return;
@@ -257,6 +303,7 @@ export default function EmployerSettingsPage() {
   }
 
   async function handleSave() {
+    setSuccessMessage("");
     if (!form.firstName || !form.lastName) {
       toast.error("First name and last name are required.");
       return;
@@ -326,6 +373,9 @@ export default function EmployerSettingsPage() {
       });
 
       toast.success("Settings saved successfully.");
+      setSuccessMessage("Settings saved successfully.");
+      initialFormRef.current = form;
+      setIsDirty(false);
     } catch (err) {
       console.error(err);
       toast.error("Error saving settings.");
@@ -382,6 +432,11 @@ export default function EmployerSettingsPage() {
         </div>
 
         <div className="space-y-8">
+          {successMessage && (
+            <div className="text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+              {successMessage}
+            </div>
+          )}
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-neutral-800">Employer</h2>
 
@@ -614,14 +669,16 @@ export default function EmployerSettingsPage() {
                 Cancel
               </button>
 
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-              >
-                <Save className="w-5 h-5" />
-                {saving ? "Saving..." : "Save Settings"}
-              </button>
+              {isDirty && (
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
+                >
+                  <Save className="w-5 h-5" />
+                  {saving ? "Saving..." : "Save Settings"}
+                </button>
+              )}
             </div>
           </div>
         </div>

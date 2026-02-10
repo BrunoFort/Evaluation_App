@@ -6,6 +6,7 @@ import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAu
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
 
 import { supabase } from "/src/lib/supabaseClient";
+import { toast } from "sonner";
 
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
@@ -81,25 +82,7 @@ export default function EmployerRegisterPage() {
 
       const storedPhoto = loadPhoto(registerPhotoKey);
       if (storedPhoto) {
-        try {
-          const blob = dataUrlToBlob(storedPhoto);
-          if (blob) {
-            const uploadResult = await uploadProfilePhoto({
-              userId: auth.user.id,
-              file: blob,
-              role: "employer",
-            });
-            await updateAuthAvatar({
-              url: uploadResult?.publicUrl,
-              path: uploadResult?.path,
-            });
-          }
-        } catch (uploadError) {
-          console.error(uploadError);
-          toast.error("Photo upload failed. You can try again in Settings.");
-        } finally {
-          removePhoto(registerPhotoKey);
-        }
+        toast.info("Photo will be uploaded after you verify and sign in.");
       }
 
       // 2) cria employer no banco
