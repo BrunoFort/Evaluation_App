@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "sonner";
 
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
@@ -59,6 +60,9 @@ export default function EmployerRegisterPage() {
       });
 
       if (authError) throw authError;
+      if (!auth?.user) {
+        throw new Error("User session not returned by Supabase.");
+      }
 
       const employerPayload = {
         ...data,
@@ -67,20 +71,26 @@ export default function EmployerRegisterPage() {
 
       const storedPhoto = loadPhoto(registerPhotoKey);
       if (storedPhoto) {
-        const blob = dataUrlToBlob(storedPhoto);
-        if (blob) {
-          const uploadResult = await uploadProfilePhoto({
-            userId: auth.user.id,
-            file: blob,
-            role: "employer",
-          });
-          await updateAuthAvatar({
-            url: uploadResult?.publicUrl,
-            path: uploadResult?.path,
-          });
+        try {
+          const blob = dataUrlToBlob(storedPhoto);
+          if (blob) {
+            const uploadResult = await uploadProfilePhoto({
+              userId: auth.user.id,
+              file: blob,
+              role: "employer",
+            });
+            await updateAuthAvatar({
+              url: uploadResult?.publicUrl,
+              path: uploadResult?.path,
+            });
+          }
+        } catch (uploadError) {
+          console.error(uploadError);
+          toast.error("Photo upload failed. You can try again in Settings.");
+        } finally {
+          removePhoto(registerPhotoKey);
         }
       }
-      removePhoto(registerPhotoKey);
 
       // 2) cria employer no banco
       const employer = await createEmployer(employerPayload);
@@ -97,7 +107,8 @@ export default function EmployerRegisterPage() {
       navigate("/employer");
     } catch (err) {
       console.error(err);
-      setError("There was an error creating your account. Please try again.");
+      const message = err?.message || "There was an error creating your account.";
+      setError(message);
     } finally {
       setLoading(false);
     }
