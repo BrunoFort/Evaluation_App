@@ -47,7 +47,7 @@ export default function EmployeeLoginPage() {
         <div className="flex items-center justify-start">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
+            className="inline-flex items-baseline gap-1 text-sm text-purple-600 hover:text-purple-700"
           >
             <IconHome />
             Home
