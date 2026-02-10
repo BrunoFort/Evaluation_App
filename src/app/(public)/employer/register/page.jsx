@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
 
-import { createEmployer } from "/src/features/employers/api/employersApi";
 import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
@@ -104,7 +103,12 @@ export default function EmployerRegisterPage() {
       }
 
       // 2) cria employer no banco
-      await createEmployer(employerPayload);
+      const { error: registerError } = await supabase.rpc("register_employer", {
+        payload: employerPayload,
+      });
+      if (registerError) {
+        throw registerError;
+      }
 
       // 3) redireciona para login com aviso de validacao
       navigate(
