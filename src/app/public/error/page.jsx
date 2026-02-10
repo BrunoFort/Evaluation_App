@@ -15,7 +15,7 @@ export default function PublicErrorPage() {
 
         <a
           href="/"
-          className="inline-flex items-baseline gap-1 text-purple-600 hover:text-purple-700 text-lg"
+          className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-700 text-lg leading-none"
         >
           <IconHome />
           Home

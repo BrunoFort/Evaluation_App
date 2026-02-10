@@ -3,7 +3,7 @@ export default function IconHome({ className = "" }) {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={`h-6 w-6 align-text-bottom translate-y-[1px] ${className}`}
+      className={`h-6 w-6 align-text-bottom translate-y-[2px] ${className}`}
     >
       <path
         d="M4 11.5L12 5l8 6.5"
