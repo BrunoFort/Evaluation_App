@@ -73,7 +73,7 @@ export default function EmployerLoginPage() {
 
         <PageHeader
           title="Employer Login"
-          subtitle="Access your company dashboard"
+          subtitle="Access your employer dashboard"
           align="center"
         />
 
