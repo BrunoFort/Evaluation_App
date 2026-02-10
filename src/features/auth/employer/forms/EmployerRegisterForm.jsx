@@ -451,6 +451,17 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
               validate: (value) =>
                 validatePassword(value) || passwordHelpText(),
             })}
+            onBlur={() => {
+              const value = watch("password");
+              if (!validatePassword(value)) {
+                setError("password", {
+                  type: "manual",
+                  message: passwordHelpText(),
+                });
+              } else {
+                clearErrors("password");
+              }
+            }}
           />
           {errors.password && (
             <p className="text-red-600 text-sm">{errors.password.message}</p>
