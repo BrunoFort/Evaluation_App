@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useEmployerAuth } from "@/features/auth/employer/hooks/useEmployerAuth";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -12,12 +12,23 @@ import IconHome from "@/components/ui/IconHome.jsx";
 export default function EmployerLoginPage() {
   const { login } = useEmployerAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const verifyBanner = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldShow = params.get("verify") === "1";
+    const emailParam = params.get("email");
+    if (!shouldShow) return null;
+    return {
+      email: emailParam ? decodeURIComponent(emailParam) : null,
+    };
+  }, [location.search]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -78,6 +89,13 @@ export default function EmployerLoginPage() {
         />
 
         <Card padding="lg" shadow="md" className="space-y-6">
+          {verifyBanner && (
+            <div className="text-purple-700 bg-purple-50 border border-purple-200 px-4 py-2 rounded-lg text-sm">
+              {verifyBanner.email
+                ? `We sent a verification email to ${verifyBanner.email}. Please verify your account to sign in.`
+                : "We sent a verification email. Please verify your account to sign in."}
+            </div>
+          )}
 
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">

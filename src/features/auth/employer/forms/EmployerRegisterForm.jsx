@@ -118,6 +118,19 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  function validatePassword(password) {
+    if (!password || password.length < 8) return false;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[@#$%&*]/.test(password);
+    return hasUpper && hasLower && hasNumber && hasSymbol;
+  }
+
+  function passwordHelpText() {
+    return "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and one of @, #, $, %, &, *.";
+  }
+
   async function handleBusinessNumberBlur() {
     const bn = watch("businessNumber");
     if (!bn) return;
@@ -190,13 +203,13 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
       return;
     }
 
-    if (!data.password || data.password.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+    if (!validatePassword(data.password)) {
+      toast.error(passwordHelpText());
       return;
     }
 
     if (data.password !== data.confirmPassword) {
-      toast.error("Passwords do not match.");
+      toast.error("Senhas nao correspondem");
       return;
     }
 
@@ -242,6 +255,10 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
             <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Number *</label>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("personalIdNumber", { required: true })}
+              onChange={(e) => {
+                const upper = e.target.value.toUpperCase();
+                setValue("personalIdNumber", upper, { shouldValidate: true });
+              }}
               onBlur={() => {
                 const type = watch("personalIdType");
                 const number = watch("personalIdNumber");
@@ -269,7 +286,11 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Employee Registration Number *</label>
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              {...register("employeeRegistration", { required: true })} />
+              {...register("employeeRegistration", { required: true })}
+              onChange={(e) => {
+                const upper = e.target.value.toUpperCase();
+                setValue("employeeRegistration", upper, { shouldValidate: true });
+              }} />
           </div>
 
           <div>
@@ -307,6 +328,12 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
             <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               {...register("businessNumber", { required: true })}
               maxLength={9}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "");
+                setValue("businessNumber", digits, { shouldValidate: true });
+              }}
               onBlur={handleBusinessNumberBlur} />
             {errors.businessNumber && (
               <p className="text-red-600 text-sm">{errors.businessNumber.message}</p>
@@ -379,7 +406,11 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 message: "Invalid email format",
               },
-            })} />
+            })}
+            onChange={(e) => {
+              const lower = e.target.value.toLowerCase();
+              setValue("contactEmail", lower, { shouldValidate: true });
+            }} />
           {errors.contactEmail && (
             <p className="text-red-600 text-sm">{errors.contactEmail.message}</p>
           )}
@@ -415,8 +446,15 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <input
             type="password"
             className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            {...register("password", { required: true })}
+            {...register("password", {
+              required: true,
+              validate: (value) =>
+                validatePassword(value) || passwordHelpText(),
+            })}
           />
+          {errors.password && (
+            <p className="text-red-600 text-sm">{errors.password.message}</p>
+          )}
         </div>
 
         <div>
@@ -424,8 +462,15 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <input
             type="password"
             className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            {...register("confirmPassword", { required: true })}
+            {...register("confirmPassword", {
+              required: true,
+              validate: (value) =>
+                value === watch("password") || "Senhas nao correspondem",
+            })}
           />
+          {errors.confirmPassword && (
+            <p className="text-red-600 text-sm">{errors.confirmPassword.message}</p>
+          )}
         </div>
       </div>
 

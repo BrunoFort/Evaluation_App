@@ -7,6 +7,7 @@ export function EmployeeCompleteRegistrationForm({ onSubmit }) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -97,14 +98,38 @@ export function EmployeeCompleteRegistrationForm({ onSubmit }) {
           type="password"
           {...register("password", {
             required: "Password is required",
-            minLength: {
-              value: 6,
-              message: "Password must have at least 6 characters",
+            validate: (value) => {
+              if (!value || value.length < 8) {
+                return "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and one of @, #, $, %, &, *.";
+              }
+              const hasUpper = /[A-Z]/.test(value);
+              const hasLower = /[a-z]/.test(value);
+              const hasNumber = /\d/.test(value);
+              const hasSymbol = /[@#$%&*]/.test(value);
+              return (
+                (hasUpper && hasLower && hasNumber && hasSymbol) ||
+                "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and one of @, #, $, %, &, *."
+              );
             },
           })}
         />
         {errors.password && (
           <p className="text-red-600 text-sm">{errors.password.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <Label>Confirm Password</Label>
+        <Input
+          type="password"
+          {...register("confirmPassword", {
+            required: "Confirm Password is required",
+            validate: (value) =>
+              value === watch("password") || "Senhas nao correspondem",
+          })}
+        />
+        {errors.confirmPassword && (
+          <p className="text-red-600 text-sm">{errors.confirmPassword.message}</p>
         )}
       </div>
 

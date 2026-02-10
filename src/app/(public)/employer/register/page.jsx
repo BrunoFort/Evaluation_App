@@ -54,9 +54,17 @@ export default function EmployerRegisterPage() {
 
     try {
       // 1) cria usuário de autenticação
+      const redirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/employer/login`
+          : undefined;
+
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contactEmail,
         password: data.password,
+        options: {
+          emailRedirectTo: redirectTo,
+        },
       });
 
       if (authError) throw authError;
@@ -64,10 +72,13 @@ export default function EmployerRegisterPage() {
         throw new Error("User session not returned by Supabase.");
       }
 
-      const employerPayload = {
-        ...data,
-        id: auth.user.id,
-      };
+      const {
+        password,
+        confirmPassword,
+        ...employerPayload
+      } = data;
+
+      employerPayload.id = auth.user.id;
 
       const storedPhoto = loadPhoto(registerPhotoKey);
       if (storedPhoto) {
@@ -93,18 +104,12 @@ export default function EmployerRegisterPage() {
       }
 
       // 2) cria employer no banco
-      const employer = await createEmployer(employerPayload);
+      await createEmployer(employerPayload);
 
-      // 3) login real
-      login({
-        role: "employer",
-        email: auth.user.email,
-        employerId: auth.user.id,
-        ...employer,
-      });
-
-      // 4) redireciona
-      navigate("/employer");
+      // 3) redireciona para login com aviso de validacao
+      navigate(
+        `/employer/login?verify=1&email=${encodeURIComponent(auth.user.email)}`
+      );
     } catch (err) {
       console.error(err);
       const message = err?.message || "There was an error creating your account.";

@@ -54,6 +54,19 @@ export default function EmployeeRegisterPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
+  function validatePassword(password) {
+    if (!password || password.length < 8) return false;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[@#$%&*]/.test(password);
+    return hasUpper && hasLower && hasNumber && hasSymbol;
+  }
+
+  function passwordHelpText() {
+    return "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and one of @, #, $, %, &, *.";
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
@@ -73,14 +86,14 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (!validatePassword(password)) {
+      setError(passwordHelpText());
       setLoading(false);
       return;
     }
 
     if (password !== confirm) {
-      setError("Passwords do not match.");
+      setError("Senhas nao correspondem");
       setLoading(false);
       return;
     }
@@ -173,7 +186,7 @@ export default function EmployeeRegisterPage() {
               label="Email Address"
               placeholder="Enter your email"
               value={form.email}
-              onChange={(e) => updateField("email", e.target.value)}
+              onChange={(e) => updateField("email", e.target.value.toLowerCase())}
             />
 
             <Input
