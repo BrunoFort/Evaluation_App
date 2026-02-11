@@ -56,14 +56,17 @@ export default function EmployerRegisterPage() {
   async function handleRegister(data) {
     setError("");
     setLoading(true);
+    console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
     try {
       // 1) cria usuário de autenticação
-      console.log("📝 Step 1: Creating auth user...");
+      console.log("📝 Passo 1: Criando usuário de autenticação...");
       const redirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/employer/login`
           : undefined;
+
+      console.log("📝 emailRedirectTo:", redirectTo);
 
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contactEmail,
@@ -73,12 +76,18 @@ export default function EmployerRegisterPage() {
         },
       });
 
-      if (authError) throw authError;
+      console.log("📝 Resposta do signUp:", { auth, authError });
+
+      if (authError) {
+        console.error("❌ Erro no signUp:", authError);
+        throw authError;
+      }
+      
       if (!auth?.user) {
-        throw new Error("User session not returned by Supabase.");
+        throw new Error("Sessão do usuário não retornada pelo Supabase.");
       }
 
-      console.log("✅ Auth user created - userId:", auth.user.id);
+      console.log("✅ Usuário de autenticação criado - userId:", auth.user.id);
 
       const {
         password,
@@ -88,37 +97,51 @@ export default function EmployerRegisterPage() {
 
       employerPayload.id = auth.user.id;
 
-      console.log("📝 Step 2: Checking for pending photo...");
+      console.log("📝 Passo 2: Verificando foto pendente...");
       const storedPhoto = loadPhoto(registerPhotoKey);
       if (storedPhoto) {
-        console.log("✅ Photo found in localStorage -", storedPhoto.length, "chars");
-        toast.info("Photo will be uploaded after you verify and sign in.");
+        console.log("✅ Foto encontrada em localStorage -", storedPhoto.length, "caracteres");
+        toast.info("A foto será enviada após você verificar e fazer login.");
       } else {
-        console.log("⚠️ No photo found in localStorage");
+        console.log("⚠️ Nenhuma foto encontrada em localStorage");
       }
 
       // 2) cria employer no banco
-      console.log("📝 Step 3: Registering employer via RPC...");
-      const { error: registerError } = await supabase.rpc("register_employer", {
+      console.log("📝 Passo 3: Registrando empregador via RPC...");
+      console.log("📝 Payload do RPC:", employerPayload);
+      
+      const { data: rpcData, error: registerError } = await supabase.rpc("register_employer", {
         payload: employerPayload,
       });
+      
+      console.log("📝 Resposta do RPC:", { rpcData, registerError });
+
       if (registerError) {
+        console.error("❌ Erro no RPC:", registerError);
         throw registerError;
       }
 
-      console.log("✅ Employer registered successfully");
-      console.log("📝 Step 4: Redirecting to login with verification prompt...");
+      console.log("✅ Empregador registrado com sucesso");
+      console.log("📝 Passo 4: Redirecionando para login...");
 
       // 3) redireciona para login com aviso de validacao
-      navigate(
-        `/employer/login?verify=1&email=${encodeURIComponent(auth.user.email)}`
-      );
+      const loginUrl = `/employer/login?verify=1&email=${encodeURIComponent(auth.user.email)}`;
+      console.log("📝 URL de redirecionamento:", loginUrl);
+      
+      navigate(loginUrl);
+      console.log("✅ Navigate foi chamado!");
     } catch (err) {
-      console.error("❌ Registration error:", err);
-      const message = err?.message || "There was an error creating your account.";
+      console.error("❌❌❌ ERRO NO REGISTRO:", err);
+      console.error("Nome do erro:", err?.name);
+      console.error("Mensagem do erro:", err?.message);
+      console.error("Detalhes do erro:", err);
+      
+      const message = err?.message || "Houve um erro ao criar sua conta.";
       setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
+      console.log("✅ handleRegister finalizado");
     }
   }
 
