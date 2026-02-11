@@ -20,34 +20,63 @@ function sanitizeFileName(name) {
 }
 
 export function dataUrlToBlob(dataUrl) {
-  if (!dataUrl) return null;
-  const [header, base64] = dataUrl.split(",");
-  const match = header.match(/data:(.*);base64/);
-  const mime = match ? match[1] : "image/jpeg";
-  const binary = atob(base64);
-  const len = binary.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i += 1) {
-    bytes[i] = binary.charCodeAt(i);
+  console.log("🖼️ dataUrlToBlob - input length:", dataUrl?.length);
+  if (!dataUrl) {
+    console.warn("⚠️ dataUrlToBlob called with null/undefined");
+    return null;
   }
-  return new Blob([bytes], { type: mime });
+  
+  try {
+    const [header, base64] = dataUrl.split(",");
+    console.log("🖼️ header:", header?.slice?.(0, 50));
+    const match = header.match(/data:(.*);base64/);
+    const mime = match ? match[1] : "image/jpeg";
+    console.log("🖼️ mime type:", mime);
+    
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mime });
+    console.log("✅ Blob created successfully -", blob.size, "bytes");
+    return blob;
+  } catch (err) {
+    console.error("❌ dataUrlToBlob error:", err);
+    return null;
+  }
 }
 
 export async function uploadProfilePhoto({ userId, file, role = "employer" }) {
-  if (!userId || !file) return null;
+  if (!userId || !file) {
+    console.error("❌ uploadProfilePhoto missing required params - userId:", userId, "file:", file);
+    return null;
+  }
+
+  console.log("📸 uploadProfilePhoto called - userId:", userId, "fileName:", file?.name, "fileSize:", file?.size, "role:", role);
 
   const extension = getFileExtension(file);
   const safeName = sanitizeFileName(file?.name || `profile.${extension}`);
   const folder = role === "employee" ? "employee" : "employer";
   const path = `profile-photos/${folder}/${userId}/${Date.now()}-${safeName}`;
 
-  const { error: uploadError } = await supabase.storage
+  console.log("📸 Upload path:", path);
+
+  const { error: uploadError, data: uploadData } = await supabase.storage
     .from(BUCKET)
     .upload(path, file, { upsert: true, cacheControl: "3600" });
 
-  if (uploadError) throw uploadError;
+  if (uploadError) {
+    console.error("❌ Supabase upload error:", uploadError);
+    throw uploadError;
+  }
+
+  console.log("✅ File uploaded to Supabase - uploadData:", uploadData);
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  console.log("✅ Public URL generated:", data?.publicUrl);
+  
   return { publicUrl: data?.publicUrl || null, path };
 }
 

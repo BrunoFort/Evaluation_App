@@ -96,45 +96,68 @@ export default function EmployerSettingsPage() {
 
   useEffect(() => {
     if (!employer?.employerId) return;
-    async function loadAvatar() {
+
+    async function initializePhoto() {
       try {
-        const metadata = await loadAuthAvatar();
-        setPhotoUrl(metadata.avatar_url || null);
+        // First, check if there's a pending photo from registration
+        const pendingPhoto = loadPhoto("employer-register-photo");
+        console.log("🔵 Photo initialization - employerId:", employer?.employerId);
+        console.log("🔵 pendingPhoto from localStorage:", pendingPhoto ? `found (${pendingPhoto.length} chars)` : "not found");
+
+        if (pendingPhoto) {
+          // Upload the pending photo first
+          console.log("🔵 Converting data URL to blob...");
+          const blob = dataUrlToBlob(pendingPhoto);
+          console.log("🔵 Blob created:", blob ? `${blob.size} bytes` : "null");
+          
+          if (blob) {
+            console.log("🔵 Uploading photo to Supabase...");
+            const uploadResult = await uploadProfilePhoto({
+              userId: employer.employerId,
+              file: blob,
+              role: "employer",
+            });
+            console.log("🔵 Upload result:", uploadResult);
+            
+            if (uploadResult?.publicUrl) {
+              console.log("🔵 Updating auth avatar...");
+              await updateAuthAvatar({
+                url: uploadResult.publicUrl,
+                path: uploadResult.path,
+              });
+              console.log("🔵 Auth avatar updated");
+              setPhotoUrl(uploadResult.publicUrl);
+              console.log("🔵 Photo URL state updated to:", uploadResult.publicUrl);
+            }
+          } else {
+            console.log("🔵 Blob conversion failed, clearing pending photo");
+          }
+          
+          // Always clean up the pending photo
+          console.log("🔵 Removing pending photo from localStorage");
+          removePhoto("employer-register-photo");
+        } else {
+          // No pending photo, just load the existing avatar
+          console.log("🔵 No pending photo, loading existing avatar...");
+          const metadata = await loadAuthAvatar();
+          const avatarUrl = metadata?.avatar_url || null;
+          console.log("🔵 Loaded avatar from auth metadata:", avatarUrl);
+          setPhotoUrl(avatarUrl);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("🔴 Photo initialization error:", err);
+        toast.error("Error loading profile photo.");
+        // Still try to load existing avatar even if upload failed
+        try {
+          const metadata = await loadAuthAvatar();
+          setPhotoUrl(metadata?.avatar_url || null);
+        } catch (fallbackErr) {
+          console.error("🔴 Fallback avatar load failed:", fallbackErr);
+        }
       }
     }
 
-    loadAvatar();
-  }, [employer?.employerId]);
-
-  useEffect(() => {
-    if (!employer?.employerId) return;
-    const pendingPhoto = loadPhoto("employer-register-photo");
-    if (!pendingPhoto) return;
-
-    async function uploadPending() {
-      try {
-        const blob = dataUrlToBlob(pendingPhoto);
-        if (!blob) return;
-        const uploadResult = await uploadProfilePhoto({
-          userId: employer.employerId,
-          file: blob,
-          role: "employer",
-        });
-        await updateAuthAvatar({
-          url: uploadResult?.publicUrl,
-          path: uploadResult?.path,
-        });
-        setPhotoUrl(uploadResult?.publicUrl || null);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        removePhoto("employer-register-photo");
-      }
-    }
-
-    uploadPending();
+    initializePhoto();
   }, [employer?.employerId]);
 
   useEffect(() => {

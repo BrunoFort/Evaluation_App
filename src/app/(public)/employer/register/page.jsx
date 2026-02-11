@@ -33,16 +33,22 @@ export default function EmployerRegisterPage() {
   const registerPhotoKey = "employer-register-photo";
 
   useEffect(() => {
-    setPhotoUrl(loadPhoto(registerPhotoKey));
+    const existing = loadPhoto(registerPhotoKey);
+    console.log("📋 Register page mounted - existing photo:", existing ? `found (${existing.length} chars)` : "not found");
+    setPhotoUrl(existing);
   }, []);
 
   async function handlePhotoUpload(file) {
+    console.log("📸 Photo upload started - file:", file.name, "size:", file.size);
     const dataUrl = await readFileAsDataUrl(file);
+    console.log("📸 Data URL created -", dataUrl.length, "chars");
     setPhotoUrl(dataUrl);
     savePhoto(registerPhotoKey, dataUrl);
+    console.log("✅ Photo saved to localStorage key: " + registerPhotoKey);
   }
 
   function handlePhotoDelete() {
+    console.log("🗑️ Photo deleted from registration form");
     setPhotoUrl(null);
     removePhoto(registerPhotoKey);
   }
@@ -53,6 +59,7 @@ export default function EmployerRegisterPage() {
 
     try {
       // 1) cria usuário de autenticação
+      console.log("📝 Step 1: Creating auth user...");
       const redirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/employer/login`
@@ -71,6 +78,8 @@ export default function EmployerRegisterPage() {
         throw new Error("User session not returned by Supabase.");
       }
 
+      console.log("✅ Auth user created - userId:", auth.user.id);
+
       const {
         password,
         confirmPassword,
@@ -79,12 +88,17 @@ export default function EmployerRegisterPage() {
 
       employerPayload.id = auth.user.id;
 
+      console.log("📝 Step 2: Checking for pending photo...");
       const storedPhoto = loadPhoto(registerPhotoKey);
       if (storedPhoto) {
+        console.log("✅ Photo found in localStorage -", storedPhoto.length, "chars");
         toast.info("Photo will be uploaded after you verify and sign in.");
+      } else {
+        console.log("⚠️ No photo found in localStorage");
       }
 
       // 2) cria employer no banco
+      console.log("📝 Step 3: Registering employer via RPC...");
       const { error: registerError } = await supabase.rpc("register_employer", {
         payload: employerPayload,
       });
@@ -92,12 +106,15 @@ export default function EmployerRegisterPage() {
         throw registerError;
       }
 
+      console.log("✅ Employer registered successfully");
+      console.log("📝 Step 4: Redirecting to login with verification prompt...");
+
       // 3) redireciona para login com aviso de validacao
       navigate(
         `/employer/login?verify=1&email=${encodeURIComponent(auth.user.email)}`
       );
     } catch (err) {
-      console.error(err);
+      console.error("❌ Registration error:", err);
       const message = err?.message || "There was an error creating your account.";
       setError(message);
     } finally {
