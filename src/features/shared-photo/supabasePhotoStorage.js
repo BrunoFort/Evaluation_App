@@ -81,23 +81,63 @@ export async function uploadProfilePhoto({ userId, file, role = "employer" }) {
 }
 
 export async function deleteProfilePhoto(path) {
-  if (!path) return;
-  const { error } = await supabase.storage.from(BUCKET).remove([path]);
-  if (error) throw error;
+  if (!path) {
+    console.warn("⚠️ deleteProfilePhoto: caminho vazio");
+    return;
+  }
+  
+  try {
+    console.log("🗑️ Deletando foto do Supabase:", path);
+    const { error } = await supabase.storage.from(BUCKET).remove([path]);
+    if (error) {
+      console.error("❌ Erro ao deletar foto:", error);
+      throw error;
+    }
+    console.log("✅ Foto deletada com sucesso");
+  } catch (err) {
+    console.error("❌ Erro na deleção de foto:", err);
+    throw err;
+  }
 }
 
 export async function loadAuthAvatar() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return data?.user?.user_metadata || {};
+  try {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("❌ Erro ao carregar usuário:", error);
+      throw error;
+    }
+    const metadata = data?.user?.user_metadata || {};
+    console.log("✅ Avatar carregado dos metadados:", metadata?.avatar_url ? "encontrado" : "vazio");
+    return metadata;
+  } catch (err) {
+    console.error("❌ Erro ao carregar avatar:", err);
+    throw err;
+  }
 }
 
 export async function updateAuthAvatar({ url, path }) {
-  const { error } = await supabase.auth.updateUser({
-    data: {
-      avatar_url: url || null,
-      avatar_path: path || null,
-    },
-  });
-  if (error) throw error;
+  if (!url && !path) {
+    console.warn("⚠️ updateAuthAvatar: url e path vazios");
+    return;
+  }
+  
+  try {
+    console.log("🔄 Atualizando avatar nos metadados do auth...", { url: url?.slice(0, 50), path });
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        avatar_url: url || null,
+        avatar_path: path || null,
+      },
+    });
+    
+    if (error) {
+      console.error("❌ Erro ao atualizar avatar:", error);
+      throw error;
+    }
+    console.log("✅ Avatar atualizado com sucesso nos metadados");
+  } catch (err) {
+    console.error("❌ Erro na atualização de avatar:", err.message);
+    throw err;
+  }
 }
