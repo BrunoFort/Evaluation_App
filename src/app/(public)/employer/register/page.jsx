@@ -6,7 +6,6 @@ import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAu
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
 
 import { supabase } from "/src/lib/supabaseClient";
-import { toast } from "sonner";
 
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
