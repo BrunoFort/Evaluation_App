@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import EmployerDashboardLayout from "@/layouts/EmployerDashboardLayout.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
-import { Building2, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { toast } from "sonner";
+import SettingsIcon from "/src/assets/star-settings-svgrepo-com.svg";
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
 import { validateBusinessNumber } from "@/features/auth/shared/api/validateBusinessNumber";
 import { getEmployerById, updateEmployer } from "@/features/employers/api/employersApi";
@@ -464,7 +465,7 @@ export default function EmployerSettingsPage() {
       <div className="max-w-3xl mx-auto bg-white border border-neutral-200 rounded-xl shadow-sm p-8 space-y-10">
         <div className="flex items-start justify-between gap-6">
           <div className="flex items-center gap-3">
-            <Building2 className="w-8 h-8 text-purple-600" />
+            <img src={SettingsIcon} alt="Settings" className="w-8 h-8" />
             <h1 className="text-3xl font-bold text-neutral-900">Settings</h1>
           </div>
 
