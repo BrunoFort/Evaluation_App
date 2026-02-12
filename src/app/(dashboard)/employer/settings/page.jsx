@@ -191,16 +191,30 @@ export default function EmployerSettingsPage() {
       toast.error("Please confirm your email before uploading a photo.");
       return;
     }
-    const uploadResult = await uploadProfilePhoto({
-      userId: employer.employerId,
-      file,
-      role: "employer",
-    });
-    setPhotoUrl(uploadResult?.publicUrl || null);
-    await updateAuthAvatar({
-      url: uploadResult?.publicUrl,
-      path: uploadResult?.path,
-    });
+
+    try {
+      // Delete old photo before uploading new one
+      const metadata = await loadAuthAvatar();
+      if (metadata?.avatar_path) {
+        console.log("🗑️ Deleting old photo:", metadata.avatar_path);
+        await deleteProfilePhoto(metadata.avatar_path);
+      }
+
+      const uploadResult = await uploadProfilePhoto({
+        userId: employer.employerId,
+        file,
+        role: "employer",
+      });
+      setPhotoUrl(uploadResult?.publicUrl || null);
+      await updateAuthAvatar({
+        url: uploadResult?.publicUrl,
+        path: uploadResult?.path,
+      });
+      toast.success("Photo uploaded successfully!");
+    } catch (err) {
+      console.error("❌ Photo upload error:", err);
+      toast.error("Failed to upload photo.");
+    }
   }
 
   function handlePhotoDelete() {

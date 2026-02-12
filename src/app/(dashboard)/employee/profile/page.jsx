@@ -31,16 +31,28 @@ export default function EmployeeProfilePage() {
 
   async function handlePhotoUpload(file) {
     if (!employeeId) return;
-    const uploadResult = await uploadProfilePhoto({
-      userId: employeeId,
-      file,
-      role: "employee",
-    });
-    setPhotoUrl(uploadResult?.publicUrl || null);
-    await updateAuthAvatar({
-      url: uploadResult?.publicUrl,
-      path: uploadResult?.path,
-    });
+
+    try {
+      // Delete old photo before uploading new one
+      const metadata = await loadAuthAvatar();
+      if (metadata?.avatar_path) {
+        console.log("🗑️ Deleting old photo:", metadata.avatar_path);
+        await deleteProfilePhoto(metadata.avatar_path);
+      }
+
+      const uploadResult = await uploadProfilePhoto({
+        userId: employeeId,
+        file,
+        role: "employee",
+      });
+      setPhotoUrl(uploadResult?.publicUrl || null);
+      await updateAuthAvatar({
+        url: uploadResult?.publicUrl,
+        path: uploadResult?.path,
+      });
+    } catch (err) {
+      console.error("❌ Photo upload error:", err);
+    }
   }
 
   function handlePhotoDelete() {
