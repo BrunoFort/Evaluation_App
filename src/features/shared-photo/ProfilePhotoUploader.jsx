@@ -2,15 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { EllipsisVertical, User as UserIcon } from "lucide-react";
 
-export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
+export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete, disabled = false }) {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(photoUrl || null);
+  const isDisabled = Boolean(disabled);
 
   useEffect(() => {
     setPreview(photoUrl || null);
   }, [photoUrl]);
 
   function handleFileSelect(event) {
+    if (isDisabled) return;
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -34,10 +36,12 @@ export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
   }
 
   function triggerFilePicker() {
+    if (isDisabled) return;
     fileInputRef.current?.click();
   }
 
   function handleRemove() {
+    if (isDisabled) return;
     setPreview(null);
     onDelete();
   }
@@ -61,7 +65,13 @@ export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
       {/* Menu ⋮ */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-2 rounded-full hover:bg-neutral-100 border border-neutral-300">
+          <button
+            className={`p-2 rounded-full border border-neutral-300 ${
+              isDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-neutral-100"
+            }`}
+            disabled={isDisabled}
+            aria-disabled={isDisabled}
+          >
             <EllipsisVertical className="w-6 h-6 text-neutral-700" />
           </button>
         </DropdownMenuTrigger>
@@ -103,6 +113,7 @@ export default function ProfilePhotoUploader({ photoUrl, onUpload, onDelete }) {
         ref={fileInputRef}
         onChange={handleFileSelect}
         className="hidden"
+        disabled={isDisabled}
       />
     </div>
   );

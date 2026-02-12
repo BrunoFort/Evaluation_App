@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,11 +11,55 @@ import {
 
 import ShineLogo from "@/assets/shine-logo.png";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
+import Avatar from "/src/components/ui/Avatar.jsx";
+import { loadAuthAvatar } from "/src/features/shared-photo/supabasePhotoStorage";
+import { getEmployerById } from "/src/features/employers/api/employersApi";
 
 export default function EmployerDashboardLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useEmployerAuth();
+  const { employer, logout } = useEmployerAuth();
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [displayName, setDisplayName] = useState("");
+
+  const fallbackName = useMemo(() => {
+    const email = employer?.email || "";
+    return email ? email.split("@")[0] : "Profile";
+  }, [employer?.email]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadAvatar() {
+      try {
+        const metadata = await loadAuthAvatar();
+        if (isMounted) {
+          setAvatarUrl(metadata?.avatar_url || null);
+        }
+      } catch (err) {
+        console.error("Failed to load avatar:", err);
+      }
+    }
+
+    async function loadEmployerName() {
+      if (!employer?.employerId) return;
+      try {
+        const data = await getEmployerById(employer.employerId);
+        const fullName = [data?.firstName, data?.lastName].filter(Boolean).join(" ");
+        if (isMounted) {
+          setDisplayName(fullName || data?.companyName || "");
+        }
+      } catch (err) {
+        console.error("Failed to load employer name:", err);
+      }
+    }
+
+    loadAvatar();
+    loadEmployerName();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.pathname, employer?.employerId]);
 
   const navItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/employer" },
@@ -98,12 +142,11 @@ export default function EmployerDashboardLayout({ children }) {
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate("/employer/settings")}
           >
-            {/* Avatar (placeholder for now) */}
-            <div className="w-12 h-12 rounded-full bg-neutral-300 overflow-hidden">
-              {/* Quando você implementar upload, basta trocar por <img src={profileUrl} /> */}
-            </div>
+            <Avatar src={avatarUrl} alt="Profile" size={48} />
 
-            <span className="text-neutral-700 font-medium">Profile</span>
+            <span className="text-neutral-700 font-medium">
+              {displayName || fallbackName}
+            </span>
           </div>
         </header>
 

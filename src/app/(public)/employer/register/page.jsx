@@ -11,7 +11,6 @@ import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
 import {
-  loadPhoto,
   removePhoto,
   savePhoto,
   readFileAsDataUrl,
@@ -33,9 +32,10 @@ export default function EmployerRegisterPage() {
   const registerPhotoKey = "employer-register-photo";
 
   useEffect(() => {
-    const existing = loadPhoto(registerPhotoKey);
-    console.log("📋 Register page mounted - existing photo:", existing ? `found (${existing.length} chars)` : "not found");
-    setPhotoUrl(existing);
+    // Clear any stale registration photo so each new registration starts empty.
+    removePhoto(registerPhotoKey);
+    console.log("📋 Register page mounted - cleared stored photo");
+    setPhotoUrl(null);
   }, []);
 
   async function handlePhotoUpload(file) {
@@ -43,14 +43,12 @@ export default function EmployerRegisterPage() {
     const dataUrl = await readFileAsDataUrl(file);
     console.log("📸 Data URL created -", dataUrl.length, "chars");
     setPhotoUrl(dataUrl);
-    savePhoto(registerPhotoKey, dataUrl);
-    console.log("✅ Photo saved to localStorage key: " + registerPhotoKey);
+    console.log("✅ Photo stored in memory for this registration only");
   }
 
   function handlePhotoDelete() {
     console.log("🗑️ Photo deleted from registration form");
     setPhotoUrl(null);
-    removePhoto(registerPhotoKey);
   }
 
   async function handleRegister(data) {
@@ -88,17 +86,8 @@ export default function EmployerRegisterPage() {
 
       employerPayload.id = auth.user.id;
 
-      console.log("📝 Passo 2: Verificando foto pendente...");
-      const storedPhoto = loadPhoto(registerPhotoKey);
-      if (storedPhoto) {
-        console.log("✅ Foto encontrada em localStorage -", storedPhoto.length, "caracteres");
-        toast.info("A foto será enviada após você verificar e fazer login.");
-      } else {
-        console.log("⚠️ Nenhuma foto encontrada em localStorage");
-      }
-
       // 2) cria employer no banco
-      console.log("📝 Passo 3: Registrando empregador via RPC...");
+      console.log("📝 Passo 2: Registrando empregador via RPC...");
       console.log("📝 Payload do RPC:", employerPayload);
       
       const { data: rpcData, error: registerError } = await supabase.rpc("register_employer", {
@@ -118,7 +107,15 @@ export default function EmployerRegisterPage() {
       }
 
       console.log("✅ Empregador registrado com sucesso");
-      console.log("📝 Passo 4: Redirecionando para login...");
+
+      if (photoUrl) {
+        const pendingKey = `employer-register-photo:${auth.user.id}`;
+        savePhoto(pendingKey, photoUrl);
+        console.log("✅ Pending photo stored for confirmed login:", pendingKey);
+        toast.info("Photo will be uploaded after email confirmation.");
+      }
+
+      console.log("📝 Passo 3: Redirecionando para login...");
 
       // 3) redireciona para login
       toast.success("Registro realizado com sucesso! Faça login para continuar.");

@@ -62,6 +62,7 @@ export default function EmployerSettingsPage() {
   const [sendingReset, setSendingReset] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [photoUrl, setPhotoUrl] = useState(null);
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [isDirty, setIsDirty] = useState(false);
   const initialFormRef = useRef(null);
@@ -99,17 +100,27 @@ export default function EmployerSettingsPage() {
 
     async function initializePhoto() {
       try {
-        // First, check if there's a pending photo from registration
-        const pendingPhoto = loadPhoto("employer-register-photo");
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+
+        const user = authData?.user;
+        const confirmed = Boolean(user?.email_confirmed_at || user?.confirmed_at);
+        setIsEmailConfirmed(confirmed);
+
+        const pendingKey = user?.id
+          ? `employer-register-photo:${user.id}`
+          : `employer-register-photo:${employer.employerId}`;
+        const pendingPhoto = loadPhoto(pendingKey);
+
         console.log("🔵 Photo initialization - employerId:", employer?.employerId);
+        console.log("🔵 email confirmed:", confirmed);
         console.log("🔵 pendingPhoto from localStorage:", pendingPhoto ? `found (${pendingPhoto.length} chars)` : "not found");
 
-        if (pendingPhoto) {
-          // Upload the pending photo first
+        if (pendingPhoto && confirmed) {
           console.log("🔵 Converting data URL to blob...");
           const blob = dataUrlToBlob(pendingPhoto);
           console.log("🔵 Blob created:", blob ? `${blob.size} bytes` : "null");
-          
+
           if (blob) {
             console.log("🔵 Uploading photo to Supabase...");
             const uploadResult = await uploadProfilePhoto({
@@ -118,7 +129,7 @@ export default function EmployerSettingsPage() {
               role: "employer",
             });
             console.log("🔵 Upload result:", uploadResult);
-            
+
             if (uploadResult?.publicUrl) {
               console.log("🔵 Updating auth avatar...");
               await updateAuthAvatar({
@@ -128,22 +139,18 @@ export default function EmployerSettingsPage() {
               console.log("🔵 Auth avatar updated");
               setPhotoUrl(uploadResult.publicUrl);
               console.log("🔵 Photo URL state updated to:", uploadResult.publicUrl);
+              removePhoto(pendingKey);
+              console.log("🔵 Removed pending photo from localStorage:", pendingKey);
+              return;
             }
-          } else {
-            console.log("🔵 Blob conversion failed, clearing pending photo");
           }
-          
-          // Always clean up the pending photo
-          console.log("🔵 Removing pending photo from localStorage");
-          removePhoto("employer-register-photo");
-        } else {
-          // No pending photo, just load the existing avatar
-          console.log("🔵 No pending photo, loading existing avatar...");
-          const metadata = await loadAuthAvatar();
-          const avatarUrl = metadata?.avatar_url || null;
-          console.log("🔵 Loaded avatar from auth metadata:", avatarUrl);
-          setPhotoUrl(avatarUrl);
         }
+
+        console.log("🔵 Loading existing avatar...");
+        const metadata = await loadAuthAvatar();
+        const avatarUrl = metadata?.avatar_url || null;
+        console.log("🔵 Loaded avatar from auth metadata:", avatarUrl);
+        setPhotoUrl(avatarUrl);
       } catch (err) {
         console.error("🔴 Photo initialization error:", err);
         toast.error("Error loading profile photo.");
@@ -169,6 +176,10 @@ export default function EmployerSettingsPage() {
 
   async function handlePhotoUpload(file) {
     if (!employer?.employerId) return;
+    if (!isEmailConfirmed) {
+      toast.error("Please confirm your email before uploading a photo.");
+      return;
+    }
     const uploadResult = await uploadProfilePhoto({
       userId: employer.employerId,
       file,
@@ -451,10 +462,16 @@ export default function EmployerSettingsPage() {
             photoUrl={photoUrl}
             onUpload={handlePhotoUpload}
             onDelete={handlePhotoDelete}
+            disabled={!isEmailConfirmed}
           />
         </div>
 
         <div className="space-y-8">
+          {!isEmailConfirmed && (
+            <div className="text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2 rounded-lg text-sm">
+              Please confirm your email to upload or change your profile photo.
+            </div>
+          )}
           {successMessage && (
             <div className="text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
               {successMessage}
