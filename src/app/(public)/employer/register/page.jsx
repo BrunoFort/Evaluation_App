@@ -121,6 +121,23 @@ export default function EmployerRegisterPage() {
         throw registerError;
       }
 
+      // Se RPC retornar null, tenta inserir direto na tabela (fallback)
+      if (!rpcData) {
+        console.log("⚠️ RPC retornou null, tentando inserir direto na tabela...");
+        
+        const { data: directInsert, error: directError } = await supabase
+          .from("employers")
+          .insert([employerPayload])
+          .select();
+        
+        console.log("📝 Resposta do INSERT direto:", { directInsert, directError });
+        
+        if (directError) {
+          console.error("❌ Erro no INSERT direto:", directError);
+          throw directError;
+        }
+      }
+
       console.log("✅ Empregador registrado com sucesso");
       console.log("📝 Passo 4: Redirecionando para login...");
 
