@@ -34,38 +34,47 @@ export default function EmployerLoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+    console.log("🔴 INICIANDO LOGIN com email:", email);
 
     if (!email || !password) {
-      setError("Please enter your email and password.");
+      setError("Por favor, insira seu email e senha.");
       setLoading(false);
       return;
     }
 
+    console.log("📝 Tentando autenticar com Supabase...");
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    console.log("📝 Resposta do signInWithPassword:", { data, authError });
+
     if (authError) {
+      console.error("❌ Erro de autenticação:", authError);
       setError(authError.message);
       setLoading(false);
       return;
     }
 
     const user = data?.user;
+    console.log("✅ Usuário autenticado:", user?.id);
 
     if (!user) {
-      setError("Authentication failed. Please try again.");
+      console.error("❌ Usuário não retornado");
+      setError("Falha na autenticação. Por favor, tente novamente.");
       setLoading(false);
       return;
     }
 
+    console.log("✅ Fazendo login na aplicação...");
     login({
       role: "employer",
       email: user.email,
       employerId: user.id,
     });
 
+    console.log("✅ Redirecionando para dashboard...");
     navigate("/employer");
   }
 

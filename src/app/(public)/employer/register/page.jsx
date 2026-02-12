@@ -61,19 +61,10 @@ export default function EmployerRegisterPage() {
     try {
       // 1) cria usuário de autenticação
       console.log("📝 Passo 1: Criando usuário de autenticação...");
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/employer/login`
-          : undefined;
-
-      console.log("📝 emailRedirectTo:", redirectTo);
 
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contactEmail,
         password: data.password,
-        options: {
-          emailRedirectTo: redirectTo,
-        },
       });
 
       console.log("📝 Resposta do signUp:", { auth, authError });
@@ -141,11 +132,9 @@ export default function EmployerRegisterPage() {
       console.log("✅ Empregador registrado com sucesso");
       console.log("📝 Passo 4: Redirecionando para login...");
 
-      // 3) redireciona para login com aviso de validacao
-      const loginUrl = `/employer/login?verify=1&email=${encodeURIComponent(auth.user.email)}`;
-      console.log("📝 URL de redirecionamento:", loginUrl);
-      
-      navigate(loginUrl);
+      // 3) redireciona para login
+      toast.success("Registro realizado com sucesso! Faça login para continuar.");
+      navigate(`/employer/login`);
       console.log("✅ Navigate foi chamado!");
     } catch (err) {
       console.error("❌❌❌ ERRO NO REGISTRO:", err);
