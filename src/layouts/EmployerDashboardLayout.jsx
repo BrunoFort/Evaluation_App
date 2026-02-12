@@ -32,8 +32,10 @@ export default function EmployerDashboardLayout({ children }) {
     async function loadAvatar() {
       try {
         const metadata = await loadAuthAvatar();
+        console.log("📸 Dashboard: loaded avatar metadata:", metadata);
         if (isMounted) {
           setAvatarUrl(metadata?.avatar_url || null);
+          console.log("📸 Dashboard: avatar URL set to:", metadata?.avatar_url || "null");
         }
       } catch (err) {
         console.error("Failed to load avatar:", err);
@@ -45,6 +47,7 @@ export default function EmployerDashboardLayout({ children }) {
       try {
         const data = await getEmployerById(employer.employerId);
         const fullName = [data?.firstName, data?.lastName].filter(Boolean).join(" ");
+        console.log("👤 Dashboard: loaded employer name:", fullName || data?.companyName || "no name");
         if (isMounted) {
           setDisplayName(fullName || data?.companyName || "");
         }

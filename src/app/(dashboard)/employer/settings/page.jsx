@@ -113,8 +113,17 @@ export default function EmployerSettingsPage() {
         const pendingPhoto = loadPhoto(pendingKey);
 
         console.log("🔵 Photo initialization - employerId:", employer?.employerId);
+        console.log("🔵 userId from auth:", user?.id);
+        console.log("🔵 pendingKey:", pendingKey);
+        console.log("🔵 email_confirmed_at:", user?.email_confirmed_at);
+        console.log("🔵 confirmed_at:", user?.confirmed_at);
         console.log("🔵 email confirmed:", confirmed);
         console.log("🔵 pendingPhoto from localStorage:", pendingPhoto ? `found (${pendingPhoto.length} chars)` : "not found");
+
+        if (pendingPhoto && !confirmed) {
+          console.log("⚠️ Pending photo found but email NOT confirmed - upload blocked");
+          toast.warning("Please confirm your email to upload your profile photo.");
+        }
 
         if (pendingPhoto && confirmed) {
           console.log("🔵 Converting data URL to blob...");
@@ -141,6 +150,7 @@ export default function EmployerSettingsPage() {
               console.log("🔵 Photo URL state updated to:", uploadResult.publicUrl);
               removePhoto(pendingKey);
               console.log("🔵 Removed pending photo from localStorage:", pendingKey);
+              toast.success("Profile photo uploaded successfully!");
               return;
             }
           }
