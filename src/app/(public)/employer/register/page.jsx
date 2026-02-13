@@ -60,9 +60,14 @@ export default function EmployerRegisterPage() {
       // 1) cria usuário de autenticação
       console.log("📝 Passo 1: Criando usuário de autenticação...");
 
+      const redirectTo = `${window.location.origin}/employer/login`;
+
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contactEmail,
         password: data.password,
+        options: {
+          emailRedirectTo: redirectTo,
+        },
       });
 
       console.log("📝 Resposta do signUp:", { auth, authError });
