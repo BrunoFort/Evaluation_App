@@ -67,6 +67,9 @@ export default function EmployerRegisterPage() {
         password: data.password,
         options: {
           emailRedirectTo: redirectTo,
+          data: {
+            first_name: data.firstName,
+          },
         },
       });
 
