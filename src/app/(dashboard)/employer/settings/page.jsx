@@ -426,6 +426,18 @@ export default function EmployerSettingsPage() {
     try {
       const updated = await updateEmployer(employer.employerId, form);
 
+      if (form.firstName?.trim() || form.lastName?.trim()) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: {
+            first_name: form.firstName?.trim() || null,
+            last_name: form.lastName?.trim() || null,
+          },
+        });
+        if (updateError) {
+          console.warn("Failed to sync name to auth metadata:", updateError);
+        }
+      }
+
       login({
         ...employer,
         ...updated,
