@@ -459,6 +459,17 @@ export default function EmployerSettingsPage() {
           ? `${window.location.origin}/employer/reset-password`
           : undefined;
 
+      if (form.firstName?.trim()) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: {
+            first_name: form.firstName.trim(),
+          },
+        });
+        if (updateError) {
+          console.warn("Failed to sync first_name for reset email:", updateError);
+        }
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
         redirectTo,
       });
