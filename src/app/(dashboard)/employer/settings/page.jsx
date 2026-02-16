@@ -427,14 +427,24 @@ export default function EmployerSettingsPage() {
       const updated = await updateEmployer(employer.employerId, form);
 
       if (form.firstName?.trim() || form.lastName?.trim()) {
-        const { error: updateError } = await supabase.auth.updateUser({
+        console.log("📍 SETTINGS SAVE: Syncing name to auth metadata");
+        console.log("📍 firstName:", form.firstName?.trim());
+        console.log("📍 lastName:", form.lastName?.trim());
+        
+        const { error: updateError, data: userData } = await supabase.auth.updateUser({
           data: {
             first_name: form.firstName?.trim() || null,
             last_name: form.lastName?.trim() || null,
           },
         });
+        
+        console.log("📍 updateUser error:", updateError);
+        console.log("📍 updateUser data:", userData);
+        
         if (updateError) {
-          console.warn("Failed to sync name to auth metadata:", updateError);
+          console.warn("❌ Failed to sync name to auth metadata:", updateError);
+        } else {
+          console.log("✅ Successfully synced name to auth metadata");
         }
       }
 
@@ -471,26 +481,46 @@ export default function EmployerSettingsPage() {
           ? `${window.location.origin}/employer/reset-password`
           : undefined;
 
+      console.log("📍 PASSWORD RESET FLOW START");
+      console.log("📍 Target email:", targetEmail);
+      console.log("📍 Form firstName before sync:", form.firstName);
+
       if (form.firstName?.trim()) {
-        const { error: updateError } = await supabase.auth.updateUser({
+        console.log("📍 Syncing firstName to auth metadata...");
+        const { error: updateError, data: userData } = await supabase.auth.updateUser({
           data: {
             first_name: form.firstName.trim(),
           },
         });
+        console.log("📍 updateUser response error:", updateError);
+        console.log("📍 updateUser response data:", userData);
+        
         if (updateError) {
-          console.warn("Failed to sync first_name for reset email:", updateError);
+          console.warn("❌ Failed to sync first_name for reset email:", updateError);
+        } else {
+          console.log("✅ Successfully updated user metadata");
         }
+
+        // Verify metadata was actually saved
+        console.log("📍 Verifying metadata persistence...");
+        const { data: { user }, error: getUserError } = await supabase.auth.getUser();
+        console.log("📍 Current user.user_metadata:", user?.user_metadata);
+        console.log("📍 getUser error:", getUserError);
       }
 
+      console.log("📍 Sending reset password email to:", targetEmail);
       const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
         redirectTo,
       });
 
+      console.log("📍 resetPasswordForEmail error:", error);
+
       if (error) throw error;
 
       toast.success("Password reset email sent successfully.");
+      console.log("✅ Password reset email sent");
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error in password reset flow:", err);
       toast.error("Failed to send reset email.");
     } finally {
       setSendingReset(false);
