@@ -41,11 +41,18 @@ export default function EmployerEmployeeListPage() {
     loadEmployees();
   }, [employerId]);
 
-  const filteredEmployees = employees.filter((emp) =>
-    (emp.name || emp.full_name || "")
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  const filteredEmployees = employees.filter((emp) => {
+    const searchLower = search.toLowerCase();
+    const name = (emp.name || emp.full_name || "").toLowerCase();
+    const regNumber = (emp.employee_registration_number || "").toLowerCase();
+    const position = (emp.position || emp.role || "").toLowerCase();
+
+    return (
+      name.includes(searchLower) ||
+      regNumber.includes(searchLower) ||
+      position.includes(searchLower)
+    );
+  });
 
   return (
     <EmployerDashboardLayout>
@@ -97,9 +104,9 @@ export default function EmployerEmployeeListPage() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-neutral-200">
+                    <th className="py-3 text-sm font-semibold text-neutral-700">Employee Registration Number</th>
                     <th className="py-3 text-sm font-semibold text-neutral-700">Name</th>
                     <th className="py-3 text-sm font-semibold text-neutral-700">Position</th>
-                    <th className="py-3 text-sm font-semibold text-neutral-700">Email</th>
                     <th className="py-3 text-sm font-semibold text-neutral-700 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -108,12 +115,14 @@ export default function EmployerEmployeeListPage() {
                   {filteredEmployees.map((emp) => (
                     <tr key={emp.id} className="border-b border-neutral-100">
                       <td className="py-4 text-neutral-900">
+                        {emp.employee_registration_number || "-"}
+                      </td>
+                      <td className="py-4 text-neutral-900">
                         {emp.name || emp.full_name || "Unknown"}
                       </td>
                       <td className="py-4 text-neutral-700">
                         {emp.position || emp.role || "-"}
                       </td>
-                      <td className="py-4 text-neutral-700">{emp.email}</td>
                       <td className="py-4 text-right">
                         <Button
                           variant="outline"
