@@ -20,6 +20,8 @@ import {
 } from "/src/features/shared-photo/supabasePhotoStorage";
 import { loadPhoto, removePhoto } from "/src/features/shared-photo/photoStorage";
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://zidtqkmuifogeqptdseb.supabase.co";
+
 const fsaMap = {
   K1A: { city: "Ottawa", province: "ON" },
   K2P: { city: "Ottawa", province: "ON" },
@@ -476,46 +478,35 @@ export default function EmployerSettingsPage() {
     try {
       setSendingReset(true);
 
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/employer/reset-password`
-          : undefined;
-
       console.log("📍 PASSWORD RESET FLOW START");
       console.log("📍 Target email:", targetEmail);
-      console.log("📍 Form firstName before sync:", form.firstName);
+      console.log("📍 Form firstName:", form.firstName);
 
-      if (form.firstName?.trim()) {
-        console.log("📍 Syncing firstName to auth metadata...");
-        const { error: updateError, data: userData } = await supabase.auth.updateUser({
-          data: {
-            first_name: form.firstName.trim(),
-          },
-        });
-        console.log("📍 updateUser response error:", updateError);
-        console.log("📍 updateUser response data:", userData);
-        
-        if (updateError) {
-          console.warn("❌ Failed to sync first_name for reset email:", updateError);
-        } else {
-          console.log("✅ Successfully updated user metadata");
-        }
-
-        // Verify metadata was actually saved
-        console.log("📍 Verifying metadata persistence...");
-        const { data: { user }, error: getUserError } = await supabase.auth.getUser();
-        console.log("📍 Current user.user_metadata:", user?.user_metadata);
-        console.log("📍 getUser error:", getUserError);
-      }
-
-      console.log("📍 Sending reset password email to:", targetEmail);
-      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
-        redirectTo,
+      // Call Edge Function to send personalized reset email via Gmail SMTP
+      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/send-recovery-email`;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      console.log("📍 Calling Edge Function:", edgeFunctionUrl);
+      
+      const response = await fetch(edgeFunctionUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token || ""}`,
+        },
+        body: JSON.stringify({
+          email: targetEmail,
+          firstName: form.firstName?.trim() || "there",
+        }),
       });
 
-      console.log("📍 resetPasswordForEmail error:", error);
+      const result = await response.json();
+      console.log("📍 Edge Function response:", result);
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to send reset email");
+      }
 
       toast.success("Password reset email sent successfully.");
       console.log("✅ Password reset email sent");
