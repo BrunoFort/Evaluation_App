@@ -18,26 +18,18 @@ export async function sendEmployeeInvitationEmail(
     console.log("   Email:", email);
     console.log("   URL:", invitationUrl);
 
-    // Get the current session to get the auth token
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session?.access_token) {
-      throw new Error("No authenticated session found");
-    }
-
     // Get Supabase URL from environment
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const functionUrl = `${supabaseUrl}/functions/v1/send-employee-invitation`;
 
     console.log("📧 Calling:", functionUrl);
-    console.log("📧 Using authenticated session");
 
-    // Call the Edge Function with Authorization header
+    // Call the Edge Function with function secret
     const response = await fetch(functionUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${session.access_token}`,
+        "x-function-secret": "send-employee-invitation-secret-2026",
       },
       body: JSON.stringify({
         email,
