@@ -11,7 +11,7 @@ import NOCJobSelector from "/src/features/shared-noc/NOCJobSelector.jsx";
 import CanadianPhoneInput from "/src/features/shared-phone/CanadianPhoneInput.jsx";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth.js";
 import { createEmployee } from "/src/features/employees/api/employeesApi.js";
-import { inviteEmployeeByEmail } from "/src/features/employees/api/employeeInvitation.js";
+import { sendEmployeeInvitationEmail } from "/src/features/employees/api/employeeInvitation.js";
 
 export default function EmployerEmployeeAddPage() {
   const navigate = useNavigate();
@@ -158,10 +158,11 @@ export default function EmployerEmployeeAddPage() {
 
       // Send invitation email to employee
       try {
-        await inviteEmployeeByEmail(
+        await sendEmployeeInvitationEmail(
           form.contactEmail.toLowerCase(),
           form.firstName,
-          form.lastName
+          form.lastName,
+          form.employeeRegistrationNumber
         );
         toast.success("Employee created and invitation email sent!");
       } catch (err) {

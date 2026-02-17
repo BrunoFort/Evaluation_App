@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
@@ -21,10 +21,16 @@ import {
 
 export default function EmployeeRegisterPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Get pre-filled values from URL (for invited employees)
+  const invitedEmail = searchParams.get("email") || "";
+  const invitedFirstName = searchParams.get("firstName") || "";
+  const invitedLastName = searchParams.get("lastName") || "";
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
+    name: invitedFirstName && invitedLastName ? `${invitedFirstName} ${invitedLastName}` : "",
+    email: invitedEmail,
     password: "",
     confirm: "",
   });
