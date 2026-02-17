@@ -24,12 +24,11 @@ export async function sendEmployeeInvitationEmail(
 
     console.log("📧 Calling:", functionUrl);
 
-    // Call the Edge Function with function secret
+    // Call the Edge Function (public - no auth required)
     const response = await fetch(functionUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-function-secret": "send-employee-invitation-secret-2026",
       },
       body: JSON.stringify({
         email,
