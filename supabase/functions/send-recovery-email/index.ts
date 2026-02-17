@@ -6,6 +6,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const GMAIL_USER = Deno.env.get("GMAIL_USER");
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
+const RESET_REDIRECT_URL = Deno.env.get("RESET_REDIRECT_URL");
 
 serve(async (req) => {
   try {
@@ -26,6 +27,13 @@ serve(async (req) => {
       );
     }
 
+    if (!RESET_REDIRECT_URL) {
+      return new Response(
+        JSON.stringify({ error: "RESET_REDIRECT_URL not configured" }),
+        { status: 500 }
+      );
+    }
+
     // Initialize Supabase Admin client
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, {
       auth: {
@@ -40,6 +48,9 @@ serve(async (req) => {
     const { data, error: linkError } = await supabase.auth.admin.generateLink({
       type: "recovery",
       email: email,
+      options: {
+        redirectTo: RESET_REDIRECT_URL,
+      },
     });
 
     if (linkError || !data?.properties?.recovery_link) {
