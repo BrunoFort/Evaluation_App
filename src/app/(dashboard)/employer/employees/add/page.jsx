@@ -165,16 +165,16 @@ export default function EmployerEmployeeAddPage() {
 
       // Send invitation email to employee
       try {
-        sendEmployeeInvitationEmail(
+        await sendEmployeeInvitationEmail(
           form.contactEmail.toLowerCase(),
           form.firstName,
           form.lastName,
           form.employeeRegistrationNumber
         );
-        toast.success("Employee created and invitation email prepared!");
+        toast.success("Employee created and invitation email sent!");
       } catch (err) {
         console.error("Email invitation failed:", err);
-        toast.success("Employee created successfully!");
+        toast.success("Employee created successfully! (Email sending failed - you can resend it manually)");
       }
 
       navigate("/employer/employees");

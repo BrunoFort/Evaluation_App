@@ -1,5 +1,5 @@
 // deno-lint-ignore no-undef
-// deno-env-allow GMAIL_EMAIL,GMAIL_APP_PASSWORD
+// deno-env-allow GMAIL_USER,GMAIL_PASSWORD
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,12 +16,16 @@ Deno.serve(async (req: any) => {
   }
 
   try {
+    console.log("📧 [send-employee-invitation] Received request");
+    
     const payload = await req.json();
+    console.log("📧 [send-employee-invitation] Payload:", { email: payload.email, firstName: payload.firstName });
 
     const { email, firstName, lastName, employeeRegistrationNumber, invitationUrl } = payload;
 
     // Validate required fields
     if (!email || !firstName || !invitationUrl) {
+      console.error("❌ Missing required fields");
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -30,14 +34,21 @@ Deno.serve(async (req: any) => {
 
     // Get Gmail credentials from environment
     // deno-lint-ignore no-undef
-    const gmailEmail = Deno.env.get("GMAIL_USER");
+    const gmailUser = Deno.env.get("GMAIL_USER");
     // deno-lint-ignore no-undef
     const gmailPassword = Deno.env.get("GMAIL_PASSWORD");
+
+    console.log("📧 [send-employee-invitation] Gmail User:", gmailUser ? "✓ Set" : "❌ Not set");
+    console.log("📧 [send-employee-invitation] Gmail Password:", gmailPassword ? "✓ Set" : "❌ Not set");
     
-    if (!gmailEmail || !gmailPassword) {
-      console.error("Gmail credentials not configured");
+    if (!gmailUser || !gmailPassword) {
+      console.error("❌ Gmail credentials not configured");
       return new Response(
-        JSON.stringify({ error: "Email service not configured" }),
+        JSON.stringify({ 
+          error: "Gmail credentials not configured",
+          gmailUserSet: !!gmailUser,
+          gmailPasswordSet: !!gmailPassword
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -94,7 +105,9 @@ Deno.serve(async (req: any) => {
       </html>
     `;
 
-    // Send email via Gmail SMTP
+    console.log("📧 [send-employee-invitation] Sending email to:", email);
+
+    // Send email via Gmail SMTP (using SendGrid API format)
     const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
@@ -107,7 +120,7 @@ Deno.serve(async (req: any) => {
             to: [{ email: email }],
           },
         ],
-        from: { email: gmailEmail },
+        from: { email: gmailUser },
         subject: `Welcome, ${firstName}! Complete Your Registration`,
         content: [
           {
