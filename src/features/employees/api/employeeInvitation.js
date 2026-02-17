@@ -2,7 +2,7 @@ import { supabase } from "/src/lib/supabaseClient";
 
 /**
  * Send an invitation email to employee to register
- * The employee will visit a registration page with their email pre-filled
+ * Uses Supabase Edge Function to send email via Resend
  */
 export async function sendEmployeeInvitationEmail(
   email,
@@ -11,29 +11,39 @@ export async function sendEmployeeInvitationEmail(
   employeeRegistrationNumber
 ) {
   try {
-    // Create invitation URL
+    // Create invitation URL with pre-filled data
     const invitationUrl = `${window.location.origin}/employee/register?email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}`;
 
-    // For now, we'll just log the invitation
-    // In production, you would integrate with your email service or Supabase Functions
-    console.log("📧 Invitation Email Details:", {
-      to: email,
-      subject: `Welcome! Complete Your Registration`,
-      body: `Hi ${firstName},\n\nYou have been invited to join our platform.\n\nClick here to complete your registration: ${invitationUrl}\n\nEmployee Registration Number: ${employeeRegistrationNumber}`,
-    });
+    // Call Supabase Edge Function
+    const { data, error } = await supabase.functions.invoke(
+      "send-employee-invitation",
+      {
+        body: {
+          email,
+          firstName,
+          lastName,
+          employeeRegistrationNumber,
+          invitationUrl,
+        },
+      }
+    );
 
-    // Since we can't send actual emails without a backend service/function,
-    // we'll use a toast notification to inform the employer
+    if (error) {
+      console.error("Error calling edge function:", error);
+      throw new Error(error.message || "Failed to send invitation email");
+    }
+
     return {
       success: true,
       email: email,
-      message: "Employee created successfully. In production, invitation email would be sent.",
-      invitationUrl: invitationUrl,
+      messageId: data.messageId,
+      message: "Invitation email sent successfully",
     };
   } catch (err) {
-    console.error("Error preparing invitation email:", err);
+    console.error("Error sending invitation email:", err);
     throw err;
   }
 }
+
 
 
