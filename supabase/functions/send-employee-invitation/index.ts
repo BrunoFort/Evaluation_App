@@ -160,18 +160,13 @@ ${htmlContent}`;
 // Helper function to send via Gmail SMTP using raw socket connection
 async function sendViaGmailSmtp(gmailUser: string, gmailPassword: string, toEmail: string, firstName: string, htmlContent: string): Promise<Response> {
   try {
-    console.log("📧 [sendViaGmailSmtp] Attempting SMTP connection to Gmail...");
+    console.log("📧 [sendViaGmailSmtp] Attempting SMTP connection to Gmail on port 465...");
     
-    // Create TLS connection to Gmail SMTP
-    const tlsConn = await Deno.connect({
+    // Create TLS connection to Gmail SMTP (port 465 - SMTPS)
+    const conn = await Deno.connect({
       hostname: "smtp.gmail.com",
-      port: 587,
+      port: 465,
       transport: "tcp",
-    });
-
-    // Wrap in TLS (starttls)
-    const conn = await Deno.startTls(tlsConn, {
-      hostname: "smtp.gmail.com",
     });
 
     const encoder = new TextEncoder();
