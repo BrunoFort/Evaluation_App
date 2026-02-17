@@ -63,9 +63,13 @@ serve(async (req) => {
     });
 
     if (linkError || !data?.properties?.recovery_link) {
-      console.error("Link generation error:", linkError);
+      console.error("Link generation error:", linkError, data);
       return new Response(
-        JSON.stringify({ error: "Failed to generate recovery link", details: linkError }),
+        JSON.stringify({
+          error: "Failed to generate recovery link",
+          details: linkError,
+          data,
+        }),
         { status: 500, headers: corsHeaders }
       );
     }
