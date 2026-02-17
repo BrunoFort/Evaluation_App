@@ -8,14 +8,23 @@ const GMAIL_USER = Deno.env.get("GMAIL_USER");
 const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 const RESET_REDIRECT_URL = Deno.env.get("RESET_REDIRECT_URL");
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
   try {
     const { email, firstName } = await req.json();
 
     if (!email) {
       return new Response(
         JSON.stringify({ error: "Missing email" }),
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -23,14 +32,14 @@ serve(async (req) => {
     if (!GMAIL_USER || !GMAIL_PASSWORD) {
       return new Response(
         JSON.stringify({ error: "Gmail credentials not configured" }),
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
     if (!RESET_REDIRECT_URL) {
       return new Response(
         JSON.stringify({ error: "RESET_REDIRECT_URL not configured" }),
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -57,7 +66,7 @@ serve(async (req) => {
       console.error("Link generation error:", linkError);
       return new Response(
         JSON.stringify({ error: "Failed to generate recovery link", details: linkError }),
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -143,17 +152,20 @@ serve(async (req) => {
     console.log("📍 Email sent successfully via Gmail SMTP");
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
+      JSON.stringify({
+        success: true,
         message: "Password reset email sent successfully",
       }),
-      { headers: { "Content-Type": "application/json" }, status: 200 }
+      {
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 200,
+      }
     );
   } catch (error) {
     console.error("Function error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 });
