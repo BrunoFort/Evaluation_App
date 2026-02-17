@@ -62,7 +62,9 @@ serve(async (req) => {
       },
     });
 
-    if (linkError || !data?.properties?.recovery_link) {
+    const actionLink = data?.properties?.action_link;
+
+    if (linkError || !actionLink) {
       console.error("Link generation error:", linkError, data);
       return new Response(
         JSON.stringify({
@@ -74,7 +76,7 @@ serve(async (req) => {
       );
     }
 
-    const recoveryLink = data.properties.recovery_link;
+    const recoveryLink = actionLink;
     console.log("📍 Recovery link generated");
 
     // Prepare personalized email content
