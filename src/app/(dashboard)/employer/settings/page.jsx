@@ -478,40 +478,18 @@ export default function EmployerSettingsPage() {
     try {
       setSendingReset(true);
 
-      console.log("📍 PASSWORD RESET FLOW START");
-      console.log("📍 Target email:", targetEmail);
-      console.log("📍 Form firstName:", form.firstName);
+      const redirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/employer/reset-password`
+          : undefined;
 
-      // Call Edge Function to send personalized reset email via Gmail SMTP
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-
-      if (sessionError || !sessionData?.session?.access_token) {
-        throw new Error("Missing auth session. Please sign in again.");
-      }
-
-      console.log("📍 Calling Edge Function: send-recovery-email");
-
-      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/send-recovery-email`;
-      const response = await fetch(edgeFunctionUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: targetEmail,
-          firstName: form.firstName?.trim() || "there",
-        }),
+      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
+        redirectTo,
       });
 
-      const result = await response.json().catch(() => null);
-      console.log("📍 Edge Function response:", result);
-
-      if (!response.ok) {
-        throw new Error(result?.error || "Failed to send reset email");
-      }
+      if (error) throw error;
 
       toast.success("Password reset email sent successfully.");
-      console.log("✅ Password reset email sent");
     } catch (err) {
       console.error("❌ Error in password reset flow:", err);
       toast.error("Failed to send reset email.");
