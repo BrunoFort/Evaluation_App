@@ -26,6 +26,11 @@ export async function getEmployeeById(id) {
 }
 
 export async function createEmployee(data) {
+  // Generate UUID if not provided
+  if (!data.id) {
+    data.id = crypto.randomUUID();
+  }
+
   const { data: result, error } = await supabase
     .from(TABLE)
     .insert([data])
@@ -54,4 +59,5 @@ export async function deleteEmployee(id) {
   if (error) throw new Error(error.message || "Failed to delete employee");
   return true;
 }
+
 
