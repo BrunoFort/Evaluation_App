@@ -1,10 +1,10 @@
 // deno-lint-ignore no-undef
-// deno-env-allow GMAIL_USER,GMAIL_PASSWORD
+// deno-env-allow GMAIL_USER,GMAIL_PASSWORD,FUNCTION_SECRET
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-function-secret",
 };
 
 // deno-lint-ignore no-explicit-any
@@ -17,6 +17,22 @@ Deno.serve(async (req: any) => {
 
   try {
     console.log("📧 [send-employee-invitation] Received request");
+    
+    // Check for function secret in header
+    const functionSecret = req.headers.get("x-function-secret");
+    const expectedSecret = Deno.env.get("FUNCTION_SECRET");
+    
+    console.log("📧 [send-employee-invitation] Function secret provided:", functionSecret ? "✓" : "✗");
+    console.log("📧 [send-employee-invitation] Expected secret exists:", expectedSecret ? "✓" : "✗");
+    
+    // Only validate if secret is configured
+    if (expectedSecret && functionSecret !== expectedSecret) {
+      console.error("❌ Invalid function secret");
+      return new Response(
+        JSON.stringify({ error: "Invalid function secret" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     
     const payload = await req.json();
     console.log("📧 [send-employee-invitation] Payload:", { email: payload.email, firstName: payload.firstName });
