@@ -139,6 +139,11 @@ export default function EmployerEmployeeAddPage() {
 
       await createEmployee({
         employerid: employerId,
+        // Legacy fields (required by database schema)
+        name: `${form.firstName} ${form.lastName}`.trim(),
+        role: selectedJobTitle,
+        email: form.contactEmail.toLowerCase(),
+        // New extended fields
         first_name: form.firstName,
         last_name: form.lastName,
         personal_id_type: form.personalIdType,
