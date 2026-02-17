@@ -16,17 +16,19 @@ export async function sendEmployeeInvitationEmail(
     console.log("   Email:", email);
     console.log("   URL:", invitationUrl);
 
-    // Get Supabase URL from environment
+    // Get Supabase URL and API key from environment
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     const functionUrl = `${supabaseUrl}/functions/v1/send-employee-invitation`;
 
     console.log("📧 Calling:", functionUrl);
 
-    // Call the Edge Function directly via fetch (no auth needed - function is public)
+    // Call the Edge Function with apikey header (required by Supabase)
     const response = await fetch(functionUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "apikey": supabaseAnonKey,
       },
       body: JSON.stringify({
         email,
