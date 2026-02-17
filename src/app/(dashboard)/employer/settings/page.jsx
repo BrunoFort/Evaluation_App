@@ -491,20 +491,23 @@ export default function EmployerSettingsPage() {
 
       console.log("📍 Calling Edge Function: send-recovery-email");
 
-      const { data: result, error } = await supabase.functions.invoke(
-        "send-recovery-email",
-        {
-          body: {
-            email: targetEmail,
-            firstName: form.firstName?.trim() || "there",
-          },
-        }
-      );
+      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/send-recovery-email`;
+      const response = await fetch(edgeFunctionUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: targetEmail,
+          firstName: form.firstName?.trim() || "there",
+        }),
+      });
 
+      const result = await response.json().catch(() => null);
       console.log("📍 Edge Function response:", result);
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        throw new Error(result?.error || "Failed to send reset email");
       }
 
       toast.success("Password reset email sent successfully.");

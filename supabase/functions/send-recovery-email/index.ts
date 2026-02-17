@@ -129,25 +129,37 @@ serve(async (req) => {
     console.log("📍 Sending email via Gmail SMTP...");
 
     const client = new SmtpClient();
-    
-    await client.connectTLS({
-      hostname: "smtp.gmail.com",
-      port: 465,
-      username: GMAIL_USER,
-      password: GMAIL_PASSWORD,
-    });
 
-    await client.send({
-      from: GMAIL_USER,
-      to: email,
-      subject: "Reset your Shine password",
-      content: emailHtml,
-      headers: {
-        "Content-Type": "text/html; charset=UTF-8",
-      },
-    });
+    try {
+      await client.connectTLS({
+        hostname: "smtp.gmail.com",
+        port: 465,
+        username: GMAIL_USER,
+        password: GMAIL_PASSWORD,
+      });
 
-    await client.close();
+      await client.send({
+        from: GMAIL_USER,
+        to: email,
+        subject: "Reset your Shine password",
+        content: emailHtml,
+        headers: {
+          "Content-Type": "text/html; charset=UTF-8",
+        },
+      });
+    } catch (smtpError) {
+      console.error("SMTP error:", smtpError);
+      return new Response(
+        JSON.stringify({ error: "SMTP send failed", details: `${smtpError}` }),
+        { status: 500, headers: corsHeaders }
+      );
+    } finally {
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.warn("SMTP close error:", closeError);
+      }
+    }
 
     console.log("📍 Email sent successfully via Gmail SMTP");
 
