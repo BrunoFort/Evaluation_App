@@ -16,6 +16,9 @@ export async function sendEmployeeInvitationEmail(
     console.log("   Email:", email);
     console.log("   URL:", invitationUrl);
 
+    // Get the current session to get the auth token
+    const { data: { session } } = await supabase.auth.getSession();
+    
     // Get Supabase URL and API key from environment
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -23,13 +26,22 @@ export async function sendEmployeeInvitationEmail(
 
     console.log("📧 Calling:", functionUrl);
 
-    // Call the Edge Function with apikey header (required by Supabase)
+    // Prepare headers
+    const headers = {
+      "Content-Type": "application/json",
+      "apikey": supabaseAnonKey,
+    };
+
+    // Add Authorization header if session exists
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+      console.log("📧 Using authenticated session");
+    }
+
+    // Call the Edge Function
     const response = await fetch(functionUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": supabaseAnonKey,
-      },
+      headers,
       body: JSON.stringify({
         email,
         firstName,
