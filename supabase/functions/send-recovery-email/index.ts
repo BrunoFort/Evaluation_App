@@ -1,8 +1,11 @@
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const GMAIL_USER = Deno.env.get("GMAIL_USER");
+const GMAIL_PASSWORD = Deno.env.get("GMAIL_PASSWORD");
 
 serve(async (req) => {
   try {
@@ -12,6 +15,14 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: "Missing email" }),
         { status: 400 }
+      );
+    }
+
+    // Check if Gmail credentials are configured
+    if (!GMAIL_USER || !GMAIL_PASSWORD) {
+      return new Response(
+        JSON.stringify({ error: "Gmail credentials not configured" }),
+        { status: 500 }
       );
     }
 
@@ -94,13 +105,36 @@ serve(async (req) => {
 </body>
 </html>`;
 
-    console.log("📍 Email HTML prepared");
+    // Send email via Gmail SMTP
+    console.log("📍 Sending email via Gmail SMTP...");
+
+    const client = new SmtpClient();
+    
+    await client.connectTLS({
+      hostname: "smtp.gmail.com",
+      port: 465,
+      username: GMAIL_USER,
+      password: GMAIL_PASSWORD,
+    });
+
+    await client.send({
+      from: GMAIL_USER,
+      to: email,
+      subject: "Reset your Shine password",
+      content: emailHtml,
+      headers: {
+        "Content-Type": "text/html; charset=UTF-8",
+      },
+    });
+
+    await client.close();
+
+    console.log("📍 Email sent successfully via Gmail SMTP");
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Recovery email ready to send",
-        recoveryLink: recoveryLink,
+        message: "Password reset email sent successfully",
       }),
       { headers: { "Content-Type": "application/json" }, status: 200 }
     );
@@ -112,3 +146,4 @@ serve(async (req) => {
     );
   }
 });
+
