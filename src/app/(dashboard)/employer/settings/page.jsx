@@ -432,7 +432,7 @@ export default function EmployerSettingsPage() {
         console.log("📍 lastName:", form.lastName?.trim());
         
         const { error: updateError, data: userData } = await supabase.auth.updateUser({
-          data: {
+          app_metadata: {
             first_name: form.firstName?.trim() || null,
             last_name: form.lastName?.trim() || null,
           },
@@ -488,7 +488,7 @@ export default function EmployerSettingsPage() {
       if (form.firstName?.trim()) {
         console.log("📍 Syncing firstName to auth metadata...");
         const { error: updateError, data: userData } = await supabase.auth.updateUser({
-          data: {
+          app_metadata: {
             first_name: form.firstName.trim(),
           },
         });
