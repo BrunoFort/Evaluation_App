@@ -73,6 +73,10 @@ export default function EmployerEmployeeAddPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
+    // Prevent double submission
+    if (saving) return;
+    
     setSaving(true);
     setError("");
 
@@ -138,7 +142,8 @@ export default function EmployerEmployeeAddPage() {
         return;
       }
 
-      await createEmployee({
+      // Don't pass an explicit ID - let the database generate it
+      const employeeData = {
         employerid: employerId,
         // Legacy fields (required by database schema)
         name: `${form.firstName} ${form.lastName}`.trim(),
@@ -154,26 +159,36 @@ export default function EmployerEmployeeAddPage() {
         phone_country: form.phoneCountry,
         phone_number: form.phoneNumber,
         contact_email: form.contactEmail.toLowerCase(),
-      });
+      };
+
+      await createEmployee(employeeData);
 
       // Send invitation email to employee
       try {
-        await sendEmployeeInvitationEmail(
+        sendEmployeeInvitationEmail(
           form.contactEmail.toLowerCase(),
           form.firstName,
           form.lastName,
           form.employeeRegistrationNumber
         );
-        toast.success("Employee created and invitation email sent!");
+        toast.success("Employee created and invitation email prepared!");
       } catch (err) {
         console.error("Email invitation failed:", err);
-        toast.success("Employee created, but invitation email could not be sent.");
+        toast.success("Employee created successfully!");
       }
 
       navigate("/employer/employees");
     } catch (err) {
-      console.error(err);
-      setError("There was an error saving the employee. Please try again.");
+      console.error("Error details:", err);
+      const errorMsg = err.message || "Unknown error";
+      
+      if (errorMsg.includes("duplicate")) {
+        setError("An employee with this email or registration number already exists.");
+      } else if (errorMsg.includes("not-null")) {
+        setError("Please fill in all required fields.");
+      } else {
+        setError("There was an error saving the employee. Please try again.");
+      }
     } finally {
       setSaving(false);
     }
