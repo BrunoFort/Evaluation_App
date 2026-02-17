@@ -106,12 +106,17 @@ Deno.serve(async (req: any) => {
     `;
 
     console.log("📧 [send-employee-invitation] Sending email to:", email);
+    console.log("📧 [send-employee-invitation] From:", gmailUser);
 
-    // Send email via Gmail SMTP (using SendGrid API format)
+    // Send email via SendGrid API
+    // Note: gmailPassword should be SendGrid API key, not Gmail password
+    const sendGridApiKey = gmailPassword;
+    console.log("📧 [send-employee-invitation] API Key available:", sendGridApiKey ? "yes" : "no");
+
     const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${gmailPassword}`,
+        "Authorization": `Bearer ${sendGridApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -131,15 +136,23 @@ Deno.serve(async (req: any) => {
       }),
     });
 
+    console.log("📧 [send-employee-invitation] SendGrid response status:", response.status);
+    const responseText = await response.text();
+    console.log("📧 [send-employee-invitation] SendGrid response:", responseText);
+
     if (!response.ok) {
-      const result = await response.json();
-      console.error("SendGrid API error:", result);
+      console.error("❌ SendGrid API failed with status:", response.status);
       return new Response(
-        JSON.stringify({ error: "Failed to send email", details: result }),
+        JSON.stringify({ 
+          error: "Failed to send email via SendGrid",
+          status: response.status,
+          details: responseText
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    console.log("✅ Email sent successfully to:", email);
     return new Response(
       JSON.stringify({ success: true, email: email }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
