@@ -1,3 +1,5 @@
+import { supabase } from "/src/lib/supabaseClient";
+
 /**
  * Send an invitation email to employee to register
  * Uses Supabase Edge Function to send email
