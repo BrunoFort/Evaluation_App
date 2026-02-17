@@ -1,5 +1,3 @@
-import { supabase } from "/src/lib/supabaseClient";
-
 /**
  * Send an invitation email to employee to register
  * Uses Supabase Edge Function to send email
@@ -18,32 +16,18 @@ export async function sendEmployeeInvitationEmail(
     console.log("   Email:", email);
     console.log("   URL:", invitationUrl);
 
-    // Get the current session to get the auth token
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    // Prepare headers
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    
-    // Add auth header if session exists
-    if (session?.access_token) {
-      headers["Authorization"] = `Bearer ${session.access_token}`;
-      console.log("📧 Using authenticated session");
-    } else {
-      console.log("📧 No auth session - making unauthenticated request");
-    }
-
-    // Get Supabase URL from environment or from client
+    // Get Supabase URL from environment
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const functionUrl = `${supabaseUrl}/functions/v1/send-employee-invitation`;
 
     console.log("📧 Calling:", functionUrl);
 
-    // Call the Edge Function directly via fetch
+    // Call the Edge Function directly via fetch (no auth needed - function is public)
     const response = await fetch(functionUrl, {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         email,
         firstName,
