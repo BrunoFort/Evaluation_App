@@ -483,29 +483,31 @@ export default function EmployerSettingsPage() {
       console.log("📍 Form firstName:", form.firstName);
 
       // Call Edge Function to send personalized reset email via Gmail SMTP
-      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/send-recovery-email`;
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      console.log("📍 Calling Edge Function:", edgeFunctionUrl);
-      
-      const response = await fetch(edgeFunctionUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token || ""}`,
-        },
-        body: JSON.stringify({
-          email: targetEmail,
-          firstName: form.firstName?.trim() || "there",
-        }),
-      });
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
-      const result = await response.json();
+      if (sessionError || !sessionData?.session?.access_token) {
+        throw new Error("Missing auth session. Please sign in again.");
+      }
+
+      console.log("📍 Calling Edge Function: send-recovery-email");
+
+      const { data: result, error } = await supabase.functions.invoke(
+        "send-recovery-email",
+        {
+          body: {
+            email: targetEmail,
+            firstName: form.firstName?.trim() || "there",
+          },
+          headers: {
+            Authorization: `Bearer ${sessionData.session.access_token}`,
+          },
+        }
+      );
+
       console.log("📍 Edge Function response:", result);
 
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to send reset email");
+      if (error) {
+        throw error;
       }
 
       toast.success("Password reset email sent successfully.");
