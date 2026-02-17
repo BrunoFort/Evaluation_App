@@ -498,9 +498,6 @@ export default function EmployerSettingsPage() {
             email: targetEmail,
             firstName: form.firstName?.trim() || "there",
           },
-          headers: {
-            Authorization: `Bearer ${sessionData.session.access_token}`,
-          },
         }
       );
 
