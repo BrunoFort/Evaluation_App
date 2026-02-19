@@ -1,34 +1,31 @@
 # Send Employee Invitation Edge Function
 
-Esta é uma Supabase Edge Function que envia emails de convite para employees usando **Gmail SMTP**.
+Esta função envia emails de convite de employee usando **Resend**.
 
 ## Setup
 
-### 1. Instale a CLI do Supabase
-
-```bash
-npm install -g supabase
-```
-
-### 2. Configure suas credenciais
+### 1. Login no Supabase CLI
 
 ```bash
 supabase login
 ```
 
-### 3. Você Já Tem as Variáveis Configuradas!
+### 2. Configure os secrets do Resend
 
-Você já possui os secrets `GMAIL_USER` e `GMAIL_PASSWORD` configurados no Supabase. A Edge Function vai usar exatamente esses mesmos secrets. 
+```bash
+supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
+supabase secrets set RESEND_FROM_EMAIL=onboarding@resend.dev
+```
 
-Nenhuma configuração adicional é necessária! ✅
+Use um remetente válido no Resend (domínio verificado ou `onboarding@resend.dev` para testes).
 
-### 4. Deploy a função
+### 3. Deploy da função
 
 ```bash
 supabase functions deploy send-employee-invitation
 ```
 
-### 5. Teste a função (opcional)
+### 4. Teste da função (opcional)
 
 ```bash
 supabase functions invoke send-employee-invitation \
@@ -40,19 +37,6 @@ supabase functions invoke send-employee-invitation \
     "invitationUrl": "http://localhost:5173/employee/register?email=teste@example.com"
   }'
 ```
-
-## Como Funciona
-
-1. Quando um employer cria um employee
-2. A função é chamada automaticamente
-3. Um email de convite é enviado via Gmail SMTP (usando `GMAIL_USER` e `GMAIL_PASSWORD`)
-4. O employee recebe o email com link para completar o registro
-
-## Troubleshooting
-
-- **Erro "Gmail credentials not configured"**: Verifique se `GMAIL_USER` e `GMAIL_PASSWORD` estão realmente configurados
-- **Email não enviado**: Certifique-se que `GMAIL_PASSWORD` é a senha de app do Gmail (16 caracteres)
-- **Erro 535 Authentication failed**: A senha de app pode estar expirada ou incorreta
 
 ## Ver os Logs
 

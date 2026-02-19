@@ -1,5 +1,6 @@
 // deno-lint-ignore no-undef
-// deno-env-allow GMAIL_USER,GMAIL_PASSWORD
+// deno-env-allow RESEND_API_KEY,RESEND_FROM_EMAIL
+declare const Deno: any;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,11 +18,11 @@ Deno.serve(async (req: any) => {
 
   try {
     console.log("📧 [send-employee-invitation] Received request");
-    
+
     const payload = await req.json();
     console.log("📧 [send-employee-invitation] Payload:", { email: payload.email, firstName: payload.firstName });
 
-    const { email, firstName, lastName, employeeRegistrationNumber, invitationUrl } = payload;
+    const { email, firstName, employeeRegistrationNumber, invitationUrl } = payload;
 
     // Validate required fields
     if (!email || !firstName || !invitationUrl) {
@@ -32,22 +33,22 @@ Deno.serve(async (req: any) => {
       );
     }
 
-    // Get Gmail credentials from environment
+    // Get Resend credentials from environment
     // deno-lint-ignore no-undef
-    const gmailUser = Deno.env.get("GMAIL_USER");
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
     // deno-lint-ignore no-undef
-    const gmailPassword = Deno.env.get("GMAIL_PASSWORD");
+    const resendFromEmail = Deno.env.get("RESEND_FROM_EMAIL");
 
-    console.log("📧 [send-employee-invitation] Gmail User:", gmailUser ? "✓ Set" : "❌ Not set");
-    console.log("📧 [send-employee-invitation] Gmail Password:", gmailPassword ? "✓ Set" : "❌ Not set");
-    
-    if (!gmailUser || !gmailPassword) {
-      console.error("❌ Gmail credentials not configured");
+    console.log("📧 [send-employee-invitation] RESEND_API_KEY:", resendApiKey ? "✓ Set" : "❌ Not set");
+    console.log("📧 [send-employee-invitation] RESEND_FROM_EMAIL:", resendFromEmail ? "✓ Set" : "❌ Not set");
+
+    if (!resendApiKey || !resendFromEmail) {
+      console.error("❌ Resend credentials not configured");
       return new Response(
-        JSON.stringify({ 
-          error: "Gmail credentials not configured",
-          gmailUserSet: !!gmailUser,
-          gmailPasswordSet: !!gmailPassword
+        JSON.stringify({
+          error: "Resend credentials not configured",
+          resendApiKeySet: !!resendApiKey,
+          resendFromEmailSet: !!resendFromEmail,
         }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -106,45 +107,35 @@ Deno.serve(async (req: any) => {
     `;
 
     console.log("📧 [send-employee-invitation] Sending email to:", email);
-    console.log("📧 [send-employee-invitation] From:", gmailUser);
 
-    // Convert credentials to base64 for SMTP AUTH
-    const credentials = btoa(`${gmailUser}:${gmailPassword}`);
-
-    // Send email via Gmail SMTP
-    const smtpHeaders = {
-      "Content-Type": "text/plain; charset=utf-8",
-    };
-
-    // Prepare email message in SMTP format
-    const emailMessage = `From: ${gmailUser}
-To: ${email}
-Subject: Welcome, ${firstName}! Complete Your Registration
-MIME-Version: 1.0
-Content-Type: text/html; charset=utf-8
-
-${htmlContent}`;
-
-    console.log("📧 [send-employee-invitation] Connecting to Gmail SMTP...");
-
-    // Use Gmail SMTP via REST API (simpler approach)
-    // Create proper email envelope
-    const response = await fetch("https://smtp.gmail.com:587", {
+    const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
-      headers: smtpHeaders,
-      body: emailMessage,
-    }).catch(async (err) => {
-      console.error("📧 [send-employee-invitation] Direct SMTP failed, trying alternative:", err.message);
-      
-      // Fallback: Use a simple HTTP-based email service that works with basic auth
-      // We'll construct a raw SMTP request manually
-      return await sendViaGmailSmtp(gmailUser, gmailPassword, email, firstName, htmlContent);
+      headers: {
+        "Authorization": `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: resendFromEmail,
+        to: [email],
+        subject: `Welcome, ${firstName}! Complete Your Registration`,
+        html: htmlContent,
+      }),
     });
 
-    console.log("📧 [send-employee-invitation] Email send completed");
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Resend error:", { status: response.status, body: errorText });
+      return new Response(
+        JSON.stringify({ error: "Failed to send email", details: errorText }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const resendResult = await response.json();
+    console.log("✅ Resend success:", resendResult);
 
     return new Response(
-      JSON.stringify({ success: true, email: email, message: "Email queued for sending" }),
+      JSON.stringify({ success: true, email, messageId: resendResult.id }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
@@ -156,72 +147,3 @@ ${htmlContent}`;
     );
   }
 });
-
-// Helper function to send via Gmail SMTP using raw socket connection
-async function sendViaGmailSmtp(gmailUser: string, gmailPassword: string, toEmail: string, firstName: string, htmlContent: string): Promise<Response> {
-  try {
-    console.log("📧 [sendViaGmailSmtp] Attempting SMTP connection to Gmail on port 465...");
-    
-    // Create TLS connection to Gmail SMTP (port 465 - SMTPS)
-    const conn = await Deno.connect({
-      hostname: "smtp.gmail.com",
-      port: 465,
-      transport: "tcp",
-    });
-
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
-    // Helper to send command and wait for response
-    async function sendCommand(cmd: string): Promise<string> {
-      await conn.write(encoder.encode(cmd + "\r\n"));
-      const buf = new Uint8Array(1024);
-      const n = await conn.read(buf);
-      return decoder.decode(buf.subarray(0, n));
-    }
-
-    // SMTP handshake
-    const welcomeMsg = await sendCommand("EHLO localhost");
-    console.log("📧 [SMTP] Welcome:", welcomeMsg.substring(0, 50));
-
-    // AUTH LOGIN
-    await sendCommand("AUTH LOGIN");
-    await sendCommand(btoa(gmailUser)); // Base64 encoded email
-    await sendCommand(btoa(gmailPassword)); // Base64 encoded password
-
-    // FROM
-    await sendCommand(`MAIL FROM:<${gmailUser}>`);
-
-    // TO
-    await sendCommand(`RCPT TO:<${toEmail}>`);
-
-    // DATA
-    await sendCommand("DATA");
-
-    // Email headers and body
-    const emailData = `From: ${gmailUser}\r
-To: ${toEmail}\r
-Subject: Welcome, ${firstName}! Complete Your Registration\r
-MIME-Version: 1.0\r
-Content-Type: text/html; charset=utf-8\r
-\r
-${htmlContent}\r
-.\r
-`;
-
-    await conn.write(encoder.encode(emailData));
-
-    // QUIT
-    await sendCommand("QUIT");
-    conn.close();
-
-    console.log("✅ Email sent successfully via Gmail SMTP");
-    return new Response(
-      JSON.stringify({ success: true, message: "Email sent via SMTP" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    console.error("❌ Gmail SMTP error:", error);
-    throw error;
-  }
-}

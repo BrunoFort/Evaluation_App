@@ -1,46 +1,32 @@
-# Como Deployar a Edge Function de Convite de Employee
+# Como Deployar a Edge Function de Convite de Employee (Resend)
 
-## Excelente Notícia! 🎉
-
-Você já tem `GMAIL_USER` e `GMAIL_PASSWORD` configurados no Supabase. A Edge Function vai usar exatamente esses mesmos secrets.
-
-**Nenhuma configuração adicional é necessária!**
-
-## Passo Único: Deploy a Função
-
-Abra o terminal na raiz do projeto e execute:
+## 1) Login no Supabase CLI
 
 ```bash
 supabase login
 ```
 
-(Se pedir, faça login com sua conta Supabase)
+## 2) Configurar secrets do Resend
 
-Depois:
+```bash
+supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
+supabase secrets set RESEND_FROM_EMAIL=onboarding@resend.dev
+```
+
+`RESEND_FROM_EMAIL` precisa ser um remetente válido no Resend (domínio verificado ou `onboarding@resend.dev` para testes).
+
+## 3) Deploy da função
 
 ```bash
 supabase functions deploy send-employee-invitation
 ```
 
-Pronto! ✅
-
-## Pronto! ✅
-
-Agora quando um employer criar um employee:
-1. O employee será salvo no banco
-2. Automaticamente um email de convite será enviado (via Gmail SMTP usando `GMAIL_USER` e `GMAIL_PASSWORD`)
-3. O email conterá um link para a página de registro com dados pré-preenchidos
-
----
-
-## Ver os Logs da Função
-
-Se precisar debugar:
+## 4) Ver logs (se necessário)
 
 ```bash
 supabase functions logs send-employee-invitation
 ```
 
-É isso! Sem precisa de nada novo, você já tem tudo que precisa configurado. 🚀
+Pronto: ao criar employee, o sistema envia convite via Resend automaticamente.
 
 

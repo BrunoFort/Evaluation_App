@@ -18,43 +18,44 @@ export async function sendEmployeeInvitationEmail(
     console.log("   Email:", email);
     console.log("   URL:", invitationUrl);
 
-    // Get Supabase URL and API key from environment
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    const functionUrl = `${supabaseUrl}/functions/v1/send-employee-invitation`;
+    const payload = {
+      email,
+      firstName,
+      lastName,
+      employeeRegistrationNumber,
+      invitationUrl,
+    };
 
-    console.log("📧 Calling:", functionUrl);
-    console.log("📧 Using apikey header for authentication");
-
-    // Call the Edge Function with required apikey header
-    const response = await fetch(functionUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": supabaseAnonKey,
-      },
-      body: JSON.stringify({
-        email,
-        firstName,
-        lastName,
-        employeeRegistrationNumber,
-        invitationUrl,
-      }),
-    });
-
-    console.log("📧 Response status:", response.status);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ Edge Function error:", {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
+    const invokeFunction = async () => {
+      const { data, error } = await supabase.functions.invoke("send-employee-invitation", {
+        body: payload,
       });
-      throw new Error(`Edge Function returned status ${response.status}: ${errorText}`);
+
+      if (error) {
+        const message = error.message || "Unknown Edge Function error";
+        throw new Error(message);
+      }
+
+      return data;
+    };
+
+    let data;
+
+    try {
+      data = await invokeFunction();
+    } catch (firstError) {
+      const shouldRetryAuth = /401|JWT|authorization/i.test(String(firstError?.message || ""));
+      if (!shouldRetryAuth) throw firstError;
+
+      console.warn("📧 First invoke failed, trying to refresh auth session...");
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        throw new Error(`Failed to refresh auth session: ${refreshError.message}`);
+      }
+
+      data = await invokeFunction();
     }
 
-    const data = await response.json();
     console.log("✅ Edge Function success:", data);
 
     return {
