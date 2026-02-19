@@ -32,8 +32,27 @@ export async function sendEmployeeInvitationEmail(
       });
 
       if (error) {
-        const message = error.message || "Unknown Edge Function error";
-        throw new Error(message);
+        let parsedContext = null;
+        try {
+          if (error.context?.json) {
+            parsedContext = await error.context.json();
+          }
+        } catch {
+          parsedContext = null;
+        }
+
+        const contextText = JSON.stringify(parsedContext || {});
+        const isResendSandbox =
+          /testing emails to your own email address/i.test(contextText) ||
+          /verify a domain at resend.com\/domains/i.test(contextText) ||
+          parsedContext?.providerStatus === 403;
+
+        const enrichedError = new Error(error.message || "Unknown Edge Function error");
+        enrichedError.isResendSandbox = isResendSandbox;
+        enrichedError.providerStatus = parsedContext?.providerStatus;
+        enrichedError.providerError = parsedContext?.providerError;
+        enrichedError.details = parsedContext;
+        throw enrichedError;
       }
 
       return data;

@@ -125,9 +125,22 @@ Deno.serve(async (req: any) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("❌ Resend error:", { status: response.status, body: errorText });
+
+      let resendError: any = null;
+      try {
+        resendError = JSON.parse(errorText);
+      } catch {
+        resendError = { raw: errorText };
+      }
+
       return new Response(
-        JSON.stringify({ error: "Failed to send email", details: errorText }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          error: "Failed to send email",
+          provider: "resend",
+          providerStatus: response.status,
+          providerError: resendError,
+        }),
+        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 

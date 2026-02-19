@@ -174,7 +174,11 @@ export default function EmployerEmployeeAddPage() {
         toast.success("Employee created and invitation email sent!");
       } catch (err) {
         console.error("Email invitation failed:", err);
-        toast.success("Employee created successfully! (Email sending failed - you can resend it manually)");
+        if (err?.isResendSandbox) {
+          toast.error("Employee created, but Resend sandbox blocked this recipient. Verify a domain in Resend and update RESEND_FROM_EMAIL.");
+        } else {
+          toast.success("Employee created successfully! (Email sending failed - you can resend it manually)");
+        }
       }
 
       navigate("/employer/employees");
