@@ -37,7 +37,7 @@ export default function HomePage() {
         <img
           src={SHIME_LOGO_BLACK}
           alt="Shime Logo"
-          className="w-[32rem] h-[32rem] max-w-[45vw] max-h-[45vh] object-contain"
+          className="w-[32rem] h-[32rem] max-w-[90vw] max-h-[90vh] object-contain"
         />
       </section>
 
