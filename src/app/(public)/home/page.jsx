@@ -33,7 +33,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-neutral-50 flex flex-col items-center">
 
       {/* LOGO */}
-      <section className="min-h-[34vh] w-full flex items-center justify-center px-6">
+      <section className="min-h-[24vh] w-full flex items-center justify-center px-6">
         <img
           src={SHIME_LOGO_BLACK}
           alt="Shime Logo"
@@ -42,7 +42,7 @@ export default function HomePage() {
       </section>
 
       {/* HERO */}
-      <section className="max-w-4xl text-center space-y-6 mb-16 px-6">
+      <section className="max-w-4xl text-center space-y-6 mb-16 px-6 -mt-6">
         <h1 className="text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
           Fast, Secure Access to Employee Evaluations  
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
