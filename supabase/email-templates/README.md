@@ -1,8 +1,8 @@
 Use these templates in Supabase Dashboard:
 
-Authentication > Email Templates > Confirm Signup
+Authentication > Email Templates
 
-- Use employee-confirmation.html for the employee project template.
-- Use employer-confirmation.html for the employer project template.
+- Confirm Signup: use employee-confirmation.html (unified).
+- Reset Password: use reset-password.html.
 
-Both templates reference the Shime logo hosted in shime-assets.
+Templates reference the Shime logo hosted in shime-assets.
