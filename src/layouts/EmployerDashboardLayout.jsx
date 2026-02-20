@@ -76,7 +76,7 @@ export default function EmployerDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pt-4 pb-4 px-6 space-y-4">
+      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pt-4 pb-4 px-6">
 
         {/* Logo */}
         <div className="flex items-center justify-center">
@@ -88,7 +88,7 @@ export default function EmployerDashboardLayout({ children }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-1">
+        <nav className="mt-4 flex flex-col gap-1">
           {navItems.map((item, i) => {
             const active = location.pathname === item.path;
             const Icon = item.icon;
