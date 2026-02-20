@@ -216,8 +216,13 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
     onSubmit(data);
   }
 
+  function handleInvalid(formErrors) {
+    console.warn("Employer register validation errors:", formErrors);
+    toast.error("Please fill in all required fields.");
+  }
+
   return (
-    <form onSubmit={handleSubmit(internalSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(internalSubmit, handleInvalid)} className="space-y-8">
 
       {/* EMPLOYER */}
       <div className="space-y-4">
