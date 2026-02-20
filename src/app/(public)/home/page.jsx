@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { ArrowRight, ShieldCheck, Sparkles, Clock } from "lucide-react";
-import ShimeLogo from "@/assets/shime-logo-black.png";
+import { SHIME_LOGO_BLACK } from "@/lib/branding";
 
 export default function HomePage() {
   const [token, setToken] = useState("");
@@ -35,7 +35,7 @@ export default function HomePage() {
       {/* LOGO */}
       <div className="w-full max-w-6xl flex items-center mb-20">
         <img
-          src={ShimeLogo}
+          src={SHIME_LOGO_BLACK}
           alt="Shime Logo"
           className="w-64 h-64 object-contain"  // 3x maior
         />

@@ -8,7 +8,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import ShimeLogo from "@/assets/shime-logo-white.png";
+import { SHIME_LOGO_WHITE } from "@/lib/branding";
 import { supabase } from "/src/lib/supabaseClient";
 
 export default function CompanyLayout({ children }) {
@@ -31,7 +31,7 @@ export default function CompanyLayout({ children }) {
         {/* Logo */}
         <div className="flex items-center justify-center mb-12">
           <img
-            src={ShimeLogo}
+            src={SHIME_LOGO_WHITE}
             alt="Shime Logo"
             className="w-32 h-32 object-contain"
           />
