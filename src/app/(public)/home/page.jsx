@@ -30,19 +30,19 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-neutral-50 flex flex-col items-center px-6 py-16">
+    <main className="min-h-screen bg-neutral-50 flex flex-col items-center">
 
       {/* LOGO */}
-      <div className="w-full max-w-6xl flex items-center mb-20">
+      <section className="min-h-screen w-full flex items-center justify-center px-6">
         <img
           src={SHIME_LOGO_BLACK}
           alt="Shime Logo"
-          className="w-64 h-64 object-contain"  // 3x maior
+          className="w-[48rem] h-[48rem] max-w-[90vw] max-h-[90vh] object-contain"
         />
-      </div>
+      </section>
 
       {/* HERO */}
-      <section className="max-w-4xl text-center space-y-6 mb-16">
+      <section className="max-w-4xl text-center space-y-6 mb-16 px-6">
         <h1 className="text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
           Fast, Secure Access to Employee Evaluations  
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
@@ -56,7 +56,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA BUTTONS */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 w-full max-w-xl">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 w-full max-w-xl px-6">
 
         <Link
           to="/employer/login"
@@ -76,7 +76,7 @@ export default function HomePage() {
       </section>
 
       {/* DIRECT LINK ACCESS (DISCREET) */}
-      <section className="w-full max-w-xl mb-20 opacity-80">
+      <section className="w-full max-w-xl mb-20 opacity-80 px-6">
         <label className="block text-sm font-medium text-neutral-600 mb-2">
           Received a Shime evaluation link? (Employer access only)
         </label>
@@ -101,7 +101,7 @@ export default function HomePage() {
       </section>
 
       {/* ADVANTAGES */}
-      <section className="w-full max-w-5xl mb-24">
+      <section className="w-full max-w-5xl mb-24 px-6">
         <h2 className="text-3xl font-bold text-neutral-900 text-center mb-10">
           Why Shime?
         </h2>
@@ -139,7 +139,7 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="w-full max-w-6xl border-t border-neutral-200 pt-6 mt-10 text-center text-neutral-500 text-sm">
+      <footer className="w-full max-w-6xl border-t border-neutral-200 pt-6 mt-10 text-center text-neutral-500 text-sm px-6">
         © {new Date().getFullYear()} Shime — Empowering professional growth with clarity and trust.
       </footer>
 
