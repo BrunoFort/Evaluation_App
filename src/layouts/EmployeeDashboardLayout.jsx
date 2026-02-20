@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, Share2, LogOut } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Share2, Settings, LogOut } from "lucide-react";
 import ShineLogo from "@/assets/shine-logo.png";
 import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAuth";
 
@@ -13,6 +13,7 @@ export default function EmployeeDashboardLayout({ children }) {
     { label: "Dashboard", icon: LayoutDashboard, path: "/employee" },
     { label: "My Evaluations", icon: ClipboardList, path: "/employee/evaluations" },
     { label: "Share Reference", icon: Share2, path: "/employee/share" },
+    { label: "Settings", icon: Settings, path: "/employee/settings" },
   ];
 
   return (
