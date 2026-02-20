@@ -57,13 +57,34 @@ export default function EmployerRegisterPage() {
     console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
     try {
+      const normalizedEmail = (data.contactEmail || "").toLowerCase();
+
+      if (normalizedEmail) {
+        const { data: existingEmployer, error: existingError } = await supabase
+          .from("employers")
+          .select("id")
+          .or(`email.eq.${normalizedEmail},contact_email.eq.${normalizedEmail}`)
+          .maybeSingle();
+
+        if (existingError) {
+          console.warn("Employer pre-check failed:", existingError);
+        }
+
+        if (existingEmployer) {
+          const message = "An employer with this email already exists. Please login.";
+          setError(message);
+          toast.error(message);
+          return;
+        }
+      }
+
       // 1) cria usuário de autenticação
       console.log("📝 Passo 1: Criando usuário de autenticação...");
 
       const redirectTo = `${window.location.origin}/employer/login`;
 
       const { data: auth, error: authError } = await supabase.auth.signUp({
-        email: data.contactEmail,
+        email: normalizedEmail || data.contactEmail,
         password: data.password,
         options: {
           emailRedirectTo: redirectTo,
@@ -135,7 +156,10 @@ export default function EmployerRegisterPage() {
       console.error("Mensagem do erro:", err?.message);
       console.error("Detalhes do erro:", err);
       
-      const message = err?.message || "Houve um erro ao criar sua conta.";
+      const rawMessage = err?.message || "Houve um erro ao criar sua conta.";
+      const message = rawMessage.includes("employers_email_key") || rawMessage.includes("duplicate key")
+        ? "An employer with this email already exists. Please login."
+        : rawMessage;
       setError(message);
       toast.error(message);
     } finally {

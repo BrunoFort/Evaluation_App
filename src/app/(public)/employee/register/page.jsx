@@ -79,14 +79,15 @@ export default function EmployeeRegisterPage() {
     setLoading(true);
 
     const { name, email, password, confirm } = form;
+    const normalizedEmail = (email || "").toLowerCase();
 
-    if (!name || !email || !password || !confirm) {
+    if (!name || !normalizedEmail || !password || !confirm) {
       setError("Please fill in all fields.");
       setLoading(false);
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError("Please enter a valid email address.");
       setLoading(false);
       return;
@@ -104,13 +105,33 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
+    const { data: existingEmployee, error: existingError } = await supabase
+      .from("employees")
+      .select("id")
+      .or(`email.eq.${normalizedEmail},contact_email.eq.${normalizedEmail}`)
+      .maybeSingle();
+
+    if (existingError) {
+      console.warn("Employee pre-check failed:", existingError);
+    }
+
+    if (existingEmployee) {
+      setError("An employee with this email already exists. Please login.");
+      setLoading(false);
+      return;
+    }
+
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
     });
 
     if (signUpError) {
-      setError(signUpError.message);
+      const rawMessage = signUpError.message || "Failed to create account.";
+      const message = rawMessage.toLowerCase().includes("already")
+        ? "An account with this email already exists. Please login."
+        : rawMessage;
+      setError(message);
       setLoading(false);
       return;
     }
