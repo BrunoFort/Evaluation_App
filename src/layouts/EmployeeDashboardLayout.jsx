@@ -20,9 +20,9 @@ export default function EmployeeDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
+      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-6 px-6 shadow-xl">
 
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center mb-2">
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
