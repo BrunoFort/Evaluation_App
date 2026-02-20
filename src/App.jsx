@@ -46,6 +46,7 @@ import EmployeeResetPasswordPage from "@/app/(public)/employee/reset-password/pa
 // EMPLOYEE DASHBOARD
 import EmployeeDashboardPage from "@/app/(dashboard)/employee/page.jsx";
 import EmployeeProfilePage from "@/app/(dashboard)/employee/profile/page.jsx";
+import EmployeeSettingsPage from "@/app/(dashboard)/employee/settings/page.jsx";
 
 export default function App() {
   useEffect(() => {
@@ -180,6 +181,15 @@ export default function App() {
           element={
             <RequireEmployeeAuth>
               <EmployeeProfilePage />
+            </RequireEmployeeAuth>
+          }
+        />
+
+        <Route
+          path="/employee/settings"
+          element={
+            <RequireEmployeeAuth>
+              <EmployeeSettingsPage />
             </RequireEmployeeAuth>
           }
         />
