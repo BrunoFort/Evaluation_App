@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "/src/lib/supabaseClient";
+import { toast } from "sonner";
 
 import Card from "/src/components/ui/card.jsx";
 import Input from "/src/components/ui/input.jsx";
@@ -36,6 +37,7 @@ export default function EmployeeRegisterPage() {
   });
 
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
 
@@ -76,6 +78,7 @@ export default function EmployeeRegisterPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
     setLoading(true);
 
     const { name, email, password, confirm } = form;
@@ -83,24 +86,28 @@ export default function EmployeeRegisterPage() {
 
     if (!name || !normalizedEmail || !password || !confirm) {
       setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       setLoading(false);
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
       setLoading(false);
       return;
     }
 
     if (!validatePassword(password)) {
       setError(passwordHelpText());
+      toast.error(passwordHelpText());
       setLoading(false);
       return;
     }
 
     if (password !== confirm) {
       setError("Senhas nao correspondem");
+      toast.error("Senhas nao correspondem");
       setLoading(false);
       return;
     }
@@ -117,13 +124,19 @@ export default function EmployeeRegisterPage() {
 
     if (existingEmployee) {
       setError("An employee with this email already exists. Please login.");
+      toast.error("An employee with this email already exists. Please login.");
       setLoading(false);
       return;
     }
 
+    const redirectTo = `${window.location.origin}/employee/login`;
+
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: normalizedEmail,
       password,
+      options: {
+        emailRedirectTo: redirectTo,
+      },
     });
 
     if (signUpError) {
@@ -132,6 +145,7 @@ export default function EmployeeRegisterPage() {
         ? "An account with this email already exists. Please login."
         : rawMessage;
       setError(message);
+      toast.error(message);
       setLoading(false);
       return;
     }
@@ -172,7 +186,12 @@ export default function EmployeeRegisterPage() {
       });
     }
 
-    navigate("/employee");
+    toast.success("Registration completed. Check your email to confirm your account.");
+    setSuccessMessage(
+      "Registration completed. We sent a confirmation email. Please confirm to finish your account."
+    );
+    setLoading(false);
+    return;
   }
 
   return (
@@ -194,13 +213,20 @@ export default function EmployeeRegisterPage() {
             />
           </div>
 
+          {successMessage && (
+            <div className="text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+              {successMessage}
+            </div>
+          )}
+
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          {!successMessage && (
+            <form onSubmit={handleSubmit} className="space-y-5">
 
             <Input
               label="Full Name"
@@ -232,20 +258,30 @@ export default function EmployeeRegisterPage() {
               onChange={(e) => updateField("confirm", e.target.value)}
             />
 
-            <Button type="submit" fullWidth size="lg" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account"}
-            </Button>
+              <Button type="submit" fullWidth size="lg" disabled={loading}>
+                {loading ? "Creating account..." : "Create Account"}
+              </Button>
 
-            <Button
-              type="button"
-              variant="outline"
-              fullWidth
-              size="lg"
-              onClick={() => navigate(-1)}
+              <Button
+                type="button"
+                variant="outline"
+                fullWidth
+                size="lg"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
+            </form>
+          )}
+
+          {successMessage && (
+            <Link
+              to="/employee/login"
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-100 transition"
             >
-              Cancel
-            </Button>
-          </form>
+              Return to Login
+            </Link>
+          )}
 
           <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
             <Link to="/employee/login" className="hover:text-purple-600">

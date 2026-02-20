@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+      .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 8px; }
+      .header { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: #ffffff; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+      .header h1 { margin: 12px 0 0; font-size: 24px; }
+      .logo { display: block; margin: 0 auto; height: 44px; }
+      .content { color: #333333; line-height: 1.6; }
+      .button { display: inline-block; background-color: #a855f7; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+      .footer { border-top: 1px solid #eeeeee; margin-top: 30px; padding-top: 20px; font-size: 12px; color: #999999; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://zidtqkmuifogeqptdseb.supabase.co/storage/v1/object/public/shime-assets/branding/shime-logo-black.png" alt="Shime" class="logo" />
+        <h1>Confirm your employer account</h1>
+      </div>
+
+      <div class="content">
+        <p>Hi,</p>
+
+        <p>Please confirm your email to activate your employer account.</p>
+
+        <center>
+          <a href="{{ .ConfirmationURL }}" class="button">Confirm Email</a>
+        </center>
+
+        <p>If the button does not work, copy and paste this URL in your browser:</p>
+        <p><small>{{ .ConfirmationURL }}</small></p>
+
+        <p>If you did not create a Shime account, you can safely ignore this email.</p>
+
+        <p>Best regards,<br>The Shime Team</p>
+      </div>
+
+      <div class="footer">
+        <p>This is an automated email. Please do not reply to this message.</p>
+      </div>
+    </div>
+  </body>
+</html>

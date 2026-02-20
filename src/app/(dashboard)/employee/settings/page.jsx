@@ -311,19 +311,20 @@ export default function EmployeeSettingsPage() {
 
   async function handleSave() {
     setSuccessMessage("");
+    const normalizedPersonalEmail = form.personal_email?.toLowerCase() || "";
 
     if (!form.first_name || !form.last_name) {
       toast.error("First name and last name are required.");
       return;
     }
 
-    if (!form.personal_email) {
+    if (!normalizedPersonalEmail) {
       toast.error("Personal email is required.");
       setFieldErrors((prev) => ({ ...prev, personal_email: "Personal email is required." }));
       return;
     }
 
-    if (!validateEmail(form.personal_email)) {
+    if (!validateEmail(normalizedPersonalEmail)) {
       toast.error("Invalid personal email format.");
       setFieldErrors((prev) => ({ ...prev, personal_email: "Invalid email format." }));
       return;
@@ -398,7 +399,7 @@ export default function EmployeeSettingsPage() {
         last_name: form.last_name,
         personal_id_type: form.document_type,
         personal_id_number: form.document_number,
-        contact_email: form.personal_email,
+        contact_email: normalizedPersonalEmail,
         phone_country: form.phone_country_code,
         phone_number: form.phone_number,
         address_city: form.address_city,
@@ -833,16 +834,14 @@ export default function EmployeeSettingsPage() {
               Cancel
             </button>
 
-            {isDirty && (
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-              >
-                <Save className="w-5 h-5" />
-                {saving ? "Saving..." : "Save Settings"}
-              </button>
-            )}
+            <button
+              onClick={handleSave}
+              disabled={saving || !isDirty}
+              className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
+            >
+              <Save className="w-5 h-5" />
+              {saving ? "Saving..." : "Save Settings"}
+            </button>
           </div>
         </div>
       </div>

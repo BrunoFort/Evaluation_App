@@ -15,6 +15,10 @@ supabase login
 ```bash
 supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
 supabase secrets set RESEND_FROM_EMAIL=onboarding@resend.dev
+
+Opcional (logo no email):
+
+supabase secrets set SHIME_LOGO_BLACK_URL=https://zidtqkmuifogeqptdseb.supabase.co/storage/v1/object/public/shime-assets/branding/shime-logo-black.png
 ```
 
 Use um remetente válido no Resend (domínio verificado ou `onboarding@resend.dev` para testes).

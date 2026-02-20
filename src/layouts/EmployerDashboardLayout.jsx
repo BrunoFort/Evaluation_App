@@ -76,7 +76,7 @@ export default function EmployerDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pb-2 px-6">
+      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col pb-2 px-6 shadow-xl">
 
         {/* Logo */}
         <div className="h-2" />
@@ -92,7 +92,7 @@ export default function EmployerDashboardLayout({ children }) {
         <div className="h-2" />
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-2">
           {navItems.map((item, i) => {
             const active = location.pathname === item.path;
             const Icon = item.icon;
@@ -101,13 +101,11 @@ export default function EmployerDashboardLayout({ children }) {
               <Link
                 key={i}
                 to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition
-                  ${active ? "bg-white text-neutral-900 shadow-md" : "text-white hover:bg-white/20"}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium transition
+                  ${active ? "bg-white text-purple-700 shadow-md" : "hover:bg-white/20"}
                 `}
               >
-                <Icon
-                  className={`w-5 h-5 ${active ? "text-neutral-900" : "text-white"}`}
-                />
+                <Icon className={`w-5 h-5 ${active ? "text-purple-700" : "text-white"}`} />
                 {item.label}
               </Link>
             );
@@ -116,13 +114,13 @@ export default function EmployerDashboardLayout({ children }) {
 
         {/* Logout */}
         <button
-          className="mt-2 flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-white hover:bg-white/20 transition"
+          className="mt-2 flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
           onClick={async () => {
             await logout();
             navigate("/employer/login");
           }}
         >
-          <LogOut className="w-5 h-5 text-white" />
+          <LogOut className="w-5 h-5" />
           Logout
         </button>
       </aside>

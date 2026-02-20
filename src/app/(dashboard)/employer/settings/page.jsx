@@ -365,6 +365,7 @@ export default function EmployerSettingsPage() {
 
   async function handleSave() {
     setSuccessMessage("");
+    const normalizedContactEmail = form.contactEmail?.toLowerCase() || "";
     if (!form.firstName || !form.lastName) {
       toast.error("First name and last name are required.");
       return;
@@ -432,13 +433,13 @@ export default function EmployerSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
 
-    if (!form.contactEmail) {
+    if (!normalizedContactEmail) {
       toast.error("Contact email is required.");
       setFieldErrors((prev) => ({ ...prev, contactEmail: "Contact email is required." }));
       return;
     }
 
-    if (!validateEmail(form.contactEmail)) {
+    if (!validateEmail(normalizedContactEmail)) {
       toast.error("Invalid email format.");
       setFieldErrors((prev) => ({ ...prev, contactEmail: "Invalid email format." }));
       return;
@@ -454,7 +455,10 @@ export default function EmployerSettingsPage() {
     setSaving(true);
 
     try {
-      const updated = await updateEmployer(employer.employerId, form);
+      const updated = await updateEmployer(employer.employerId, {
+        ...form,
+        contactEmail: normalizedContactEmail,
+      });
 
       if (form.firstName?.trim() || form.lastName?.trim()) {
         console.log("📍 SETTINGS SAVE: Syncing name to auth metadata");
@@ -796,16 +800,14 @@ export default function EmployerSettingsPage() {
                 Cancel
               </button>
 
-              {isDirty && (
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 font-semibold"
-                >
-                  <Save className="w-5 h-5" />
-                  {saving ? "Saving..." : "Save Settings"}
-                </button>
-              )}
+              <button
+                onClick={handleSave}
+                disabled={saving || !isDirty}
+                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
+              >
+                <Save className="w-5 h-5" />
+                {saving ? "Saving..." : "Save Settings"}
+              </button>
             </div>
           </div>
         </div>

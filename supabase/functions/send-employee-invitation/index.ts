@@ -1,5 +1,5 @@
 // deno-lint-ignore no-undef
-// deno-env-allow RESEND_API_KEY,RESEND_FROM_EMAIL
+// deno-env-allow RESEND_API_KEY,RESEND_FROM_EMAIL,SHIME_LOGO_BLACK_URL
 declare const Deno: any;
 
 const corsHeaders = {
@@ -38,6 +38,8 @@ Deno.serve(async (req: any) => {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     // deno-lint-ignore no-undef
     const resendFromEmail = Deno.env.get("RESEND_FROM_EMAIL");
+    const shimeLogoUrl = Deno.env.get("SHIME_LOGO_BLACK_URL")
+      || "https://zidtqkmuifogeqptdseb.supabase.co/storage/v1/object/public/shime-assets/branding/shime-logo-black.png";
 
     console.log("📧 [send-employee-invitation] RESEND_API_KEY:", resendApiKey ? "✓ Set" : "❌ Not set");
     console.log("📧 [send-employee-invitation] RESEND_FROM_EMAIL:", resendFromEmail ? "✓ Set" : "❌ Not set");
@@ -64,7 +66,8 @@ Deno.serve(async (req: any) => {
             body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
             .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; }
             .header { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
-            .header h1 { margin: 0; font-size: 24px; }
+            .header h1 { margin: 12px 0 0; font-size: 24px; }
+            .logo { display: block; margin: 0 auto; height: 44px; }
             .content { color: #333; line-height: 1.6; }
             .button { display: inline-block; background-color: #a855f7; color: white; padding: 12px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
             .footer { border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px; font-size: 12px; color: #999; }
@@ -74,7 +77,8 @@ Deno.serve(async (req: any) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>Welcome to Our Platform!</h1>
+              <img src="${shimeLogoUrl}" alt="Shime" class="logo" />
+              <h1>Welcome to Shime!</h1>
             </div>
 
             <div class="content">
@@ -95,7 +99,7 @@ Deno.serve(async (req: any) => {
 
               <p>This link will pre-fill your registration with your name and email for a faster signup process.</p>
 
-              <p>Best regards,<br>The Evaluation Team</p>
+              <p>Best regards,<br>The Shime Team</p>
             </div>
 
             <div class="footer">
@@ -117,7 +121,7 @@ Deno.serve(async (req: any) => {
       body: JSON.stringify({
         from: resendFromEmail,
         to: [email],
-        subject: `Welcome, ${firstName}! Complete Your Registration`,
+        subject: `Welcome to Shime, ${firstName}! Complete Your Registration`,
         html: htmlContent,
       }),
     });

@@ -26,6 +26,7 @@ export default function EmployerRegisterPage() {
   const { login } = useEmployerAuth();
 
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
 
@@ -53,6 +54,7 @@ export default function EmployerRegisterPage() {
 
   async function handleRegister(data) {
     setError("");
+    setSuccessMessage("");
     setLoading(true);
     console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
@@ -144,12 +146,12 @@ export default function EmployerRegisterPage() {
         toast.info("Photo will be uploaded after email confirmation.");
       }
 
-      console.log("📝 Passo 3: Redirecionando para login...");
+      console.log("📝 Passo 3: Registro concluido - exibindo mensagem...");
 
-      // 3) redireciona para login
-      toast.success("Registro realizado com sucesso! Faça login para continuar.");
-      navigate(`/employer/login`);
-      console.log("✅ Navigate foi chamado!");
+      toast.success("Registration completed. Check your email to confirm your account.");
+      setSuccessMessage(
+        "Registration completed. We sent a confirmation email. Please confirm to finish your account."
+      );
     } catch (err) {
       console.error("❌❌❌ ERRO NO REGISTRO:", err);
       console.error("Nome do erro:", err?.name);
@@ -186,13 +188,30 @@ export default function EmployerRegisterPage() {
             />
           </div>
 
+          {successMessage && (
+            <div className="text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
+              {successMessage}
+            </div>
+          )}
+
           {error && (
             <div className="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          <EmployerRegisterForm onSubmit={handleRegister} loading={loading} />
+          {!successMessage && (
+            <EmployerRegisterForm onSubmit={handleRegister} loading={loading} />
+          )}
+
+          {successMessage && (
+            <Link
+              to="/employer/login"
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-100 transition"
+            >
+              Return to Login
+            </Link>
+          )}
 
           <div className="flex items-center justify-between text-sm text-neutral-600 pt-2">
             <Link to="/employer/login" className="hover:text-purple-600">
