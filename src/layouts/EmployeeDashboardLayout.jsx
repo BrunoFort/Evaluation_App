@@ -20,7 +20,9 @@ export default function EmployeeDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col pt-4 pb-4 px-6 shadow-xl">
+      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col pb-4 px-6 shadow-xl">
+
+        <div className="h-4" />
 
         <div className="flex items-center justify-center">
           <img
@@ -30,7 +32,9 @@ export default function EmployeeDashboardLayout({ children }) {
           />
         </div>
 
-        <nav className="mt-4 flex flex-col gap-2">
+        <div className="h-4" />
+
+        <nav className="flex flex-col gap-2">
           {navItems.map((item, i) => {
             const active = location.pathname === item.path;
             const Icon = item.icon;
