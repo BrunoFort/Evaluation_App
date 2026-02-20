@@ -79,7 +79,7 @@ export default function EmployerDashboardLayout({ children }) {
       <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pb-4 px-6">
 
         {/* Logo */}
-        <div className="h-4" />
+        <div style={{ height: 24 }} />
 
         <div className="flex items-center justify-center">
           <img
@@ -89,7 +89,7 @@ export default function EmployerDashboardLayout({ children }) {
           />
         </div>
 
-        <div className="h-4" />
+        <div style={{ height: 24 }} />
 
         {/* Navigation */}
         <nav className="flex flex-col gap-1">
