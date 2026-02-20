@@ -38,7 +38,7 @@ export default function HomePage() {
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
-            className="w-full h-full object-contain scale-[1.2]"
+            className="w-full h-full object-contain scale-[1.4]"
           />
         </div>
       </section>
