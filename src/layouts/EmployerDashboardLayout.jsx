@@ -79,11 +79,11 @@ export default function EmployerDashboardLayout({ children }) {
       <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col py-8 px-6">
 
         {/* Logo */}
-        <div className="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-4">
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
-            className="w-40 h-40 object-contain"
+            className="w-60 h-60 object-contain"
           />
         </div>
 

@@ -22,11 +22,11 @@ export default function EmployeeDashboardLayout({ children }) {
       {/* SIDEBAR */}
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
 
-        <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center justify-center mb-4">
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
-            className="w-40 h-40 object-contain"
+            className="w-60 h-60 object-contain"
           />
         </div>
 
