@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Share2, Settings, LogOut } from "lucide-react";
-import { SHIME_LOGO_WHITE } from "@/lib/branding";
+import { SHIME_LOGO_BLACK } from "@/lib/branding";
 import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAuth";
 
 export default function EmployeeDashboardLayout({ children }) {
@@ -23,7 +23,13 @@ export default function EmployeeDashboardLayout({ children }) {
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
 
         <div className="flex items-center justify-center mb-12">
-          <img src={SHIME_LOGO_WHITE} alt="Shime Logo" className="w-40 h-40 object-contain" />
+          <div className="rounded-2xl bg-white/95 p-4 shadow-lg">
+            <img
+              src={SHIME_LOGO_BLACK}
+              alt="Shime Logo"
+              className="w-36 h-36 object-contain"
+            />
+          </div>
         </div>
 
         <nav className="flex flex-col gap-2">

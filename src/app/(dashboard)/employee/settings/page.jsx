@@ -68,12 +68,32 @@ export default function EmployeeSettingsPage() {
         const data = await getEmployeeById(employee.employeeId);
         const { position, ...rest } = data || {};
 
+        const normalized = {
+          ...rest,
+          first_name: rest.first_name ?? rest.firstName ?? "",
+          last_name: rest.last_name ?? rest.lastName ?? "",
+          document_type: rest.document_type ?? rest.personal_id_type ?? rest.personalIdType ?? "",
+          document_number:
+            rest.document_number ?? rest.personal_id_number ?? rest.personalIdNumber ?? "",
+          personal_email: rest.personal_email ?? rest.contact_email ?? rest.contactEmail ?? rest.email ?? "",
+          phone_country_code:
+            rest.phone_country_code ?? rest.phone_country ?? rest.phoneCountry ?? "+1",
+          phone_number: rest.phone_number ?? rest.phoneNumber ?? "",
+          address_city: rest.address_city ?? rest.city ?? rest.addressCity ?? "",
+          address_province: rest.address_province ?? rest.province ?? rest.addressProvince ?? "",
+          address_country: rest.address_country ?? rest.country ?? rest.addressCountry ?? "Canada",
+          address_postal_code:
+            rest.address_postal_code ?? rest.postal_code ?? rest.postalCode ?? "",
+          address_street: rest.address_street ?? rest.street ?? rest.addressStreet ?? "",
+          address_number: rest.address_number ?? rest.number ?? rest.addressNumber ?? "",
+        };
+
         setForm((prev) => ({
           ...prev,
-          ...rest,
+          ...normalized,
         }));
 
-        initialFormRef.current = { ...rest };
+        initialFormRef.current = { ...normalized };
       } catch (err) {
         console.error(err);
         toast.error("Error loading employee settings.");
@@ -373,7 +393,26 @@ export default function EmployeeSettingsPage() {
     setSaving(true);
 
     try {
-      const updated = await updateEmployee(employee.employeeId, form);
+      const payload = {
+        first_name: form.first_name,
+        last_name: form.last_name,
+        personal_id_type: form.document_type,
+        personal_id_number: form.document_number,
+        contact_email: form.personal_email,
+        phone_country: form.phone_country_code,
+        phone_number: form.phone_number,
+        address_city: form.address_city,
+        address_province: form.address_province,
+        address_country: form.address_country,
+        address_postal_code: form.address_postal_code,
+        address_street: form.address_street,
+        address_number: form.address_number,
+        sin: form.sin,
+        work_permit: form.work_permit,
+        work_permit_expiry: form.work_permit_expiry,
+      };
+
+      const updated = await updateEmployee(employee.employeeId, payload);
 
       if (form.first_name?.trim() || form.last_name?.trim()) {
         console.log("📍 EMPLOYEE SETTINGS SAVE: Syncing name to auth metadata");
