@@ -76,10 +76,10 @@ export default function EmployerDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pb-4 px-6">
+      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col pb-2 px-6">
 
         {/* Logo */}
-        <div style={{ height: 24 }} />
+        <div className="h-2" />
 
         <div className="flex items-center justify-center">
           <img
@@ -89,7 +89,7 @@ export default function EmployerDashboardLayout({ children }) {
           />
         </div>
 
-        <div style={{ height: 24 }} />
+        <div className="h-2" />
 
         {/* Navigation */}
         <nav className="flex flex-col gap-1">

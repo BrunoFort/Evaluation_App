@@ -20,9 +20,9 @@ export default function EmployeeDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col pb-4 px-6 shadow-xl">
+      <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col pb-2 px-6 shadow-xl">
 
-        <div style={{ height: 24 }} />
+        <div className="h-2" />
 
         <div className="flex items-center justify-center">
           <img
@@ -32,7 +32,7 @@ export default function EmployeeDashboardLayout({ children }) {
           />
         </div>
 
-        <div style={{ height: 24 }} />
+        <div className="h-2" />
 
         <nav className="flex flex-col gap-2">
           {navItems.map((item, i) => {
