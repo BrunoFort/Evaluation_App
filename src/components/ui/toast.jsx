@@ -33,7 +33,7 @@ const toastVariants = cva(
       variant: {
         default: "border-neutral-300 bg-background text-neutral-900",
         destructive:
-          "border-neutral-300 bg-neutral-100 text-neutral-900", // Shine não usa destructive tokens
+          "border-neutral-300 bg-neutral-100 text-neutral-900", // Shime nao usa destructive tokens
       },
     },
     defaultVariants: {

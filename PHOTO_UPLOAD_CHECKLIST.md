@@ -24,14 +24,14 @@ console.log("Foto em localStorage:", foto ? `SIM (${(foto.length / 1024 / 1024).
 
 ### Verificar que o bucket existe:
 1. Ir para Supabase Dashboard > Storage
-2. Provar que bucket `shine-assets` existe
+2. Provar que bucket `shime-assets` existe
 3. Verificar se há pasta `profile-photos/` dentro
 
 ### Verificar RLS Policies:
 
 **Importante**: Se as políticas RLS estão muito restritivas, o upload vai falhar silenciosamente.
 
-1. Ir para Supabase Dashboard > Storage > `shine-assets`
+1. Ir para Supabase Dashboard > Storage > `shime-assets`
 2. Clicar em "Policies"
 3. Deve ter algo como:
 
@@ -42,7 +42,7 @@ ON storage.objects
 FOR INSERT
 TO authenticated
 WITH CHECK (
-  bucket_id = 'shine-assets' 
+  bucket_id = 'shime-assets' 
   AND (storage.foldername(name))[1] = auth.uid()::text
 );
 ```
@@ -55,13 +55,13 @@ CREATE POLICY "Permitir upload de teste"
 ON storage.objects
 FOR INSERT
 TO authenticated
-WITH CHECK (bucket_id = 'shine-assets');
+WITH CHECK (bucket_id = 'shime-assets');
 
 -- Permitir leitura pública
 CREATE POLICY "Permitir leitura pública"
 ON storage.objects
 FOR SELECT
-USING (bucket_id = 'shine-assets');
+USING (bucket_id = 'shime-assets');
 ```
 
 ---
@@ -80,7 +80,7 @@ console.log("Usuário autenticado:", data?.user ? `SIM (${data.user.id})` : "NÃ
 // Cole no console após fazer login
 const blob = new Blob(['teste'], { type: 'text/plain' });
 const { data, error } = await supabase.storage
-  .from('shine-assets')
+  .from('shime-assets')
   .upload(`test/${Date.now()}-test.txt`, blob);
 
 console.log("Upload bem-sucedido:", !error);
@@ -92,7 +92,7 @@ if (error) console.error("Erro do upload:", error);
 ## 4. Problemas Comuns
 
 ### ❌ "TypeError: Cannot read property 'upload' of undefined"
-- Bucket `shine-assets` não existe
+- Bucket `shime-assets` nao existe
 - **Solução**: Criar bucket no Supabase Dashboard > Storage
 
 ### ❌ "Policy violation"

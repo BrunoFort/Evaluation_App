@@ -26,14 +26,14 @@ export default function PublicEvaluationPage() {
 
   if (loading) {
     return (
-      <PublicLayout title="Loading – Shine">
+      <PublicLayout title="Loading – Shime">
         <p className="text-neutral-500">Loading evaluation...</p>
       </PublicLayout>
     );
   }
 
   return (
-    <PublicLayout title="Evaluation – Shine">
+    <PublicLayout title="Evaluation – Shime">
       <div className="max-w-3xl mx-auto space-y-10">
         {evaluations.map((evaluation) => (
           <Card

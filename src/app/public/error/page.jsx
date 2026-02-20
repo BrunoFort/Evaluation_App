@@ -3,7 +3,7 @@ import IconHome from "/src/components/ui/IconHome.jsx";
 
 export default function PublicErrorPage() {
   return (
-    <PublicLayout title="Error – Shine">
+    <PublicLayout title="Error – Shime">
       <div className="text-center py-20">
         <h1 className="text-3xl font-bold text-red-600 mb-4">
           Something went wrong

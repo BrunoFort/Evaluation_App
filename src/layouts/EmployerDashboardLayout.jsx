@@ -9,7 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import ShineLogo from "@/assets/shine-logo.png";
+import ShimeLogo from "@/assets/shime-logo-white.png";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import Avatar from "/src/components/ui/Avatar.jsx";
 import { loadAuthAvatar } from "/src/features/shared-photo/supabasePhotoStorage";
@@ -76,14 +76,14 @@ export default function EmployerDashboardLayout({ children }) {
     <div className="flex min-h-screen bg-neutral-50">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-white border-r border-neutral-200 flex flex-col py-8 px-6">
+      <aside className="w-64 bg-gradient-to-b from-neutral-900 to-neutral-800 text-white flex flex-col py-8 px-6">
 
         {/* Logo */}
         <div className="flex items-center justify-center mb-10">
           <img
-            src={ShineLogo}
-            alt="Shine Logo"
-            className="w-28 h-28 object-contain"
+            src={ShimeLogo}
+            alt="Shime Logo"
+            className="w-40 h-40 object-contain"
           />
         </div>
 
@@ -98,17 +98,11 @@ export default function EmployerDashboardLayout({ children }) {
                 key={i}
                 to={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition
-                  ${
-                    active
-                      ? "bg-purple-100 text-purple-700 border border-purple-300"
-                      : "text-neutral-700 hover:bg-neutral-100"
-                  }
+                  ${active ? "bg-white text-neutral-900 shadow-md" : "text-white hover:bg-white/20"}
                 `}
               >
                 <Icon
-                  className={`w-5 h-5 ${
-                    active ? "text-purple-700" : "text-neutral-500"
-                  }`}
+                  className={`w-5 h-5 ${active ? "text-neutral-900" : "text-white"}`}
                 />
                 {item.label}
               </Link>
@@ -116,17 +110,15 @@ export default function EmployerDashboardLayout({ children }) {
           })}
         </nav>
 
-        <div className="flex-1" />
-
         {/* Logout */}
         <button
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-neutral-700 hover:bg-neutral-100 transition"
+          className="mt-2 flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium text-white hover:bg-white/20 transition"
           onClick={async () => {
             await logout();
             navigate("/employer/login");
           }}
         >
-          <LogOut className="w-5 h-5 text-neutral-500" />
+          <LogOut className="w-5 h-5 text-white" />
           Logout
         </button>
       </aside>

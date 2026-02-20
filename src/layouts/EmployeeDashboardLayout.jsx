@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Share2, Settings, LogOut } from "lucide-react";
-import ShineLogo from "@/assets/shine-logo.png";
+import ShimeLogo from "@/assets/shime-logo-white.png";
 import { useEmployeeAuth } from "/src/features/auth/employee/hooks/useEmployeeAuth";
 
 export default function EmployeeDashboardLayout({ children }) {
@@ -23,7 +23,7 @@ export default function EmployeeDashboardLayout({ children }) {
       <aside className="w-72 bg-gradient-to-b from-purple-600 to-pink-600 text-white flex flex-col py-10 px-6 shadow-xl">
 
         <div className="flex items-center justify-center mb-12">
-          <img src={ShineLogo} alt="Shine Logo" className="w-32 h-32 object-contain" />
+          <img src={ShimeLogo} alt="Shime Logo" className="w-40 h-40 object-contain" />
         </div>
 
         <nav className="flex flex-col gap-2">
@@ -46,10 +46,8 @@ export default function EmployeeDashboardLayout({ children }) {
           })}
         </nav>
 
-        <div className="flex-1" />
-
         <button
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
+          className="mt-2 flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/20 transition text-white"
           onClick={async () => {
             await logout();
             navigate("/employee/login");

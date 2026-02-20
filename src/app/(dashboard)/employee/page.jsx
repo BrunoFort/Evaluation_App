@@ -35,7 +35,7 @@ export default function EmployeeDashboardPage() {
     });
 
     const baseUrl =
-      typeof window !== "undefined" ? window.location.origin : "https://shine.app";
+      typeof window !== "undefined" ? window.location.origin : "https://shime.app";
 
     setPublicLink(`${baseUrl}/reference/${token}`);
   }
@@ -105,7 +105,7 @@ export default function EmployeeDashboardPage() {
 
         <div className="p-8 bg-white rounded-2xl shadow-xl border border-neutral-200">
           <p className="text-neutral-700 mb-4">
-            Share your verified Shine reference with recruiters or employers.
+            Share your verified Shime reference with recruiters or employers.
           </p>
 
           {publicLink && (

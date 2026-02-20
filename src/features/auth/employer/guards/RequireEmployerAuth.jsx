@@ -6,7 +6,7 @@ export function RequireEmployerAuth({ children }) {
   const location = useLocation();
 
   if (loading) {
-    return null; // Pode trocar por um spinner Shine depois
+    return null; // Pode trocar por um spinner Shime depois
   }
 
   if (!employer) {

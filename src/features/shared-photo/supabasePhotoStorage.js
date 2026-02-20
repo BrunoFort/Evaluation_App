@@ -1,6 +1,6 @@
 import { supabase } from "/src/lib/supabaseClient";
 
-const BUCKET = "shine-assets";
+const BUCKET = "shime-assets";
 
 function getFileExtension(file) {
   if (file?.name && file.name.includes(".")) {

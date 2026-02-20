@@ -2,7 +2,7 @@ import PublicLayout from "/src/layouts/PublicLayout.jsx";
 
 export default function TokenInvalidPage() {
   return (
-    <PublicLayout title="Invalid Token – Shine">
+    <PublicLayout title="Invalid Token – Shime">
       <div className="text-center py-20">
         <h1 className="text-3xl font-bold text-red-600 mb-4">
           Invalid Link

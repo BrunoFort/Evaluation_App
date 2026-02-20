@@ -2,7 +2,7 @@ import PublicLayout from "/src/layouts/PublicLayout.jsx";
 
 export default function TokenExpiredPage() {
   return (
-    <PublicLayout title="Token Expired – Shine">
+    <PublicLayout title="Token Expired – Shime">
       <div className="text-center py-20">
         <h1 className="text-3xl font-bold text-red-600 mb-4">
           This link has expired

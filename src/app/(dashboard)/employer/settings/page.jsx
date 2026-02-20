@@ -370,6 +370,11 @@ export default function EmployerSettingsPage() {
       return;
     }
 
+    if (!form.employeeRegistration?.trim()) {
+      toast.error("Employee registration number is required.");
+      return;
+    }
+
     if (!form.personalIdType) {
       toast.error("Personal ID type is required.");
       return;
@@ -382,6 +387,12 @@ export default function EmployerSettingsPage() {
     }
 
     setFieldErrors((prev) => ({ ...prev, personalIdNumber: "" }));
+
+    const selectedJobTitle = form.allowCustomJobTitle ? form.customJobTitle : form.jobTitle;
+    if (!selectedJobTitle?.trim()) {
+      toast.error("Job title is required.");
+      return;
+    }
 
     if (!validateBusinessNumberLocal(form.businessNumber)) {
       toast.error("Business Number must have exactly 9 digits.");
@@ -407,6 +418,26 @@ export default function EmployerSettingsPage() {
       return;
     }
 
+    if (!form.phoneNumber) {
+      toast.error("Phone number is required.");
+      setFieldErrors((prev) => ({ ...prev, phoneNumber: "Phone number is required." }));
+      return;
+    }
+
+    if (!isValidPhoneNumber(form.phoneNumber, form.phoneCountry)) {
+      toast.error("Invalid phone number for selected country.");
+      setFieldErrors((prev) => ({ ...prev, phoneNumber: "Invalid phone number." }));
+      return;
+    }
+
+    setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
+
+    if (!form.contactEmail) {
+      toast.error("Contact email is required.");
+      setFieldErrors((prev) => ({ ...prev, contactEmail: "Contact email is required." }));
+      return;
+    }
+
     if (!validateEmail(form.contactEmail)) {
       toast.error("Invalid email format.");
       setFieldErrors((prev) => ({ ...prev, contactEmail: "Invalid email format." }));
@@ -415,13 +446,10 @@ export default function EmployerSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, contactEmail: "" }));
 
-    if (form.phoneNumber && !isValidPhoneNumber(form.phoneNumber, form.phoneCountry)) {
-      toast.error("Invalid phone number for selected country.");
-      setFieldErrors((prev) => ({ ...prev, phoneNumber: "Invalid phone number." }));
+    if (!form.preferredContact.phone && !form.preferredContact.email) {
+      toast.error("Select at least one preferred contact method.");
       return;
     }
-
-    setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
 
     setSaving(true);
 
@@ -532,19 +560,19 @@ export default function EmployerSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">First Name *</label>
-                <input type="text" name="firstName" value={form.firstName} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="firstName" value={form.firstName} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Last Name *</label>
-                <input type="text" name="lastName" value={form.lastName} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="lastName" value={form.lastName} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Personal ID Type *</label>
-                <select name="personalIdType" value={form.personalIdType} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2">
+                <select name="personalIdType" value={form.personalIdType} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2">
                   <option value="">Select ID Type</option>
                   <option value="Passport">Passport</option>
                   <option value="DriversLicense">Driver’s License</option>
@@ -568,6 +596,7 @@ export default function EmployerSettingsPage() {
                       setFieldErrors((prev) => ({ ...prev, personalIdNumber: "" }));
                     }
                   }}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
                 {fieldErrors.personalIdNumber && (
@@ -583,12 +612,12 @@ export default function EmployerSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Employee Registration Number *</label>
-                <input type="text" name="employeeRegistration" value={form.employeeRegistration} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="employeeRegistration" value={form.employeeRegistration} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-sm font-medium text-neutral-700">Job Title</label>
+                  <label className="text-sm font-medium text-neutral-700">Job Title *</label>
 
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-neutral-700">Custom entry</span>
@@ -622,6 +651,7 @@ export default function EmployerSettingsPage() {
                   onChange={handleChange}
                   onBlur={handleBusinessNumberBlur}
                   maxLength={9}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
                 {fieldErrors.businessNumber && (
@@ -637,6 +667,7 @@ export default function EmployerSettingsPage() {
                   value={form.companyName}
                   onChange={handleChange}
                   disabled={loadingBN}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
                 {fieldErrors.companyName && (
@@ -654,6 +685,7 @@ export default function EmployerSettingsPage() {
                   value={form.postalCode}
                   onChange={handleChange}
                   onBlur={handlePostalCodeBlur}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
                 {fieldErrors.postalCode && (
@@ -663,17 +695,17 @@ export default function EmployerSettingsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">City *</label>
-                <input type="text" name="city" value={form.city} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="city" value={form.city} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Province / Territory *</label>
-                <input type="text" name="province" value={form.province} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="province" value={form.province} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">Country *</label>
-                <input type="text" name="country" value={form.country} onChange={handleChange} className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
+                <input type="text" name="country" value={form.country} onChange={handleChange} required className="w-full border border-neutral-300 rounded-lg px-3 py-2" />
               </div>
             </div>
 
@@ -683,7 +715,7 @@ export default function EmployerSettingsPage() {
                 onChange={(v) => setForm((prev) => ({ ...prev, phoneNumber: v }))}
                 countryCode={form.phoneCountry}
                 onCountryCodeChange={(v) => setForm((prev) => ({ ...prev, phoneCountry: v }))}
-                label="Phone Number"
+                label="Phone Number *"
               />
               {fieldErrors.phoneNumber && (
                 <p className="text-red-600 text-sm">{fieldErrors.phoneNumber}</p>
@@ -698,12 +730,18 @@ export default function EmployerSettingsPage() {
                 value={form.contactEmail}
                 onChange={handleChange}
                 onBlur={() => {
-                  if (!validateEmail(form.contactEmail)) {
+                  if (!form.contactEmail) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      contactEmail: "Contact email is required.",
+                    }));
+                  } else if (!validateEmail(form.contactEmail)) {
                     setFieldErrors((prev) => ({ ...prev, contactEmail: "Invalid email format." }));
                   } else {
                     setFieldErrors((prev) => ({ ...prev, contactEmail: "" }));
                   }
                 }}
+                required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
               {fieldErrors.contactEmail && (
@@ -712,7 +750,7 @@ export default function EmployerSettingsPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-700">Preferred Contact Method</label>
+              <label className="block text-sm font-medium text-neutral-700">Preferred Contact Method *</label>
 
               <div className="flex items-center gap-6">
                 <label className="flex items-center gap-2">

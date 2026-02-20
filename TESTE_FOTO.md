@@ -3,10 +3,10 @@
 ## Requisitos Prévios
 
 1. **Verificar Supabase Storage**
-   - Bucket `shine-assets` deve existir
+  - Bucket `shime-assets` deve existir
    - Deve ter pasta `profile-photos/` (ou será criada automaticamente)
 
-2. **Verificar RLS Policies** (Supabase Dashboard > Storage > shine-assets > Policies)
+2. **Verificar RLS Policies** (Supabase Dashboard > Storage > shime-assets > Policies)
    - Se não houver nenhuma policy, criar uma permissiva para teste:
    ```sql
    -- Permitir autenticados fazer upload
@@ -14,13 +14,13 @@
    ON storage.objects
    FOR INSERT
    TO authenticated
-   WITH CHECK (bucket_id = 'shine-assets');
+  WITH CHECK (bucket_id = 'shime-assets');
    
    -- Permitir leitura pública
    CREATE POLICY "Leitura pública"
    ON storage.objects
    FOR SELECT
-   USING (bucket_id = 'shine-assets');
+  USING (bucket_id = 'shime-assets');
    ```
 
 ---
@@ -97,7 +97,7 @@ Abra DevTools (F12) > Console
 ### 7. Verificar Resultado
 
 - A foto deve aparecer no uploader de foto na página de settings
-- No Supabase Dashboard > Storage > shine-assets, deve ter:
+- No Supabase Dashboard > Storage > shime-assets, deve ter:
   - Pasta: `profile-photos/employer/[ID]/`
   - Arquivo: `[TIMESTAMP]-profile.jpg`
 
@@ -145,7 +145,7 @@ Abra DevTools (F12) > Console
 **Solução:**
 - Verificar RLS policies no Supabase Dashboard
 - Fazer logout e login novamente
-- Checar se bucket `shine-assets` existe
+- Checar se bucket `shime-assets` existe
 
 ---
 

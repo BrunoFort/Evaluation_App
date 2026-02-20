@@ -37,7 +37,6 @@ export default function EmployeeSettingsPage() {
     last_name: "",
     document_type: "",
     document_number: "",
-    position: "",
     address_city: "",
     address_province: "",
     address_country: "Canada",
@@ -67,13 +66,14 @@ export default function EmployeeSettingsPage() {
 
       try {
         const data = await getEmployeeById(employee.employeeId);
+        const { position, ...rest } = data || {};
 
         setForm((prev) => ({
           ...prev,
-          ...data,
+          ...rest,
         }));
 
-        initialFormRef.current = { ...data };
+        initialFormRef.current = { ...rest };
       } catch (err) {
         console.error(err);
         toast.error("Error loading employee settings.");
@@ -137,13 +137,20 @@ export default function EmployeeSettingsPage() {
 
         console.log("🔵 Loading existing avatar...");
         const metadata = await loadAuthAvatar();
-        const avatarUrl = metadata?.avatar_url || null;
-        setPhotoUrl(avatarUrl);
+        const avatarPath = metadata?.avatar_path || "";
+        const avatarUrl = metadata?.avatar_url || "";
+        const isEmployeeAvatar =
+          avatarPath.includes("/employee/") || avatarUrl.includes("/employee/");
+        setPhotoUrl(isEmployeeAvatar ? avatarUrl : null);
       } catch (err) {
         console.error("🔴 Photo initialization error:", err);
         try {
           const metadata = await loadAuthAvatar();
-          setPhotoUrl(metadata?.avatar_url || null);
+          const avatarPath = metadata?.avatar_path || "";
+          const avatarUrl = metadata?.avatar_url || "";
+          const isEmployeeAvatar =
+            avatarPath.includes("/employee/") || avatarUrl.includes("/employee/");
+          setPhotoUrl(isEmployeeAvatar ? avatarUrl : null);
         } catch (fallbackErr) {
           console.error("🔴 Fallback avatar load failed:", fallbackErr);
         }
@@ -263,7 +270,7 @@ export default function EmployeeSettingsPage() {
 
   function isValidPhoneNumber(value, countryCode) {
     const digits = normalizePhoneNumber(value || "");
-    if (!digits) return true; // Optional field
+    if (!digits) return false;
     const rule = phoneRules[countryCode];
     if (rule) return digits.length >= rule.min && digits.length <= rule.max;
     return digits.length >= 8 && digits.length <= 15;
@@ -271,13 +278,14 @@ export default function EmployeeSettingsPage() {
 
   function validateSIN(sin) {
     // SIN format: XXX-XXX-XXX (can have spaces or hyphens)
+    if (!sin) return false;
     const cleaned = (sin || "").replace(/[\s-]/g, "");
     return /^\d{9}$/.test(cleaned);
   }
 
   function validateWorkPermit(permit) {
-    // Work permit format: 1 letter + 9 numbers (optional field)
-    if (!permit) return true;
+    // Work permit format: 1 letter + 9 numbers
+    if (!permit) return false;
     return /^[A-Za-z]\d{9}$/.test(permit);
   }
 
@@ -289,6 +297,12 @@ export default function EmployeeSettingsPage() {
       return;
     }
 
+    if (!form.personal_email) {
+      toast.error("Personal email is required.");
+      setFieldErrors((prev) => ({ ...prev, personal_email: "Personal email is required." }));
+      return;
+    }
+
     if (!validateEmail(form.personal_email)) {
       toast.error("Invalid personal email format.");
       setFieldErrors((prev) => ({ ...prev, personal_email: "Invalid email format." }));
@@ -297,7 +311,17 @@ export default function EmployeeSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, personal_email: "" }));
 
-    if (form.sin && !validateSIN(form.sin)) {
+    if (!form.document_type) {
+      toast.error("Document type is required.");
+      return;
+    }
+
+    if (!form.document_number) {
+      toast.error("Document number is required.");
+      return;
+    }
+
+    if (!validateSIN(form.sin)) {
       toast.error("Invalid SIN format. Use XXX-XXX-XXX.");
       setFieldErrors((prev) => ({ ...prev, sin: "Invalid SIN format." }));
       return;
@@ -305,7 +329,7 @@ export default function EmployeeSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, sin: "" }));
 
-    if (form.work_permit && !validateWorkPermit(form.work_permit)) {
+    if (!validateWorkPermit(form.work_permit)) {
       toast.error("Invalid Work Permit format. Use 1 letter + 9 numbers.");
       setFieldErrors((prev) => ({ ...prev, work_permit: "Invalid format." }));
       return;
@@ -313,7 +337,12 @@ export default function EmployeeSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, work_permit: "" }));
 
-    if (form.phone_number && !isValidPhoneNumber(form.phone_number, form.phone_country_code)) {
+    if (!form.work_permit_expiry) {
+      toast.error("Work permit expiry date is required.");
+      return;
+    }
+
+    if (!isValidPhoneNumber(form.phone_number, form.phone_country_code)) {
       toast.error("Invalid phone number for selected country.");
       setFieldErrors((prev) => ({ ...prev, phone_number: "Invalid phone number." }));
       return;
@@ -321,9 +350,25 @@ export default function EmployeeSettingsPage() {
 
     setFieldErrors((prev) => ({ ...prev, phone_number: "" }));
 
-    if (form.address_postal_code && !validatePostalCode(form.address_postal_code)) {
+    if (!form.address_street || !form.address_number) {
+      toast.error("Street name and number are required.");
+      return;
+    }
+
+    if (!form.address_postal_code) {
+      toast.error("Postal code is required.");
+      return;
+    }
+
+    if (!validatePostalCode(form.address_postal_code)) {
       toast.error("Invalid Postal Code.");
       return;
+    }
+
+    if (!form.address_city || !form.address_province || !form.address_country) {
+      toast.error("City, province, and country are required.");
+      return;
+    }
     }
 
     setSaving(true);
@@ -439,6 +484,7 @@ export default function EmployeeSettingsPage() {
                   name="first_name"
                   value={form.first_name}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
@@ -452,6 +498,7 @@ export default function EmployeeSettingsPage() {
                   name="last_name"
                   value={form.last_name}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
@@ -467,7 +514,12 @@ export default function EmployeeSettingsPage() {
                 value={form.personal_email}
                 onChange={handleChange}
                 onBlur={() => {
-                  if (!validateEmail(form.personal_email)) {
+                    if (!form.personal_email) {
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        personal_email: "Personal email is required.",
+                      }));
+                    } else if (!validateEmail(form.personal_email)) {
                     setFieldErrors((prev) => ({
                       ...prev,
                       personal_email: "Invalid email format.",
@@ -476,6 +528,7 @@ export default function EmployeeSettingsPage() {
                     setFieldErrors((prev) => ({ ...prev, personal_email: "" }));
                   }
                 }}
+                  required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
               {fieldErrors.personal_email && (
@@ -483,26 +536,16 @@ export default function EmployeeSettingsPage() {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Position</label>
-              <input
-                type="text"
-                name="position"
-                value={form.position}
-                onChange={handleChange}
-                className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Document Type
+                  Document Type *
                 </label>
                 <select
                   name="document_type"
                   value={form.document_type}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 >
                   <option value="">Select Document Type</option>
@@ -514,13 +557,14 @@ export default function EmployeeSettingsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Document Number
+                  Document Number *
                 </label>
                 <input
                   type="text"
                   name="document_number"
                   value={form.document_number}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
@@ -528,7 +572,7 @@ export default function EmployeeSettingsPage() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
-                SIN (Social Insurance Number)
+                SIN (Social Insurance Number) *
               </label>
               <input
                 type="text"
@@ -536,13 +580,18 @@ export default function EmployeeSettingsPage() {
                 value={form.sin}
                 onChange={handleChange}
                 onBlur={() => {
-                  if (form.sin && !validateSIN(form.sin)) {
-                    setFieldErrors((prev) => ({ ...prev, sin: "Invalid SIN format." }));
-                  } else {
-                    setFieldErrors((prev) => ({ ...prev, sin: "" }));
+                  if (!form.sin) {
+                    setFieldErrors((prev) => ({ ...prev, sin: "SIN is required." }));
+                    return;
                   }
+                  if (!validateSIN(form.sin)) {
+                    setFieldErrors((prev) => ({ ...prev, sin: "Invalid SIN format." }));
+                    return;
+                  }
+                  setFieldErrors((prev) => ({ ...prev, sin: "" }));
                 }}
                 placeholder="XXX-XXX-XXX"
+                required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
               {fieldErrors.sin && <p className="text-red-600 text-sm">{fieldErrors.sin}</p>}
@@ -550,7 +599,7 @@ export default function EmployeeSettingsPage() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Work Permit
+                Work Permit *
               </label>
               <input
                 type="text"
@@ -558,16 +607,24 @@ export default function EmployeeSettingsPage() {
                 value={form.work_permit}
                 onChange={handleChange}
                 onBlur={() => {
-                  if (form.work_permit && !validateWorkPermit(form.work_permit)) {
+                  if (!form.work_permit) {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      work_permit: "Work permit is required.",
+                    }));
+                    return;
+                  }
+                  if (!validateWorkPermit(form.work_permit)) {
                     setFieldErrors((prev) => ({
                       ...prev,
                       work_permit: "Invalid format.",
                     }));
-                  } else {
-                    setFieldErrors((prev) => ({ ...prev, work_permit: "" }));
+                    return;
                   }
+                  setFieldErrors((prev) => ({ ...prev, work_permit: "" }));
                 }}
                 placeholder="A123456789"
+                required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
               {fieldErrors.work_permit && (
@@ -577,13 +634,14 @@ export default function EmployeeSettingsPage() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Work Permit Expiry Date
+                Work Permit Expiry Date *
               </label>
               <input
                 type="date"
                 name="work_permit_expiry"
                 value={form.work_permit_expiry}
                 onChange={handleChange}
+                required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -601,7 +659,7 @@ export default function EmployeeSettingsPage() {
                 onCountryCodeChange={(v) =>
                   setForm((prev) => ({ ...prev, phone_country_code: v }))
                 }
-                label="Phone Number"
+                label="Phone Number *"
               />
               {fieldErrors.phone_number && (
                 <p className="text-red-600 text-sm">{fieldErrors.phone_number}</p>
@@ -616,26 +674,28 @@ export default function EmployeeSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Street Name
+                  Street Name *
                 </label>
                 <input
                   type="text"
                   name="address_street"
                   value={form.address_street}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Street Number
+                  Street Number *
                 </label>
                 <input
                   type="text"
                   name="address_number"
                   value={form.address_number}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
@@ -643,7 +703,7 @@ export default function EmployeeSettingsPage() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1">
-                Postal Code
+                Postal Code *
               </label>
               <input
                 type="text"
@@ -651,6 +711,7 @@ export default function EmployeeSettingsPage() {
                 value={form.address_postal_code}
                 onChange={handleChange}
                 onBlur={handlePostalCodeBlur}
+                required
                 className="w-full border border-neutral-300 rounded-lg px-3 py-2"
               />
               {fieldErrors.address_postal_code && (
@@ -660,36 +721,39 @@ export default function EmployeeSettingsPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">City</label>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">City *</label>
                 <input
                   type="text"
                   name="address_city"
                   value={form.address_city}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-1">
-                  Province
+                  Province *
                 </label>
                 <input
                   type="text"
                   name="address_province"
                   value={form.address_province}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">Country</label>
+                <label className="block text-sm font-medium text-neutral-700 mb-1">Country *</label>
                 <input
                   type="text"
                   name="address_country"
                   value={form.address_country}
                   onChange={handleChange}
+                  required
                   className="w-full border border-neutral-300 rounded-lg px-3 py-2"
                 />
               </div>

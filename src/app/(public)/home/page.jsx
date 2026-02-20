@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { ArrowRight, ShieldCheck, Sparkles, Clock } from "lucide-react";
-import ShineLogo from "@/assets/shine-logo.png";
+import ShimeLogo from "@/assets/shime-logo-black.png";
 
 export default function HomePage() {
   const [token, setToken] = useState("");
@@ -35,8 +35,8 @@ export default function HomePage() {
       {/* LOGO */}
       <div className="w-full max-w-6xl flex items-center mb-20">
         <img
-          src={ShineLogo}
-          alt="Shine Logo"
+          src={ShimeLogo}
+          alt="Shime Logo"
           className="w-64 h-64 object-contain"  // 3x maior
         />
       </div>
@@ -46,12 +46,12 @@ export default function HomePage() {
         <h1 className="text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
           Fast, Secure Access to Employee Evaluations  
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-            Helping Employees Shine
+            Helping Employees Shime
           </span>
         </h1>
 
         <p className="text-lg text-neutral-700 leading-relaxed max-w-2xl mx-auto">
-          Shine streamlines how employers access verified evaluations while empowering employees to present their strengths with confidence.
+          Shime streamlines how employers access verified evaluations while empowering employees to present their strengths with confidence.
         </p>
       </section>
 
@@ -78,7 +78,7 @@ export default function HomePage() {
       {/* DIRECT LINK ACCESS (DISCREET) */}
       <section className="w-full max-w-xl mb-20 opacity-80">
         <label className="block text-sm font-medium text-neutral-600 mb-2">
-          Received a Shine evaluation link? (Employer access only)
+          Received a Shime evaluation link? (Employer access only)
         </label>
 
         <div className="flex gap-3">
@@ -103,7 +103,7 @@ export default function HomePage() {
       {/* ADVANTAGES */}
       <section className="w-full max-w-5xl mb-24">
         <h2 className="text-3xl font-bold text-neutral-900 text-center mb-10">
-          Why Shine?
+          Why Shime?
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
@@ -129,7 +129,7 @@ export default function HomePage() {
           {/* CARD 3 */}
           <div className="bg-white shadow-md rounded-xl p-8 text-center space-y-4 border border-neutral-200">
             <Sparkles className="w-10 h-10 text-purple-600 mx-auto" />
-            <h3 className="text-xl font-semibold text-neutral-900">Employees Shine</h3>
+            <h3 className="text-xl font-semibold text-neutral-900">Employees Shime</h3>
             <p className="text-neutral-600 text-sm">
               Employees control their data and showcase their strengths with confidence.
             </p>
@@ -140,7 +140,7 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <footer className="w-full max-w-6xl border-t border-neutral-200 pt-6 mt-10 text-center text-neutral-500 text-sm">
-        © {new Date().getFullYear()} Shine — Empowering professional growth with clarity and trust.
+        © {new Date().getFullYear()} Shime — Empowering professional growth with clarity and trust.
       </footer>
 
     </main>
