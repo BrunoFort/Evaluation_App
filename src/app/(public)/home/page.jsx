@@ -34,11 +34,13 @@ export default function HomePage() {
 
       {/* LOGO */}
       <section className="w-full flex items-center justify-center px-6 pt-6 pb-2">
-        <img
-          src={SHIME_LOGO_BLACK}
-          alt="Shime Logo"
-          className="w-[32rem] h-[32rem] max-w-[90vw] max-h-[90vh] object-contain"
-        />
+        <div className="w-[32rem] h-[32rem] max-w-[90vw] max-h-[90vh] overflow-hidden flex items-center justify-center">
+          <img
+            src={SHIME_LOGO_BLACK}
+            alt="Shime Logo"
+            className="w-full h-full object-contain scale-[1.2]"
+          />
+        </div>
       </section>
 
       {/* HERO */}
