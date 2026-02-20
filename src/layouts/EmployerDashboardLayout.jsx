@@ -85,7 +85,7 @@ export default function EmployerDashboardLayout({ children }) {
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
-            className="w-72 h-72 object-contain"
+            className="w-30 h-30 object-contain"
           />
         </div>
 

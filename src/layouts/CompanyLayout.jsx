@@ -33,7 +33,7 @@ export default function CompanyLayout({ children }) {
           <img
             src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
-            className="w-32 h-32 object-contain"
+            className="w-30 h-30 object-contain"
           />
         </div>
 
