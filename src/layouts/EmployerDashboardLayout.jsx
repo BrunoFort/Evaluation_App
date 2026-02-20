@@ -9,7 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { SHIME_LOGO_WHITE } from "@/lib/branding";
+import { SHIME_LOGO_BLACK } from "@/lib/branding";
 import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import Avatar from "/src/components/ui/Avatar.jsx";
 import { loadAuthAvatar } from "/src/features/shared-photo/supabasePhotoStorage";
@@ -81,7 +81,7 @@ export default function EmployerDashboardLayout({ children }) {
         {/* Logo */}
         <div className="flex items-center justify-center mb-10">
           <img
-            src={SHIME_LOGO_WHITE}
+            src={SHIME_LOGO_BLACK}
             alt="Shime Logo"
             className="w-40 h-40 object-contain"
           />
