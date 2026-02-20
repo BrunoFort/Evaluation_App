@@ -369,7 +369,6 @@ export default function EmployeeSettingsPage() {
       toast.error("City, province, and country are required.");
       return;
     }
-    }
 
     setSaving(true);
 
