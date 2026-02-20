@@ -33,7 +33,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-neutral-50 flex flex-col items-center">
 
       {/* LOGO */}
-      <section className="min-h-screen w-full flex items-center justify-center px-6">
+      <section className="min-h-[50vh] w-full flex items-center justify-center px-6">
         <img
           src={SHIME_LOGO_BLACK}
           alt="Shime Logo"
