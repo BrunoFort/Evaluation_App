@@ -42,10 +42,16 @@ Deno.serve(async (req) => {
     const { data: authUser, error: authError } = await admin.auth.admin.getUserByEmail(rawEmail);
 
     if (authError) {
-      return new Response(
-        JSON.stringify({ error: authError.message || "Failed to check auth users" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      const message = authError.message || "Failed to check auth users";
+      const status = authError.status || 500;
+      const isNotFound = status === 404 || /not\s*found/i.test(message);
+
+      if (!isNotFound) {
+        return new Response(
+          JSON.stringify({ error: message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     let tableHit = false;
