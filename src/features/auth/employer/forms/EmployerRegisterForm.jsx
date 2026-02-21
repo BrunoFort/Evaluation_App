@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import NOCJobSelector from "@/features/shared-noc/NOCJobSelector";
@@ -17,7 +17,7 @@ const fsaMap = {
   V5K: { city: "Vancouver", province: "BC" },
 };
 
-export function EmployerRegisterForm({ onSubmit, loading }) {
+export function EmployerRegisterForm({ onSubmit, loading, serverErrors, onClearServerError }) {
   const {
     register,
     handleSubmit,
@@ -52,6 +52,28 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
   });
 
   const [loadingBN, setLoadingBN] = useState(false);
+  const contactEmailRef = useRef(null);
+  const contactEmailRegister = register("contactEmail", {
+    required: true,
+    pattern: {
+      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: "Invalid email format",
+    },
+  });
+
+  useEffect(() => {
+    if (!serverErrors?.contactEmail) return;
+
+    setError("contactEmail", {
+      type: "server",
+      message: serverErrors.contactEmail,
+    });
+
+    if (contactEmailRef.current) {
+      contactEmailRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      contactEmailRef.current.focus();
+    }
+  }, [serverErrors?.contactEmail, setError]);
 
   function validatePostalCode(code) {
     const regex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
@@ -408,16 +430,18 @@ export function EmployerRegisterForm({ onSubmit, loading }) {
           <label className="block text-sm font-medium text-neutral-700 mb-1">Contact Email *</label>
           <input className="w-full border border-neutral-300 rounded-lg px-3 py-2"
             type="email"
-            {...register("contactEmail", {
-              required: true,
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email format",
-              },
-            })}
+            {...contactEmailRegister}
+            ref={(el) => {
+              contactEmailRegister.ref(el);
+              contactEmailRef.current = el;
+            }}
             onChange={(e) => {
               const lower = e.target.value.toLowerCase();
               setValue("contactEmail", lower, { shouldValidate: true });
+              clearErrors("contactEmail");
+              if (onClearServerError) {
+                onClearServerError("contactEmail");
+              }
             }} />
           {errors.contactEmail && (
             <p className="text-red-600 text-sm">{errors.contactEmail.message}</p>

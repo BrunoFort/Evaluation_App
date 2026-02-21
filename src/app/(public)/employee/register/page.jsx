@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "/src/lib/supabaseClient";
 import { toast } from "sonner";
@@ -37,15 +37,23 @@ export default function EmployeeRegisterPage() {
   });
 
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
+  const emailRef = useRef(null);
 
   const registerPhotoKey = "employee-register-photo";
 
   useEffect(() => {
     setPhotoUrl(loadPhoto(registerPhotoKey));
   }, []);
+
+  useEffect(() => {
+    if (!fieldErrors?.email || !emailRef.current) return;
+    emailRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    emailRef.current.focus();
+  }, [fieldErrors]);
 
   async function handlePhotoUpload(file) {
     const dataUrl = await readFileAsDataUrl(file);
@@ -79,6 +87,7 @@ export default function EmployeeRegisterPage() {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setFieldErrors({});
     setLoading(true);
 
     const { name, email, password, confirm } = form;
@@ -115,7 +124,7 @@ export default function EmployeeRegisterPage() {
     const { data: existingEmployee, error: existingError } = await supabase
       .from("employees")
       .select("id")
-      .or(`email.eq.${normalizedEmail},contact_email.eq.${normalizedEmail}`)
+      .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
       .maybeSingle();
 
     if (existingError) {
@@ -123,8 +132,9 @@ export default function EmployeeRegisterPage() {
     }
 
     if (existingEmployee) {
-      setError("An employee with this email already exists. Please login.");
-      toast.error("An employee with this email already exists. Please login.");
+      const message = "An employee with this email already exists. Try a different email address or login.";
+      setFieldErrors({ email: message });
+      toast.error(message);
       setLoading(false);
       return;
     }
@@ -142,9 +152,13 @@ export default function EmployeeRegisterPage() {
     if (signUpError) {
       const rawMessage = signUpError.message || "Failed to create account.";
       const message = rawMessage.toLowerCase().includes("already")
-        ? "An account with this email already exists. Please login."
+        ? "An employee with this email already exists. Try a different email address or login."
         : rawMessage;
-      setError(message);
+      if (message.includes("email already exists")) {
+        setFieldErrors({ email: message });
+      } else {
+        setError(message);
+      }
       toast.error(message);
       setLoading(false);
       return;
@@ -191,13 +205,11 @@ export default function EmployeeRegisterPage() {
       "Registration completed. We sent a confirmation email. Please confirm to finish your account."
     );
     setLoading(false);
-    return;
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="w-full max-w-xl space-y-8">
-
         <PageHeader
           title="Employee Registration"
           subtitle="Create your employee account"
@@ -227,36 +239,44 @@ export default function EmployeeRegisterPage() {
 
           {!successMessage && (
             <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                label="Full Name"
+                placeholder="Enter your full name"
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+              />
 
-            <Input
-              label="Full Name"
-              placeholder="Enter your full name"
-              value={form.name}
-              onChange={(e) => updateField("name", e.target.value)}
-            />
+              <Input
+                label="Email Address"
+                placeholder="Enter your email"
+                value={form.email}
+                inputRef={emailRef}
+                onChange={(e) => {
+                  updateField("email", e.target.value.toLowerCase());
+                  if (fieldErrors.email) {
+                    setFieldErrors((prev) => ({ ...prev, email: "" }));
+                  }
+                }}
+              />
+              {fieldErrors.email && (
+                <p className="text-red-600 text-sm">{fieldErrors.email}</p>
+              )}
 
-            <Input
-              label="Email Address"
-              placeholder="Enter your email"
-              value={form.email}
-              onChange={(e) => updateField("email", e.target.value.toLowerCase())}
-            />
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Create a password"
+                value={form.password}
+                onChange={(e) => updateField("password", e.target.value)}
+              />
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Create a password"
-              value={form.password}
-              onChange={(e) => updateField("password", e.target.value)}
-            />
-
-            <Input
-              label="Confirm Password"
-              type="password"
-              placeholder="Re-enter your password"
-              value={form.confirm}
-              onChange={(e) => updateField("confirm", e.target.value)}
-            />
+              <Input
+                label="Confirm Password"
+                type="password"
+                placeholder="Re-enter your password"
+                value={form.confirm}
+                onChange={(e) => updateField("confirm", e.target.value)}
+              />
 
               <Button type="submit" fullWidth size="lg" disabled={loading}>
                 {loading ? "Creating account..." : "Create Account"}

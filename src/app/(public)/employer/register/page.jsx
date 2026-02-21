@@ -27,6 +27,7 @@ export default function EmployerRegisterPage() {
 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
 
@@ -55,6 +56,7 @@ export default function EmployerRegisterPage() {
   async function handleRegister(data) {
     setError("");
     setSuccessMessage("");
+    setFieldErrors({});
     setLoading(true);
     console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
@@ -65,7 +67,7 @@ export default function EmployerRegisterPage() {
         const { data: existingEmployer, error: existingError } = await supabase
           .from("employers")
           .select("id")
-          .or(`email.eq.${normalizedEmail},contact_email.eq.${normalizedEmail}`)
+          .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
           .maybeSingle();
 
         if (existingError) {
@@ -73,8 +75,8 @@ export default function EmployerRegisterPage() {
         }
 
         if (existingEmployer) {
-          const message = "An employer with this email already exists. Please login.";
-          setError(message);
+          const message = "An employer with this email already exists. Try a different email address or login.";
+          setFieldErrors({ contactEmail: message });
           toast.error(message);
           return;
         }
@@ -159,10 +161,15 @@ export default function EmployerRegisterPage() {
       console.error("Detalhes do erro:", err);
       
       const rawMessage = err?.message || "Houve um erro ao criar sua conta.";
-      const message = rawMessage.includes("employers_email_key") || rawMessage.includes("duplicate key")
-        ? "An employer with this email already exists. Please login."
+      const isDuplicate = rawMessage.includes("employers_email_key") || rawMessage.includes("duplicate key");
+      const message = isDuplicate
+        ? "An employer with this email already exists. Try a different email address or login."
         : rawMessage;
-      setError(message);
+      if (isDuplicate) {
+        setFieldErrors({ contactEmail: message });
+      } else {
+        setError(message);
+      }
       toast.error(message);
     } finally {
       setLoading(false);
@@ -201,7 +208,18 @@ export default function EmployerRegisterPage() {
           )}
 
           {!successMessage && (
-            <EmployerRegisterForm onSubmit={handleRegister} loading={loading} />
+            <EmployerRegisterForm
+              onSubmit={handleRegister}
+              loading={loading}
+              serverErrors={fieldErrors}
+              onClearServerError={(field) => {
+                if (!field) {
+                  setFieldErrors({});
+                  return;
+                }
+                setFieldErrors((prev) => ({ ...prev, [field]: "" }));
+              }}
+            />
           )}
 
           {successMessage && (

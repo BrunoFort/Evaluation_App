@@ -1,6 +1,7 @@
 export default function Input({
   label,
   error,
+  inputRef,
   size = "md",
   className = "",
   ...props
@@ -29,6 +30,7 @@ export default function Input({
 
       <input
         {...props}
+        ref={inputRef}
         className={`${base} ${sizes[size]} ${borderColor} ${className}`}
       />
 
