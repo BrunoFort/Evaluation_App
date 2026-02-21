@@ -59,32 +59,20 @@ Deno.serve(async (req) => {
       tableHit = Boolean(employee);
     }
 
-    let authUserFound = false;
-    const perPage = 1000;
-    let page = 1;
+    const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    });
 
-    while (page) {
-      const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
-        page,
-        perPage,
-      });
-
-      if (usersError) {
-        return new Response(
-          JSON.stringify({ error: usersError.message || "Failed to list auth users" }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-
-      const users = usersData?.users || [];
-      authUserFound = users.some((user) => (user.email || "").toLowerCase() === rawEmail);
-
-      if (authUserFound || users.length < perPage) {
-        break;
-      }
-
-      page = usersData?.nextPage ?? 0;
+    if (usersError) {
+      return new Response(
+        JSON.stringify({ error: usersError.message || "Failed to list auth users" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const users = usersData?.users || [];
+    const authUserFound = users.some((user) => (user.email || "").toLowerCase() === rawEmail);
 
     const exists = authUserFound || tableHit;
 
