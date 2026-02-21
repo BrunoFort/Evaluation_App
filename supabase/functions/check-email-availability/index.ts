@@ -39,31 +39,37 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const authResponse = await fetch(
-      `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(rawEmail)}`,
-      {
+    async function fetchAuthUsers(url: string) {
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${serviceRoleKey}`,
           "apikey": serviceRoleKey,
         },
-      }
-    );
+      });
 
-    if (!authResponse.ok) {
-      const errorText = await authResponse.text();
-      return new Response(
-        JSON.stringify({ error: errorText || "Failed to check auth users" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to check auth users");
+      }
+
+      const payload = await response.json();
+      return Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.users)
+          ? payload.users
+          : [];
     }
 
-    const authPayload = await authResponse.json();
-    const authUsers = Array.isArray(authPayload)
-      ? authPayload
-      : Array.isArray(authPayload?.users)
-        ? authPayload.users
-        : [];
+    let authUsers = await fetchAuthUsers(
+      `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(rawEmail)}&page=1&per_page=1`
+    );
+
+    if (authUsers.length === 0) {
+      authUsers = await fetchAuthUsers(
+        `${supabaseUrl}/auth/v1/admin/users?email=eq.${encodeURIComponent(rawEmail)}&page=1&per_page=1`
+      );
+    }
 
     let tableHit = false;
     if (role === "employer") {
