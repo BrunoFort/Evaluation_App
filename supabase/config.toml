@@ -1,2 +1,8 @@
 [functions."send-employee-invitation"]
 verify_jwt = false
+
+[functions."check-email-availability"]
+verify_jwt = false
+
+[functions."delete-auth-user"]
+verify_jwt = false

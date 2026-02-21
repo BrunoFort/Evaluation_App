@@ -121,17 +121,20 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    const { data: existingEmployee, error: existingError } = await supabase
-      .from("employees")
-      .select("id")
-      .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
-      .maybeSingle();
+    const { data: availability, error: availabilityError } = await supabase.functions.invoke(
+      "check-email-availability",
+      { body: { email: normalizedEmail, role: "employee" } }
+    );
 
-    if (existingError) {
-      console.warn("Employee pre-check failed:", existingError);
+    if (availabilityError) {
+      console.warn("Employee availability check failed:", availabilityError);
+      setError("We could not verify this email. Please try again.");
+      toast.error("We could not verify this email. Please try again.");
+      setLoading(false);
+      return;
     }
 
-    if (existingEmployee) {
+    if (availability?.exists) {
       const message = "An employee with this email already exists. Try a different email address or login.";
       setFieldErrors({ email: message });
       toast.error(message);

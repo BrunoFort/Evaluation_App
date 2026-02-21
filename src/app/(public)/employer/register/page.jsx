@@ -27,25 +27,26 @@ export default function EmployerRegisterPage() {
     console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
     try {
+      let createdUserId = null;
       const normalizedEmail = (data.contactEmail || "").toLowerCase();
 
-      if (normalizedEmail) {
-        const { data: existingEmployer, error: existingError } = await supabase
-          .from("employers")
-          .select("id")
-          .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
-          .maybeSingle();
+      const { data: availability, error: availabilityError } = await supabase.functions.invoke(
+        "check-email-availability",
+        { body: { email: normalizedEmail, role: "employer" } }
+      );
 
-        if (existingError) {
-          console.warn("Employer pre-check failed:", existingError);
-        }
+      if (availabilityError) {
+        console.warn("Employer availability check failed:", availabilityError);
+        setError("We could not verify this email. Please try again.");
+        toast.error("We could not verify this email. Please try again.");
+        return;
+      }
 
-        if (existingEmployer) {
-          const message = "An employer with this email already exists. Try a different email address or login.";
-          setFieldErrors({ contactEmail: message });
-          toast.error(message);
-          return;
-        }
+      if (availability?.exists) {
+        const message = "An employer with this email already exists. Try a different email address or login.";
+        setFieldErrors({ contactEmail: message });
+        toast.error(message);
+        return;
       }
 
       // 1) cria usuário de autenticação
@@ -74,6 +75,8 @@ export default function EmployerRegisterPage() {
       if (!auth?.user) {
         throw new Error("Sessão do usuário não retornada pelo Supabase.");
       }
+
+      createdUserId = auth.user.id;
 
       const confirmationSentAt = auth.user.confirmation_sent_at;
       const isEmailConfirmed = Boolean(auth.user.email_confirmed_at || auth.user.confirmed_at);
@@ -114,6 +117,11 @@ export default function EmployerRegisterPage() {
 
       if (registerError) {
         console.error("❌ Erro no RPC:", registerError);
+        if (createdUserId) {
+          await supabase.functions.invoke("delete-auth-user", {
+            body: { userId: createdUserId },
+          });
+        }
         throw registerError;
       }
 
