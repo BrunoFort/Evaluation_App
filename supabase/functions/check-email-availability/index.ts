@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    // Auth user checks are handled by signUp on the client. Use service role to bypass RLS for table checks.
+    // Auth user checks via admin listUsers with pagination to avoid false negatives.
 
     let tableHit = false;
     if (role === "employer") {
@@ -59,7 +59,34 @@ Deno.serve(async (req) => {
       tableHit = Boolean(employee);
     }
 
-    const exists = tableHit;
+    let authUserFound = false;
+    const perPage = 1000;
+    let page = 1;
+
+    while (page) {
+      const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
+        page,
+        perPage,
+      });
+
+      if (usersError) {
+        return new Response(
+          JSON.stringify({ error: usersError.message || "Failed to list auth users" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const users = usersData?.users || [];
+      authUserFound = users.some((user) => (user.email || "").toLowerCase() === rawEmail);
+
+      if (authUserFound || users.length < perPage) {
+        break;
+      }
+
+      page = usersData?.nextPage ?? 0;
+    }
+
+    const exists = authUserFound || tableHit;
 
     return new Response(
       JSON.stringify({ exists }),
