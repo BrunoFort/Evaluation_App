@@ -37,7 +37,10 @@ export default function EmployerRegisterPage() {
       );
 
       if (registerError || registerData?.error) {
-        const isDuplicate = registerData?.code === "duplicate" || registerError?.message?.includes("duplicate");
+        const isDuplicate =
+          registerData?.code === "duplicate" ||
+          registerError?.status === 409 ||
+          registerError?.message?.includes("duplicate");
         const message = isDuplicate
           ? "An employer with this email already exists. Try a different email address or login."
           : registerData?.error || registerError?.message || "Failed to create account.";
