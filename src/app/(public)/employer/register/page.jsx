@@ -30,33 +30,17 @@ export default function EmployerRegisterPage() {
       let createdUserId = null;
       const normalizedEmail = (data.contactEmail || "").toLowerCase();
 
-      const { data: availability, error: availabilityError } = await supabase.functions.invoke(
-        "check-email-availability",
-        { body: { email: normalizedEmail, role: "employer" } }
-      );
+      const { data: existingEmployer, error: existingError } = await supabase
+        .from("employers")
+        .select("id")
+        .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
+        .maybeSingle();
 
-      if (availabilityError) {
-        console.warn("Employer availability check failed:", availabilityError);
-        const { data: fallbackEmployer, error: fallbackError } = await supabase
-          .from("employers")
-          .select("id")
-          .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
-          .maybeSingle();
-
-        if (fallbackError) {
-          console.warn("Employer fallback check failed:", fallbackError);
-        }
-
-        if (fallbackEmployer) {
-          const message = "An employer with this email already exists. Try a different email address or login.";
-          setFieldErrors({ contactEmail: message });
-          toast.error(message);
-          setLoading(false);
-          return;
-        }
+      if (existingError) {
+        console.warn("Employer pre-check failed:", existingError);
       }
 
-      if (availability?.exists) {
+      if (existingEmployer) {
         const message = "An employer with this email already exists. Try a different email address or login.";
         setFieldErrors({ contactEmail: message });
         toast.error(message);
