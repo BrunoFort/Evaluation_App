@@ -52,36 +52,36 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingEmployee) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 409);
+        return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
     }
 
     let authExists = false;
     let page = 1;
     const perPage = 1000;
 
-    while (page) {
-      const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
-        page,
-        perPage,
-      });
+      while (true) {
+        const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
+          page,
+          perPage,
+        });
 
-      if (usersError) {
-        return jsonResponse({ error: usersError.message || "Failed to list users" }, 500);
+        if (usersError) {
+          return jsonResponse({ error: usersError.message || "Failed to list users" }, 500);
+        }
+
+        const users = usersData?.users || [];
+        authExists = users.some((user) => (user.email || "").toLowerCase() === normalizedEmail);
+
+        if (authExists || users.length < perPage) {
+          break;
+        }
+
+        page += 1;
       }
 
-      const users = usersData?.users || [];
-      authExists = users.some((user) => (user.email || "").toLowerCase() === normalizedEmail);
-
-      if (authExists || users.length < perPage) {
-        break;
+      if (authExists) {
+        return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
       }
-
-      page = usersData?.nextPage ?? 0;
-    }
-
-    if (authExists) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 409);
-    }
 
     const { data: signUpData, error: signUpError } = await anon.auth.signUp({
       email: normalizedEmail,

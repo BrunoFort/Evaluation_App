@@ -40,6 +40,7 @@ export default function EmployerRegisterPage() {
         const isDuplicate =
           registerData?.code === "duplicate" ||
           registerError?.status === 409 ||
+          registerError?.context?.status === 409 ||
           registerError?.message?.includes("duplicate");
         const message = isDuplicate
           ? "An employer with this email already exists. Try a different email address or login."

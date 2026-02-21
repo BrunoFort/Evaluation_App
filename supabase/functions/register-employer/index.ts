@@ -52,14 +52,14 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingEmployer) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 409);
+      return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
     }
 
     let authExists = false;
-    let page = 1;
     const perPage = 1000;
+    let page = 1;
 
-    while (page) {
+    while (true) {
       const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
         page,
         perPage,
@@ -76,11 +76,11 @@ Deno.serve(async (req) => {
         break;
       }
 
-      page = usersData?.nextPage ?? 0;
+      page += 1;
     }
 
     if (authExists) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 409);
+      return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
     }
 
     const { data: signUpData, error: signUpError } = await anon.auth.signUp({
