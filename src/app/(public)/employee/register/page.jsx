@@ -128,8 +128,9 @@ export default function EmployeeRegisterPage() {
 
     if (availabilityError) {
       console.warn("Employee availability check failed:", availabilityError);
-      setError("We could not verify this email. Please try again.");
-      toast.error("We could not verify this email. Please try again.");
+      const message = "We could not verify this email. Please try again.";
+      setFieldErrors({ email: message });
+      toast.error(message);
       setLoading(false);
       return;
     }

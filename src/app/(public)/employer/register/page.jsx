@@ -37,8 +37,10 @@ export default function EmployerRegisterPage() {
 
       if (availabilityError) {
         console.warn("Employer availability check failed:", availabilityError);
-        setError("We could not verify this email. Please try again.");
-        toast.error("We could not verify this email. Please try again.");
+        const message = "We could not verify this email. Please try again.";
+        setFieldErrors({ contactEmail: message });
+        toast.error(message);
+        setLoading(false);
         return;
       }
 
