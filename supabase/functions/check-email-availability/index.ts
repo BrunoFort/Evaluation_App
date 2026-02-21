@@ -1,5 +1,5 @@
 // deno-lint-ignore no-undef
-// deno-env-allow PROJECT_URL,SERVICE_ROLE_KEY
+// deno-env-allow PROJECT_URL,SERVICE_ROLE_KEY,ANON_KEY
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("PROJECT_URL");
     const serviceRoleKey = Deno.env.get("SERVICE_ROLE_KEY");
+    const anonKey = Deno.env.get("ANON_KEY");
 
     if (!supabaseUrl || !serviceRoleKey) {
       return new Response(
@@ -39,37 +40,7 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    async function fetchAuthUsers(url: string) {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${serviceRoleKey}`,
-          "apikey": serviceRoleKey,
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to check auth users");
-      }
-
-      const payload = await response.json();
-      return Array.isArray(payload)
-        ? payload
-        : Array.isArray(payload?.users)
-          ? payload.users
-          : [];
-    }
-
-    let authUsers = await fetchAuthUsers(
-      `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(rawEmail)}&page=1&per_page=1`
-    );
-
-    if (authUsers.length === 0) {
-      authUsers = await fetchAuthUsers(
-        `${supabaseUrl}/auth/v1/admin/users?email=eq.${encodeURIComponent(rawEmail)}&page=1&per_page=1`
-      );
-    }
+    // Auth user checks are handled by signUp on the client. Use service role to bypass RLS for table checks.
 
     let tableHit = false;
     if (role === "employer") {
@@ -88,7 +59,7 @@ Deno.serve(async (req) => {
       tableHit = Boolean(employee);
     }
 
-    const exists = authUsers.length > 0 || tableHit;
+    const exists = tableHit;
 
     return new Response(
       JSON.stringify({ exists }),
