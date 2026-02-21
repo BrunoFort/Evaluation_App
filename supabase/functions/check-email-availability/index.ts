@@ -39,20 +39,31 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const { data: authUser, error: authError } = await admin.auth.admin.getUserByEmail(rawEmail);
-
-    if (authError) {
-      const message = authError.message || "Failed to check auth users";
-      const status = authError.status || 500;
-      const isNotFound = status === 404 || /not\s*found/i.test(message);
-
-      if (!isNotFound) {
-        return new Response(
-          JSON.stringify({ error: message }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+    const authResponse = await fetch(
+      `${supabaseUrl}/auth/v1/admin/users?email=${encodeURIComponent(rawEmail)}`,
+      {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${serviceRoleKey}`,
+          "apikey": serviceRoleKey,
+        },
       }
+    );
+
+    if (!authResponse.ok) {
+      const errorText = await authResponse.text();
+      return new Response(
+        JSON.stringify({ error: errorText || "Failed to check auth users" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const authPayload = await authResponse.json();
+    const authUsers = Array.isArray(authPayload)
+      ? authPayload
+      : Array.isArray(authPayload?.users)
+        ? authPayload.users
+        : [];
 
     let tableHit = false;
     if (role === "employer") {
@@ -71,7 +82,7 @@ Deno.serve(async (req) => {
       tableHit = Boolean(employee);
     }
 
-    const exists = Boolean(authUser?.user) || tableHit;
+    const exists = authUsers.length > 0 || tableHit;
 
     return new Response(
       JSON.stringify({ exists }),
