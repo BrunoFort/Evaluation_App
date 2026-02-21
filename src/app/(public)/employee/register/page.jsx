@@ -128,11 +128,23 @@ export default function EmployeeRegisterPage() {
 
     if (availabilityError) {
       console.warn("Employee availability check failed:", availabilityError);
-      const message = "We could not verify this email. Please try again.";
-      setFieldErrors({ email: message });
-      toast.error(message);
-      setLoading(false);
-      return;
+      const { data: fallbackEmployee, error: fallbackError } = await supabase
+        .from("employees")
+        .select("id")
+        .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
+        .maybeSingle();
+
+      if (fallbackError) {
+        console.warn("Employee fallback check failed:", fallbackError);
+      }
+
+      if (fallbackEmployee) {
+        const message = "An employee with this email already exists. Try a different email address or login.";
+        setFieldErrors({ email: message });
+        toast.error(message);
+        setLoading(false);
+        return;
+      }
     }
 
     if (availability?.exists) {

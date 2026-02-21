@@ -37,17 +37,30 @@ export default function EmployerRegisterPage() {
 
       if (availabilityError) {
         console.warn("Employer availability check failed:", availabilityError);
-        const message = "We could not verify this email. Please try again.";
-        setFieldErrors({ contactEmail: message });
-        toast.error(message);
-        setLoading(false);
-        return;
+        const { data: fallbackEmployer, error: fallbackError } = await supabase
+          .from("employers")
+          .select("id")
+          .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
+          .maybeSingle();
+
+        if (fallbackError) {
+          console.warn("Employer fallback check failed:", fallbackError);
+        }
+
+        if (fallbackEmployer) {
+          const message = "An employer with this email already exists. Try a different email address or login.";
+          setFieldErrors({ contactEmail: message });
+          toast.error(message);
+          setLoading(false);
+          return;
+        }
       }
 
       if (availability?.exists) {
         const message = "An employer with this email already exists. Try a different email address or login.";
         setFieldErrors({ contactEmail: message });
         toast.error(message);
+        setLoading(false);
         return;
       }
 
@@ -71,7 +84,17 @@ export default function EmployerRegisterPage() {
 
       if (authError) {
         console.error("❌ Erro no signUp:", authError);
-        throw authError;
+        const rawMessage = authError.message || "Failed to create account.";
+        const message = rawMessage.toLowerCase().includes("already")
+          ? "An employer with this email already exists. Try a different email address or login."
+          : rawMessage;
+        if (message.includes("email already exists")) {
+          setFieldErrors({ contactEmail: message });
+        } else {
+          setError(message);
+        }
+        toast.error(message);
+        return;
       }
       
       if (!auth?.user) {
