@@ -139,6 +139,28 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
+    const { data: availability, error: availabilityError } = await supabase.functions.invoke(
+      "check-email-availability",
+      { body: { email: normalizedEmail, role: "employee" } }
+    );
+
+    if (availabilityError) {
+      console.warn("Employee availability check failed:", availabilityError);
+      const message = "We could not verify this email. Please try again.";
+      setFieldErrors({ email: message });
+      toast.error(message);
+      setLoading(false);
+      return;
+    }
+
+    if (availability?.exists) {
+      const message = "An employee with this email already exists. Try a different email address or login.";
+      setFieldErrors({ email: message });
+      toast.error(message);
+      setLoading(false);
+      return;
+    }
+
     const redirectTo = `${window.location.origin}/employee/login`;
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({

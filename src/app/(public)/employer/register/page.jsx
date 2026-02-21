@@ -48,6 +48,28 @@ export default function EmployerRegisterPage() {
         return;
       }
 
+      const { data: availability, error: availabilityError } = await supabase.functions.invoke(
+        "check-email-availability",
+        { body: { email: normalizedEmail, role: "employer" } }
+      );
+
+      if (availabilityError) {
+        console.warn("Employer availability check failed:", availabilityError);
+        const message = "We could not verify this email. Please try again.";
+        setFieldErrors({ contactEmail: message });
+        toast.error(message);
+        setLoading(false);
+        return;
+      }
+
+      if (availability?.exists) {
+        const message = "An employer with this email already exists. Try a different email address or login.";
+        setFieldErrors({ contactEmail: message });
+        toast.error(message);
+        setLoading(false);
+        return;
+      }
+
       // 1) cria usuário de autenticação
       console.log("📝 Passo 1: Criando usuário de autenticação...");
 
