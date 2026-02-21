@@ -146,11 +146,7 @@ export default function EmployeeRegisterPage() {
 
     if (availabilityError) {
       console.warn("Employee availability check failed:", availabilityError);
-      const message = "We could not verify this email. Please try again.";
-      setFieldErrors({ email: message });
-      toast.error(message);
-      setLoading(false);
-      return;
+      // Fall back to auth signUp error for duplicates when the edge function is unavailable.
     }
 
     if (availability?.exists) {
