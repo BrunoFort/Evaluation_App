@@ -165,6 +165,21 @@ export default function EmployeeRegisterPage() {
     }
 
     const userId = signUpData.user.id;
+    const confirmationSentAt = signUpData.user.confirmation_sent_at;
+    const isEmailConfirmed = Boolean(signUpData.user.email_confirmed_at || signUpData.user.confirmed_at);
+
+    if (!confirmationSentAt && !isEmailConfirmed) {
+      const { error: resendError } = await supabase.auth.resend({
+        type: "signup",
+        email: normalizedEmail,
+        options: { emailRedirectTo: redirectTo },
+      });
+
+      if (resendError) {
+        console.warn("⚠️ Failed to resend confirmation email:", resendError);
+        toast.warning("We could not send the confirmation email automatically. Please use the login page to resend.");
+      }
+    }
 
     const storedPhoto = loadPhoto(registerPhotoKey);
     if (storedPhoto) {

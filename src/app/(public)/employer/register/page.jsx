@@ -9,17 +9,6 @@ import { supabase } from "/src/lib/supabaseClient";
 
 import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
-import ProfilePhotoUploader from "/src/features/shared-photo/ProfilePhotoUploader";
-import {
-  removePhoto,
-  savePhoto,
-  readFileAsDataUrl,
-} from "/src/features/shared-photo/photoStorage";
-import {
-  dataUrlToBlob,
-  uploadProfilePhoto,
-  updateAuthAvatar,
-} from "/src/features/shared-photo/supabasePhotoStorage";
 
 export default function EmployerRegisterPage() {
   const navigate = useNavigate();
@@ -29,29 +18,6 @@ export default function EmployerRegisterPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState(null);
-
-  const registerPhotoKey = "employer-register-photo";
-
-  useEffect(() => {
-    // Clear any stale registration photo so each new registration starts empty.
-    removePhoto(registerPhotoKey);
-    console.log("📋 Register page mounted - cleared stored photo");
-    setPhotoUrl(null);
-  }, []);
-
-  async function handlePhotoUpload(file) {
-    console.log("📸 Photo upload started - file:", file.name, "size:", file.size);
-    const dataUrl = await readFileAsDataUrl(file);
-    console.log("📸 Data URL created -", dataUrl.length, "chars");
-    setPhotoUrl(dataUrl);
-    console.log("✅ Photo stored in memory for this registration only");
-  }
-
-  function handlePhotoDelete() {
-    console.log("🗑️ Photo deleted from registration form");
-    setPhotoUrl(null);
-  }
 
   async function handleRegister(data) {
     setError("");
@@ -109,6 +75,23 @@ export default function EmployerRegisterPage() {
         throw new Error("Sessão do usuário não retornada pelo Supabase.");
       }
 
+      const confirmationSentAt = auth.user.confirmation_sent_at;
+      const isEmailConfirmed = Boolean(auth.user.email_confirmed_at || auth.user.confirmed_at);
+
+      if (!confirmationSentAt && !isEmailConfirmed) {
+        const resendEmail = normalizedEmail || data.contactEmail;
+        const { error: resendError } = await supabase.auth.resend({
+          type: "signup",
+          email: resendEmail,
+          options: { emailRedirectTo: redirectTo },
+        });
+
+        if (resendError) {
+          console.warn("⚠️ Failed to resend confirmation email:", resendError);
+          toast.warning("We could not send the confirmation email automatically. Please use the login page to resend.");
+        }
+      }
+
       console.log("✅ Usuário de autenticação criado - userId:", auth.user.id);
 
       const {
@@ -140,13 +123,6 @@ export default function EmployerRegisterPage() {
       }
 
       console.log("✅ Empregador registrado com sucesso");
-
-      if (photoUrl) {
-        const pendingKey = `employer-register-photo:${auth.user.id}`;
-        savePhoto(pendingKey, photoUrl);
-        console.log("✅ Pending photo stored for confirmed login:", pendingKey);
-        toast.info("Photo will be uploaded after email confirmation.");
-      }
 
       console.log("📝 Passo 3: Registro concluido - exibindo mensagem...");
 
@@ -182,19 +158,11 @@ export default function EmployerRegisterPage() {
       <div className="w-full max-w-xl space-y-8">
         <PageHeader
           title="Employer Registration"
-          subtitle="Create your employer account"
+          subtitle="Create your account"
           align="center"
         />
 
         <Card padding="lg" shadow="md" className="space-y-6">
-          <div className="flex justify-end">
-            <ProfilePhotoUploader
-              photoUrl={photoUrl}
-              onUpload={handlePhotoUpload}
-              onDelete={handlePhotoDelete}
-            />
-          </div>
-
           {successMessage && (
             <div className="text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg text-sm">
               {successMessage}
