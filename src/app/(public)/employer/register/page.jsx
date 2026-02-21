@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
-import { useEmployerAuth } from "/src/features/auth/employer/hooks/useEmployerAuth";
 import { EmployerRegisterForm } from "/src/features/auth/employer/forms/EmployerRegisterForm";
 
 import { supabase } from "/src/lib/supabaseClient";
@@ -11,9 +10,6 @@ import Card from "/src/components/ui/card.jsx";
 import PageHeader from "/src/components/ui/PageHeader.jsx";
 
 export default function EmployerRegisterPage() {
-  const navigate = useNavigate();
-  const { login } = useEmployerAuth();
-
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
@@ -27,74 +23,25 @@ export default function EmployerRegisterPage() {
     console.log("🔴🔴🔴 INICIANDO REGISTRO COM DADOS:", data);
 
     try {
-      let createdUserId = null;
       const normalizedEmail = (data.contactEmail || "").toLowerCase();
-
-      const { data: existingEmployer, error: existingError } = await supabase
-        .from("employers")
-        .select("id")
-        .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
-        .maybeSingle();
-
-      if (existingError) {
-        console.warn("Employer pre-check failed:", existingError);
-      }
-
-      if (existingEmployer) {
-        const message = "An employer with this email already exists. Try a different email address or login.";
-        setFieldErrors({ contactEmail: message });
-        toast.error(message);
-        setLoading(false);
-        return;
-      }
-
-      const { data: availability, error: availabilityError } = await supabase.functions.invoke(
-        "check-email-availability",
-        { body: { email: normalizedEmail, role: "employer" } }
+      const redirectTo = `${window.location.origin}/employer/login`;
+      const { data: registerData, error: registerError } = await supabase.functions.invoke(
+        "register-employer",
+        {
+          body: {
+            ...data,
+            contactEmail: normalizedEmail,
+            redirectTo,
+          },
+        }
       );
 
-      if (availabilityError) {
-        console.warn("Employer availability check failed:", availabilityError);
-        const message = "We could not verify this email. Please try again.";
-        setFieldErrors({ contactEmail: message });
-        toast.error(message);
-        setLoading(false);
-        return;
-      }
-
-      if (availability?.exists) {
-        const message = "An employer with this email already exists. Try a different email address or login.";
-        setFieldErrors({ contactEmail: message });
-        toast.error(message);
-        setLoading(false);
-        return;
-      }
-
-      // 1) cria usuário de autenticação
-      console.log("📝 Passo 1: Criando usuário de autenticação...");
-
-      const redirectTo = `${window.location.origin}/employer/login`;
-
-      const { data: auth, error: authError } = await supabase.auth.signUp({
-        email: normalizedEmail || data.contactEmail,
-        password: data.password,
-        options: {
-          emailRedirectTo: redirectTo,
-          data: {
-            first_name: data.firstName,
-          },
-        },
-      });
-
-      console.log("📝 Resposta do signUp:", { auth, authError });
-
-      if (authError) {
-        console.error("❌ Erro no signUp:", authError);
-        const rawMessage = authError.message || "Failed to create account.";
-        const message = rawMessage.toLowerCase().includes("already")
+      if (registerError || registerData?.error) {
+        const isDuplicate = registerData?.code === "duplicate" || registerError?.message?.includes("duplicate");
+        const message = isDuplicate
           ? "An employer with this email already exists. Try a different email address or login."
-          : rawMessage;
-        if (message.includes("email already exists")) {
+          : registerData?.error || registerError?.message || "Failed to create account.";
+        if (isDuplicate) {
           setFieldErrors({ contactEmail: message });
         } else {
           setError(message);
@@ -102,68 +49,6 @@ export default function EmployerRegisterPage() {
         toast.error(message);
         return;
       }
-      
-      if (!auth?.user) {
-        throw new Error("Sessão do usuário não retornada pelo Supabase.");
-      }
-
-      createdUserId = auth.user.id;
-
-      const confirmationSentAt = auth.user.confirmation_sent_at;
-      const isEmailConfirmed = Boolean(auth.user.email_confirmed_at || auth.user.confirmed_at);
-
-      if (!confirmationSentAt && !isEmailConfirmed) {
-        const resendEmail = normalizedEmail || data.contactEmail;
-        const { error: resendError } = await supabase.auth.resend({
-          type: "signup",
-          email: resendEmail,
-          options: { emailRedirectTo: redirectTo },
-        });
-
-        if (resendError) {
-          console.warn("⚠️ Failed to resend confirmation email:", resendError);
-          toast.warning("We could not send the confirmation email automatically. Please use the login page to resend.");
-        }
-      }
-
-      console.log("✅ Usuário de autenticação criado - userId:", auth.user.id);
-
-      const {
-        password,
-        confirmPassword,
-        ...employerPayload
-      } = data;
-
-      employerPayload.id = auth.user.id;
-
-      // 2) cria employer no banco
-      console.log("📝 Passo 2: Registrando empregador via RPC...");
-      console.log("📝 Payload do RPC:", employerPayload);
-      
-      const { data: rpcData, error: registerError } = await supabase.rpc("register_employer", {
-        payload: employerPayload,
-      });
-      
-      console.log("📝 Resposta do RPC:", { rpcData, registerError });
-
-      if (registerError) {
-        console.error("❌ Erro no RPC:", registerError);
-        if (createdUserId) {
-          await supabase.functions.invoke("delete-auth-user", {
-            body: { userId: createdUserId },
-          });
-        }
-        throw registerError;
-      }
-
-      // RPC retorna null, mas isso é normal se está criando o registro
-      if (!rpcData) {
-        console.log("⚠️ RPC retornou null, mas pode ter criado o register normalmente");
-      }
-
-      console.log("✅ Empregador registrado com sucesso");
-
-      console.log("📝 Passo 3: Registro concluido - exibindo mensagem...");
 
       toast.success("Registration completed. Check your email to confirm your account.");
       setSuccessMessage(

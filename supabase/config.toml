@@ -6,3 +6,9 @@ verify_jwt = false
 
 [functions."delete-auth-user"]
 verify_jwt = false
+
+[functions."register-employer"]
+verify_jwt = false
+
+[functions."register-employee"]
+verify_jwt = false

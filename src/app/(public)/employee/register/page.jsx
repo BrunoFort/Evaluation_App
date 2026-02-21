@@ -121,62 +121,24 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    const { data: existingEmployee, error: existingError } = await supabase
-      .from("employees")
-      .select("id")
-      .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
-      .maybeSingle();
-
-    if (existingError) {
-      console.warn("Employee pre-check failed:", existingError);
-    }
-
-    if (existingEmployee) {
-      const message = "An employee with this email already exists. Try a different email address or login.";
-      setFieldErrors({ email: message });
-      toast.error(message);
-      setLoading(false);
-      return;
-    }
-
-    const { data: availability, error: availabilityError } = await supabase.functions.invoke(
-      "check-email-availability",
-      { body: { email: normalizedEmail, role: "employee" } }
+    const redirectTo = `${window.location.origin}/employee/login`;
+    const { data: registerData, error: registerError } = await supabase.functions.invoke(
+      "register-employee",
+      {
+        body: {
+          email: normalizedEmail,
+          password,
+          redirectTo,
+        },
+      }
     );
 
-    if (availabilityError) {
-      console.warn("Employee availability check failed:", availabilityError);
-      const message = "We could not verify this email. Please try again.";
-      setFieldErrors({ email: message });
-      toast.error(message);
-      setLoading(false);
-      return;
-    }
-
-    if (availability?.exists) {
-      const message = "An employee with this email already exists. Try a different email address or login.";
-      setFieldErrors({ email: message });
-      toast.error(message);
-      setLoading(false);
-      return;
-    }
-
-    const redirectTo = `${window.location.origin}/employee/login`;
-
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: normalizedEmail,
-      password,
-      options: {
-        emailRedirectTo: redirectTo,
-      },
-    });
-
-    if (signUpError) {
-      const rawMessage = signUpError.message || "Failed to create account.";
-      const message = rawMessage.toLowerCase().includes("already")
+    if (registerError || registerData?.error) {
+      const isDuplicate = registerData?.code === "duplicate" || registerError?.message?.includes("duplicate");
+      const message = isDuplicate
         ? "An employee with this email already exists. Try a different email address or login."
-        : rawMessage;
-      if (message.includes("email already exists")) {
+        : registerData?.error || registerError?.message || "Failed to create account.";
+      if (isDuplicate) {
         setFieldErrors({ email: message });
       } else {
         setError(message);
@@ -186,22 +148,7 @@ export default function EmployeeRegisterPage() {
       return;
     }
 
-    const userId = signUpData.user.id;
-    const confirmationSentAt = signUpData.user.confirmation_sent_at;
-    const isEmailConfirmed = Boolean(signUpData.user.email_confirmed_at || signUpData.user.confirmed_at);
-
-    if (!confirmationSentAt && !isEmailConfirmed) {
-      const { error: resendError } = await supabase.auth.resend({
-        type: "signup",
-        email: normalizedEmail,
-        options: { emailRedirectTo: redirectTo },
-      });
-
-      if (resendError) {
-        console.warn("⚠️ Failed to resend confirmation email:", resendError);
-        toast.warning("We could not send the confirmation email automatically. Please use the login page to resend.");
-      }
-    }
+    const userId = registerData.userId;
 
     const storedPhoto = loadPhoto(registerPhotoKey);
     if (storedPhoto) {
