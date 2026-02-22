@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     const { data: existingEmployee } = await admin
       .from("employees")
       .select("id")
-      .or(`email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
+      .or(`email.eq.${normalizedEmail},contact_email.eq.${normalizedEmail}`)
       .maybeSingle();
 
     if (existingEmployee) {
