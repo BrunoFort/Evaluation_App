@@ -8,9 +8,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-function jsonResponse(payload: Record<string, unknown>, status = 200) {
+function jsonResponse(payload: Record<string, unknown>) {
   return new Response(JSON.stringify(payload), {
-    status,
+    status: 200,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
     const redirectTo = (payload?.redirectTo || "").toString();
 
     if (!normalizedEmail || !password) {
-      return jsonResponse({ error: "Missing email or password" }, 400);
+      return jsonResponse({ error: "Missing email or password" });
     }
 
     const supabaseUrl = Deno.env.get("PROJECT_URL");
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("ANON_KEY");
 
     if (!supabaseUrl || !serviceRoleKey || !anonKey) {
-      return jsonResponse({ error: "Supabase keys not configured" }, 500);
+      return jsonResponse({ error: "Supabase keys not configured" });
     }
 
     const admin = createClient(supabaseUrl, serviceRoleKey, {
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingEmployer) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
+      return jsonResponse({ code: "duplicate", message: "duplicate" });
     }
 
     let authExists = false;
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
       });
 
       if (usersError) {
-        return jsonResponse({ error: usersError.message || "Failed to list users" }, 500);
+        return jsonResponse({ error: usersError.message || "Failed to list users" });
       }
 
       const users = usersData?.users || [];
@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
     }
 
     if (authExists) {
-      return jsonResponse({ code: "duplicate", message: "duplicate" }, 200);
+      return jsonResponse({ code: "duplicate", message: "duplicate" });
     }
 
     const { data: signUpData, error: signUpError } = await anon.auth.signUp({
@@ -93,13 +93,13 @@ Deno.serve(async (req) => {
     });
 
     if (signUpError) {
-      return jsonResponse({ error: signUpError.message || "Failed to create account" }, 400);
+      return jsonResponse({ error: signUpError.message || "Failed to create account" });
     }
 
     const userId = signUpData?.user?.id;
 
     if (!userId) {
-      return jsonResponse({ error: "User not created" }, 500);
+      return jsonResponse({ error: "User not created" });
     }
 
     const { password: _pw, confirmPassword: _cpw, ...employerPayload } = payload || {};
@@ -111,12 +111,12 @@ Deno.serve(async (req) => {
 
     if (registerError) {
       await admin.auth.admin.deleteUser(userId);
-      return jsonResponse({ error: registerError.message || "Failed to register employer" }, 500);
+      return jsonResponse({ error: registerError.message || "Failed to register employer" });
     }
 
     return jsonResponse({ success: true, userId });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return jsonResponse({ error: message }, 500);
+    return jsonResponse({ error: message });
   }
 });
